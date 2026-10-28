@@ -1,0 +1,451 @@
+    
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>タイムライン | JyobiKen</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --main-blue: #42a9e8;
+            --hover-blue: #2996d6;
+        }
+
+        body {
+            margin: 0;
+            background: #f3f6f9;
+            color: #333;
+            font-family: Arial, "Meiryo", sans-serif;
+        }
+
+        .sidebar {
+            width: 190px;
+            min-width: 190px;
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            padding: 22px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .nav-link {
+            color: #555;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: var(--hover-blue);
+            background: #eaf6fd;
+        }
+
+        .logout {
+            margin-top: auto;
+            padding-top: 25px;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .content-card {
+            background: #fff;
+            border: 1px solid #edf0f3;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-primary {
+            background: var(--main-blue);
+            border-color: var(--main-blue);
+        }
+
+        .btn-primary:hover {
+            background: var(--hover-blue);
+            border-color: var(--hover-blue);
+        }
+
+        .form-control {
+            border-color: #d1d5db;
+            border-radius: 6px;
+        }
+
+        .filter-button {
+            background: #fff;
+            border: 1px solid #d1d5db;
+            color: #555;
+            padding: 5px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .filter-button.active,
+        .filter-button:hover {
+            background: #eaf6fd;
+            border-color: var(--main-blue);
+            color: var(--hover-blue);
+        }
+
+        .diary-card {
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .post-date {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .diary-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .diary-text {
+            font-size: 14px;
+            color: #666;
+            white-space: pre-wrap;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 240px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .post-actions {
+            border-top: 1px solid #edf0f3;
+            padding-top: 12px;
+            margin-top: 15px;
+        }
+
+        .action-button {
+            background: transparent;
+            border: none;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .action-button:hover {
+            color: var(--hover-blue);
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .logo {
+                margin-bottom: 12px;
+            }
+
+            .sidebar .nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .logout {
+                padding-top: 10px;
+            }
+
+            .main-content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="d-flex flex-column flex-md-row">
+
+    <!-- 左側メニュー -->
+    <aside class="sidebar">
+        <a href="#" class="logo">JyobiKen</a>
+
+        <nav class="nav flex-column">
+            <a href="index.html" class="nav-link">
+                卒業研究一覧
+            </a>
+            <a href="mypage.html" class="nav-link">
+                マイページ
+            </a>
+            <a href="timeline.html" class="nav-link active">
+                タイムライン
+            </a>
+            <a href="notifications.html" class="nav-link">通知</a>
+        </nav>
+
+        <div class="logout">
+            <a href="login.html"
+               class="btn btn-outline-secondary btn-sm w-100">
+                ログアウト →
+            </a>
+        </div>
+    </aside>
+
+    <!-- メイン画面 -->
+    <main class="main-content">
+
+        <div class="d-flex justify-content-between
+                    align-items-center flex-wrap gap-3 mb-4">
+
+            <h1 class="page-title mb-0">タイムライン</h1>
+
+            <a href="diary-edit.html" class="btn btn-primary">
+                ＋ 日誌を投稿
+            </a>
+        </div>
+
+        <!-- 検索・絞り込み -->
+        <section class="content-card p-3 mb-4">
+
+            <div class="row g-2 mb-3">
+                <div class="col-12 col-md-8">
+                    <input type="search"
+                           id="search-input"
+                           class="form-control"
+                           placeholder="⌕ キーワードを検索"
+                           aria-label="日誌を検索">
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <button type="button"
+                            id="search-button"
+                            class="btn btn-primary w-100">
+                        検索
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <button type="button"
+                        class="filter-button active"
+                        data-filter="all">
+                    全て
+                </button>
+
+                <button type="button"
+                        class="filter-button"
+                        data-filter="mine">
+                    自分
+                </button>
+            </div>
+
+        </section>
+
+        <!-- 日誌一覧 -->
+        <section id="diary-list">
+
+            <!-- 日誌1 -->
+            <article class="content-card diary-card"
+                     data-author="mine"
+                     data-search="活動記録 研究 制作">
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar">👤</div>
+
+                    <div>
+                        <div class="user-name">山田太郎</div>
+                        <div class="post-date">2026年10月27日</div>
+                    </div>
+                </div>
+
+                <h2 class="diary-title">活動記録</h2>
+
+                <p class="diary-text mb-0">
+今日の卒業研究では、アプリの画面設計を進めました。
+                </p>
+
+                <div class="post-actions d-flex gap-3">
+                    <button type="button" class="action-button">
+                        ♡ いいね
+                    </button>
+
+                    <button type="button" class="action-button">
+                        コメント
+                    </button>
+                </div>
+
+            </article>
+
+            <!-- 日誌2 -->
+            <article class="content-card diary-card"
+                     data-author="other"
+                     data-search="画面設計 デザイン">
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar">👤</div>
+
+                    <div>
+                        <div class="user-name">佐藤花子</div>
+                        <div class="post-date">2026年10月26日</div>
+                    </div>
+                </div>
+
+                <h2 class="diary-title">画面設計</h2>
+
+                <p class="diary-text mb-0">
+画面のデザインをチームで相談しました。
+                </p>
+
+                <div class="post-actions d-flex gap-3">
+                    <button type="button" class="action-button">
+                        ♡ いいね
+                    </button>
+
+                    <button type="button" class="action-button">
+                        コメント
+                    </button>
+                </div>
+
+            </article>
+
+            <!-- 日誌3 -->
+            <article class="content-card diary-card"
+                     data-author="other"
+                     data-search="進捗 報告 プログラム">
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar">👤</div>
+
+                    <div>
+                        <div class="user-name">鈴木花子</div>
+                        <div class="post-date">2026年10月25日</div>
+                    </div>
+                </div>
+
+                <h2 class="diary-title">進捗報告</h2>
+
+                <p class="diary-text mb-0">
+プログラムの実装を少しずつ進めています。
+                </p>
+
+                <div class="post-actions d-flex gap-3">
+                    <button type="button" class="action-button">
+                        ♡ いいね
+                    </button>
+
+                    <button type="button" class="action-button">
+                        コメント
+                    </button>
+                </div>
+
+            </article>
+
+        </section>
+
+        <p id="no-results" class="text-center text-secondary py-4 d-none">
+            該当する日誌がありません。
+        </p>
+
+    </main>
+
+</div>
+
+<script>
+    const searchInput = document.getElementById("search-input");
+    const searchButton = document.getElementById("search-button");
+    const diaryCards = document.querySelectorAll(".diary-card");
+    const filterButtons = document.querySelectorAll(".filter-button");
+    const noResults = document.getElementById("no-results");
+
+    let currentFilter = "all";
+
+    function filterDiaries() {
+        const keyword = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        diaryCards.forEach(function(card) {
+            const text = (
+                card.innerText + " " + card.dataset.search
+            ).toLowerCase();
+
+            const matchesKeyword = text.includes(keyword);
+            const matchesFilter =
+                currentFilter === "all" ||
+                card.dataset.author === currentFilter;
+
+            const visible = matchesKeyword && matchesFilter;
+
+            card.classList.toggle("d-none", !visible);
+
+            if (visible) {
+                visibleCount++;
+            }
+        });
+
+        noResults.classList.toggle("d-none", visibleCount !== 0);
+    }
+
+    searchButton.addEventListener("click", filterDiaries);
+
+    searchInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            filterDiaries();
+        }
+    });
+
+    filterButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            currentFilter = button.dataset.filter;
+
+            filterButtons.forEach(function(item) {
+                item.classList.remove("active");
+            });
+
+            button.classList.add("active");
+            filterDiaries();
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

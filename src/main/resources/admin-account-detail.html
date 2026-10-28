@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>アカウント詳細 | JyobiKen</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background: #f3f6f9;
+            color: #333;
+            font-family: Arial, "Meiryo", sans-serif;
+        }
+
+        .sidebar {
+            width: 190px;
+            min-width: 190px;
+            min-height: 100vh;
+            padding: 22px 15px;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .nav-link {
+            color: #555;
+            font-size: 14px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #2996d6;
+            background: #eaf6fd;
+        }
+
+        .logout {
+            margin-top: auto;
+            padding-top: 25px;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 24px;
+        }
+
+        .content-card {
+            max-width: 800px;
+            background: white;
+            border: 1px solid #edf0f3;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,.04);
+        }
+
+        .profile {
+            text-align: center;
+            padding: 15px 0 25px;
+        }
+
+        .avatar {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 12px;
+            background: #e5e7eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .subtext {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 20px;
+            padding: 14px 0;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .detail-label {
+            width: 130px;
+            flex-shrink: 0;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+                border-right: 0;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .logo { margin-bottom: 12px; }
+            .sidebar .nav { flex-direction: row; flex-wrap: wrap; }
+            .logout { padding-top: 10px; }
+            .main-content { padding: 20px 15px; }
+            .content-card { padding: 18px; }
+
+            .detail-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="d-flex flex-column flex-md-row">
+
+    <aside class="sidebar">
+        <a href="admin-home.html" class="logo">JyobiKen</a>
+        <nav class="nav flex-column">
+            <a href="research-list.html" class="nav-link">卒業研究一覧</a>
+            <a href="admin-accounts.html" class="nav-link active">アカウント管理</a>
+            <a href="timeline.html" class="nav-link">タイムライン</a>
+            <a href="notifications.html" class="nav-link">お知らせ</a>
+        </nav>
+        <div class="logout">
+            <a href="login.html" class="btn btn-outline-secondary btn-sm w-100">ログアウト →</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <h1 class="page-title">アカウント詳細</h1>
+
+        <section class="content-card">
+            <a href="admin-accounts.html" class="text-primary text-decoration-none small">
+                ← 戻る
+            </a>
+
+            <div class="profile">
+                <div class="avatar">👤</div>
+                <div class="profile-name">山田花子</div>
+                <div class="subtext">学籍番号：4523109</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">メールアドレス</div>
+                <div class="detail-value">hanako.yamada@example.jp</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">入学年度</div>
+                <div class="detail-value">2027年度</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">所属</div>
+                <div class="detail-value">専門学生</div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a href="admin-accounts.html" class="btn btn-outline-secondary btn-sm">
+                    一覧に戻る
+                </a>
+                <button type="button" id="delete-account" class="btn btn-danger btn-sm">
+                    削除
+                </button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById("delete-account").addEventListener("click", function () {
+        if (confirm("このアカウントを削除しますか？")) {
+            window.location.href = "admin-accounts.html";
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

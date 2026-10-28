@@ -1,0 +1,665 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>卒業研究一覧 | JyobiKen</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --main-blue: #42a9e8;
+            --hover-blue: #2996d6;
+            --background: #f3f6f9;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, "Meiryo", sans-serif;
+            background: var(--background);
+            color: #333;
+        }
+
+        .sidebar {
+            width: 200px;
+            min-width: 200px;
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            padding: 24px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: block;
+            margin-bottom: 35px;
+            color: #333;
+            font-size: 21px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link {
+            padding: 11px 12px;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
+            border-radius: 6px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: var(--hover-blue);
+            background: #eaf6fd;
+        }
+
+        .logout {
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 28px;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .user-name {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .search-card {
+            padding: 22px;
+            margin-bottom: 24px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+        }
+
+        .form-label {
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-control,
+        .form-select {
+            border-color: #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--main-blue);
+            box-shadow: 0 0 0 3px rgba(66, 169, 232, .15);
+        }
+
+        .btn-primary {
+            background: var(--main-blue);
+            border-color: var(--main-blue);
+        }
+
+        .btn-primary:hover {
+            background: var(--hover-blue);
+            border-color: var(--hover-blue);
+        }
+
+        .category-button {
+            padding: 6px 14px;
+            background: white;
+            color: #555;
+            border: 1px solid #d1d5db;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .category-button:hover,
+        .category-button.active {
+            color: white;
+            background: var(--main-blue);
+            border-color: var(--main-blue);
+        }
+
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .research-card {
+            overflow: hidden;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            transition: box-shadow .2s;
+        }
+
+        .research-card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
+        }
+
+        .research-image {
+            width: 100%;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #e9ecef;
+            color: #777;
+            font-size: 16px;
+        }
+
+        .research-body {
+            padding: 15px;
+        }
+
+        .group-name {
+            color: #777;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .research-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .research-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .empty-message {
+            display: none;
+            padding: 35px;
+            background: #fff;
+            border-radius: 10px;
+            text-align: center;
+            color: #777;
+        }
+
+        @media (max-width: 767.98px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+                padding: 15px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .logo {
+                margin-bottom: 12px;
+            }
+
+            .sidebar .nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar .nav-link {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .logout {
+                padding-top: 10px;
+            }
+
+            .main-content {
+                padding: 18px 14px;
+            }
+
+            .top-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .search-card {
+                padding: 16px;
+            }
+
+            .research-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .research-image {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout d-flex">
+
+    <!-- 左側メニュー -->
+    <aside class="sidebar">
+
+        <a href="index.html" class="logo">JyobiKen</a>
+
+        <nav class="nav flex-column">
+            <a href="index.html" class="nav-link active">
+                卒業研究一覧
+            </a>
+
+            <a href="mypage.html" class="nav-link">
+                マイページ
+            </a>
+
+            <a href="timeline.html" class="nav-link">
+                タイムライン
+            </a>
+
+            <a href="notifications.html" class="nav-link">
+                通知
+            </a>
+
+        </nav>
+
+        <div class="logout">
+            <a href="login.html"
+               class="btn btn-outline-secondary btn-sm w-100">
+                ログアウト →
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- メインエリア -->
+    <main class="main-content">
+
+        <header class="top-header">
+            <h1 class="page-title">卒業研究一覧</h1>
+            <div class="user-name">👤 山田太郎</div>
+        </header>
+
+        <!-- 検索エリア -->
+        <section class="search-card">
+
+            <form id="search-form">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-12 col-md-5">
+                        <label for="keyword" class="form-label">
+                            キーワード検索
+                        </label>
+
+                        <input type="search"
+                               id="keyword"
+                               class="form-control"
+                               placeholder="研究タイトルを検索">
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label for="category" class="form-label">
+                            カテゴリ
+                        </label>
+
+                        <select id="category" class="form-select">
+                            <option value="">すべてのカテゴリ</option>
+                            <option value="研究システム">研究システム</option>
+                            <option value="生活・便利ツール">生活・便利ツール</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+                            検索
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="row g-3 mt-1 align-items-end">
+
+                    <div class="col-12 col-md-9">
+                        <label for="year" class="form-label">
+                            卒業年度
+                        </label>
+
+                        <select id="year" class="form-select">
+                            <option value="">すべての年度</option>
+                            <option value="2027">2027年度</option>
+                            <option value="2028">2028年度</option>
+                            <option value="2029">2029年度</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <button type="button"
+                                id="reset-search"
+                                class="btn btn-outline-secondary w-100">
+                            リセット
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <!-- カテゴリボタン -->
+            <div class="mt-4">
+                <div class="form-label mb-2">カテゴリから探す</div>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <button type="button"
+                            class="category-button active"
+                            data-category="">
+                        すべて
+                    </button>
+
+                    <button type="button"
+                            class="category-button"
+                            data-category="研究システム">
+                        研究システム
+                    </button>
+
+                    <button type="button"
+                            class="category-button"
+                            data-category="生活・便利ツール">
+                        生活・便利ツール
+                    </button>
+
+                    <button type="button"
+                            class="category-button"
+                            data-category="その他">
+                        その他
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- 日誌投稿ボタン -->
+            <div class="text-end mt-3">
+                <a href="diary-edit.html"
+                   class="btn btn-primary btn-sm">
+                    ＋ 日誌を投稿する
+                </a>
+            </div>
+
+        </section>
+
+        <!-- 卒業研究一覧 -->
+        <section class="research-grid" id="research-grid">
+
+            <!-- 研究1 -->
+            <article class="research-card"
+                     data-title="研究概要"
+                     data-category="研究システム"
+                     data-year="2027">
+
+                <div class="research-image">写真</div>
+
+                <div class="research-body">
+
+                    <div class="group-name">グループA</div>
+                    <h2 class="research-title">研究概要</h2>
+
+                    <div class="research-info">
+                        <span>メンバー 3人</span>
+                        <span>♡ 2</span>
+                    </div>
+
+                    <div class="card-actions">
+
+                        <span class="badge text-bg-light">
+                            研究システム
+                        </span>
+
+                        <a href="research-detail.html"
+                           class="btn btn-primary btn-sm">
+                            詳細を見る
+                        </a>
+
+                    </div>
+                </div>
+            </article>
+
+            <!-- 研究2 -->
+            <article class="research-card"
+                     data-title="アプリ制作"
+                     data-category="生活・便利ツール"
+                     data-year="2027">
+
+                <div class="research-image">写真</div>
+
+                <div class="research-body">
+
+                    <div class="group-name">グループB</div>
+                    <h2 class="research-title">アプリ制作</h2>
+
+                    <div class="research-info">
+                        <span>メンバー 4人</span>
+                        <span>♡ 2</span>
+                    </div>
+
+                    <div class="card-actions">
+
+                        <span class="badge text-bg-light">
+                            生活・便利ツール
+                        </span>
+
+                        <a href="research-detail.html"
+                           class="btn btn-primary btn-sm">
+                            詳細を見る
+                        </a>
+
+                    </div>
+                </div>
+            </article>
+
+            <!-- 研究3 -->
+            <article class="research-card"
+                     data-title="Webシステム"
+                     data-category="研究システム"
+                     data-year="2028">
+
+                <div class="research-image">写真</div>
+
+                <div class="research-body">
+
+                    <div class="group-name">グループC</div>
+                    <h2 class="research-title">Webシステム</h2>
+
+                    <div class="research-info">
+                        <span>メンバー 3人</span>
+                        <span>♡ 1</span>
+                    </div>
+
+                    <div class="card-actions">
+
+                        <span class="badge text-bg-light">
+                            研究システム
+                        </span>
+
+                        <a href="research-detail.html"
+                           class="btn btn-primary btn-sm">
+                            詳細を見る
+                        </a>
+
+                    </div>
+                </div>
+            </article>
+
+            <!-- 研究4 -->
+            <article class="research-card"
+                     data-title="便利ツール"
+                     data-category="その他"
+                     data-year="2028">
+
+                <div class="research-image">写真</div>
+
+                <div class="research-body">
+
+                    <div class="group-name">グループD</div>
+                    <h2 class="research-title">便利ツール</h2>
+
+                    <div class="research-info">
+                        <span>メンバー 2人</span>
+                        <span>♡ 2</span>
+                    </div>
+
+                    <div class="card-actions">
+
+                        <span class="badge text-bg-light">
+                            その他
+                        </span>
+
+                        <a href="research-detail.html"
+                           class="btn btn-primary btn-sm">
+                            詳細を見る
+                        </a>
+
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- 検索結果がない場合 -->
+        <div class="empty-message mt-3" id="empty-message">
+            該当する卒業研究がありません。
+        </div>
+
+    </main>
+</div>
+
+<script>
+    const searchForm = document.getElementById("search-form");
+    const keyword = document.getElementById("keyword");
+    const category = document.getElementById("category");
+    const year = document.getElementById("year");
+    const cards = document.querySelectorAll(".research-card");
+    const emptyMessage = document.getElementById("empty-message");
+    const categoryButtons = document.querySelectorAll(".category-button");
+
+    // 検索と絞り込み
+    function filterResearch() {
+        const keywordValue = keyword.value.trim().toLowerCase();
+        const categoryValue = category.value;
+        const yearValue = year.value;
+
+        let visibleCount = 0;
+
+        cards.forEach(function(card) {
+            const title = card.dataset.title.toLowerCase();
+            const cardCategory = card.dataset.category;
+            const cardYear = card.dataset.year;
+
+            const matchesKeyword = title.includes(keywordValue);
+
+            const matchesCategory =
+                categoryValue === "" ||
+                cardCategory === categoryValue;
+
+            const matchesYear =
+                yearValue === "" ||
+                cardYear === yearValue;
+
+            const visible =
+                matchesKeyword &&
+                matchesCategory &&
+                matchesYear;
+
+            card.classList.toggle("d-none", !visible);
+
+            if (visible) {
+                visibleCount++;
+            }
+        });
+
+        // 検索結果がない場合の表示
+        emptyMessage.style.display =
+            visibleCount === 0 ? "block" : "none";
+
+        // 選択中のカテゴリボタンを変更
+        categoryButtons.forEach(function(button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.category === categoryValue
+            );
+        });
+    }
+
+    // 検索ボタン
+    searchForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        filterResearch();
+    });
+
+    // カテゴリボタン
+    categoryButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            category.value = button.dataset.category;
+            filterResearch();
+        });
+    });
+
+    // リセットボタン
+    document.getElementById("reset-search").addEventListener("click", function() {
+        keyword.value = "";
+        category.value = "";
+        year.value = "";
+
+        filterResearch();
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

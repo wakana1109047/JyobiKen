@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>マイページ | JyobiKen</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --main-blue: #42a9e8;
+            --hover-blue: #2996d6;
+        }
+
+        body {
+            margin: 0;
+            background: #f3f6f9;
+            color: #333;
+            font-family: Arial, "Meiryo", sans-serif;
+        }
+
+        .sidebar {
+            width: 190px;
+            min-width: 190px;
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            padding: 22px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .nav-link {
+            color: #555;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: var(--hover-blue);
+            background: #eaf6fd;
+        }
+
+        .logout {
+            margin-top: auto;
+            padding-top: 25px;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 24px;
+        }
+
+        .content-card {
+            background: #fff;
+            border: 1px solid #edf0f3;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .profile-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            flex-shrink: 0;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .profile-info {
+            font-size: 13px;
+            color: #777;
+            line-height: 1.8;
+        }
+
+        .btn-primary {
+            background: var(--main-blue);
+            border-color: var(--main-blue);
+        }
+
+        .btn-primary:hover {
+            background: var(--hover-blue);
+            border-color: var(--hover-blue);
+        }
+
+        .profile-edit {
+            font-size: 12px;
+        }
+
+        .tab-button {
+            border: none;
+            background: transparent;
+            padding: 12px 16px;
+            color: #666;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-button.active {
+            color: var(--hover-blue);
+            border-bottom-color: var(--main-blue);
+            font-weight: bold;
+        }
+
+        .post-image {
+            height: 130px;
+            background: #e5e7eb;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .post-title {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .post-description {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .tag {
+            background: #f0f4f7;
+            border-radius: 4px;
+            padding: 3px 6px;
+            font-size: 11px;
+            margin-right: 4px;
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .logo {
+                margin-bottom: 12px;
+            }
+
+            .sidebar .nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .logout {
+                padding-top: 10px;
+            }
+
+            .main-content {
+                padding: 20px 15px;
+            }
+
+            .content-card {
+                padding: 18px;
+            }
+
+            .profile-name {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="d-flex flex-column flex-md-row">
+
+    <!-- 左側メニュー -->
+    <aside class="sidebar">
+        <a href="#" class="logo">JyobiKen</a>
+
+        <nav class="nav flex-column">
+            <a href="index.html" class="nav-link">
+                卒業研究一覧
+            </a>
+            <a href="mypage.html" class="nav-link active">
+                マイページ
+            </a>
+            <a href="timeline.html" class="nav-link">
+                タイムライン
+            </a>
+            <a href="notifications.html" class="nav-link">通知</a>
+        </nav>
+
+        <div class="logout">
+            <a href="login.html"
+               class="btn btn-outline-secondary btn-sm w-100">
+                ログアウト →
+            </a>
+        </div>
+    </aside>
+
+    <!-- メイン画面 -->
+    <main class="main-content">
+
+        <h1 class="page-title">マイページ</h1>
+
+        <!-- プロフィール -->
+        <section class="content-card">
+
+            <div class="d-flex flex-wrap align-items-center gap-3">
+
+                <div class="profile-icon">👤</div>
+
+                <div class="flex-grow-1">
+                    <h2 class="profile-name mb-1">山田太郎</h2>
+
+                    <p class="profile-info mb-0">
+                        学籍番号：123456<br>
+                        所属：2027年度
+                    </p>
+                </div>
+
+                <a href="profile-edit.html"
+                   class="btn btn-outline-primary btn-sm profile-edit">
+                    プロフィール編集
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- 投稿・お気に入り -->
+        <section class="content-card">
+
+            <div class="d-flex justify-content-between
+                        align-items-center flex-wrap gap-3 mb-3">
+
+                <div class="d-flex flex-wrap">
+                    <button type="button"
+                            class="tab-button active"
+                            id="posts-tab">
+                        投稿一覧
+                    </button>
+
+                    <button type="button"
+                            class="tab-button"
+                            id="favorites-tab">
+                        お気に入り一覧
+                    </button>
+                </div>
+
+                <a href="diary-edit.html"
+                   class="btn btn-primary btn-sm">
+                    ＋ 投稿する
+                </a>
+
+            </div>
+
+            <!-- 投稿一覧 -->
+            <div id="posts-content" class="row g-3">
+
+                <div class="col-12 col-sm-6">
+                    <article class="border rounded-3 p-3 h-100">
+                        <div class="post-image">写真</div>
+                        <h3 class="post-title">グループ名</h3>
+                        <p class="post-description mb-2">
+                            卒業研究の活動記録
+                        </p>
+                        <span class="tag">アプリ</span>
+                        <span class="tag">活動記録</span>
+                    </article>
+                </div>
+
+                <div class="col-12 col-sm-6">
+                    <article class="border rounded-3 p-3 h-100">
+                        <div class="post-image">写真</div>
+                        <h3 class="post-title">グループ名</h3>
+                        <p class="post-description mb-2">
+                            制作の進捗を記録
+                        </p>
+                        <span class="tag">制作</span>
+                        <span class="tag">日誌</span>
+                    </article>
+                </div>
+
+            </div>
+
+            <!-- お気に入り一覧 -->
+            <div id="favorites-content" class="row g-3 d-none">
+
+                <div class="col-12 col-sm-6">
+                    <article class="border rounded-3 p-3 h-100">
+                        <div class="post-image">写真</div>
+                        <h3 class="post-title">お気に入りの研究</h3>
+                        <p class="post-description mb-0">
+                            保存した卒業研究
+                        </p>
+                    </article>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    const postsTab = document.getElementById("posts-tab");
+    const favoritesTab = document.getElementById("favorites-tab");
+    const postsContent = document.getElementById("posts-content");
+    const favoritesContent = document.getElementById("favorites-content");
+
+    postsTab.addEventListener("click", function () {
+        postsTab.classList.add("active");
+        favoritesTab.classList.remove("active");
+        postsContent.classList.remove("d-none");
+        favoritesContent.classList.add("d-none");
+    });
+
+    favoritesTab.addEventListener("click", function () {
+        favoritesTab.classList.add("active");
+        postsTab.classList.remove("active");
+        favoritesContent.classList.remove("d-none");
+        postsContent.classList.add("d-none");
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

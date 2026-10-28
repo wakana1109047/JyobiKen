@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>カンプ登録 | JyobiKen</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --main-blue: #42a9e8;
+            --hover-blue: #2996d6;
+        }
+
+        body {
+            margin: 0;
+            background: #f3f6f9;
+            color: #333;
+            font-family: Arial, "Meiryo", sans-serif;
+        }
+
+        .sidebar {
+            width: 190px;
+            min-width: 190px;
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            padding: 22px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .nav-link {
+            color: #555;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: var(--hover-blue);
+            background: #eaf6fd;
+        }
+
+        .logout {
+            margin-top: auto;
+            padding-top: 25px;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .content-card {
+            background: #fff;
+            border: 1px solid #edf0f3;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            border-color: #d1d5db;
+            border-radius: 6px;
+        }
+
+        .form-control:focus {
+            border-color: var(--main-blue);
+            box-shadow: 0 0 0 3px rgba(66, 169, 232, 0.15);
+        }
+
+        .upload-area {
+            background: #f7f9fb;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .btn-primary {
+            background: var(--main-blue);
+            border-color: var(--main-blue);
+        }
+
+        .btn-primary:hover {
+            background: var(--hover-blue);
+            border-color: var(--hover-blue);
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .logo {
+                margin-bottom: 12px;
+            }
+
+            .sidebar .nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .logout {
+                padding-top: 10px;
+            }
+
+            .main-content {
+                padding: 20px 15px;
+            }
+
+            .content-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="d-flex flex-column flex-md-row">
+
+    <aside class="sidebar">
+        <a href="research-list.html" class="logo">JyobiKen</a>
+
+        <nav class="nav flex-column">
+            <a href="research-list.html" class="nav-link">
+                卒業研究一覧
+            </a>
+            <a href="mypage.html" class="nav-link">
+                マイページ
+            </a>
+            <a href="timeline.html" class="nav-link">
+                タイムライン
+            </a>
+            <a href="notifications.html" class="nav-link">
+                通知
+            </a>
+        </nav>
+
+        <div class="logout">
+            <a href="login.html"
+               class="btn btn-outline-secondary btn-sm w-100">
+                ログアウト →
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <a href="diary-edit.html"
+           class="text-decoration-none text-primary small">
+            ← 日誌投稿・編集画面に戻る
+        </a>
+
+        <h1 class="page-title mt-3">カンプ登録</h1>
+        <p class="description">
+            カンプで使用する資料や動画を登録できます。
+        </p>
+
+        <form action="camp-home.html" method="get">
+
+            <!-- 動画 -->
+            <section class="content-card">
+                <h2 class="section-title">動画</h2>
+
+                <div class="upload-area">
+                    <div class="upload-icon">🎬</div>
+                    <p class="text-secondary small">
+                        動画ファイルを選択してください
+                    </p>
+
+                    <input type="file"
+                           class="form-control"
+                           id="video"
+                           name="video"
+                           accept="video/*">
+                </div>
+            </section>
+
+            <!-- まとめテキスト -->
+            <section class="content-card">
+                <h2 class="section-title">まとめテキスト</h2>
+
+                <div class="mb-3">
+                    <label for="summary" class="form-label">
+                        内容
+                    </label>
+
+                    <textarea id="summary"
+                              name="summary"
+                              class="form-control"
+                              rows="5"
+                              placeholder="カンプのまとめを入力してください"></textarea>
+                </div>
+            </section>
+
+            <!-- ダウンロード資料 -->
+            <section class="content-card">
+                <h2 class="section-title">ダウンロード資料</h2>
+
+                <div class="upload-area">
+                    <div class="upload-icon">📁</div>
+                    <p class="text-secondary small">
+                        PDFや資料ファイルを選択してください
+                    </p>
+
+                    <input type="file"
+                           class="form-control"
+                           id="document"
+                           name="document">
+                </div>
+            </section>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="diary-edit.html"
+                   class="btn btn-outline-secondary">
+                    キャンセル
+                </a>
+
+                <button type="submit" class="btn btn-primary px-4">
+                    登録する
+                </button>
+            </div>
+
+        </form>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
