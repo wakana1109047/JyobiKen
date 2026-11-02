@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -285,10 +285,10 @@
     <!-- 左側メニュー -->
     <aside class="sidebar">
 
-        <a href="index.html" class="logo">JyobiKen</a>
+        <a th:href="@{/}" class="logo">JyobiKen</a>
 
         <nav class="nav flex-column">
-            <a href="index.html" class="nav-link active">
+            <a th:href="@{/}" class="nav-link active">
                 卒業研究一覧
             </a>
 
@@ -307,10 +307,11 @@
         </nav>
 
         <div class="logout">
-            <a href="login.html"
-               class="btn btn-outline-secondary btn-sm w-100">
-                ログアウト →
-            </a>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
+                    ログアウト →
+                </button>
+            </form>
         </div>
 
     </aside>
@@ -320,7 +321,7 @@
 
         <header class="top-header">
             <h1 class="page-title">卒業研究一覧</h1>
-            <div class="user-name">👤 山田太郎</div>
+            <div class="user-name">👤 <span th:text="${currentUserName}">ユーザー</span></div>
         </header>
 
         <!-- 検索エリア -->

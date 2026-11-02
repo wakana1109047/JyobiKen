@@ -9,5 +9,4 @@ class JyobiKenApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

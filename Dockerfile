@@ -1,13 +1,21 @@
 FROM eclipse-temurin:17-jdk AS build
-WORKDIR /app
+WORKDIR /workspace
 
 COPY . .
-RUN ./mvnw clean package -DskipTests
+RUN ./JyobiKen/mvnw -f JyobiKen/pom.xml -B clean package
 
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:17-jre-jammy
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system app \
+    && useradd --system --gid app --no-create-home --shell /usr/sbin/nologin app
 WORKDIR /app
 
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build --chown=app:app /workspace/JyobiKen/target/jyobiken-*.jar /app/app.jar
 
+USER app:app
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=45s --retries=3 \
+    CMD curl --fail --silent http://127.0.0.1:8080/actuator/health/readiness || exit 1
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-jar", "/app/app.jar"]
