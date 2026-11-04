@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>プロフィール編集 | JyobiKen</title>
+
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+    <style>
+        :root {
+            --main-blue: #42a9e8;
+            --hover-blue: #2996d6;
+            --background: #f3f6f9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: #333;
+            font-family: "Noto Sans JP", "Meiryo", sans-serif;
+        }
+
+        /* サイドバー */
+        .sidebar {
+            width: 240px;
+            min-width: 240px;
+            min-height: 100vh;
+            background: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
+            z-index: 1000;
+        }
+
+        .logo {
+            display: block;
+            margin-bottom: 40px;
+            color: var(--main-blue);
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 10px;
+            color: #555;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background 0.2s;
+        }
+
+        .sidebar a:hover {
+            background: #edf7fd;
+            color: var(--main-blue);
+        }
+
+        .sidebar a.active {
+            background: #e8f5fd;
+            color: var(--main-blue);
+            font-weight: bold;
+        }
+
+        .logout {
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            margin-left: 240px;
+            min-width: 0;
+            padding: 40px;
+        }
+
+        .page-title {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 24px;
+        }
+
+        /* 編集カード */
+        .content-card {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #fff;
+            border: 1px solid #edf0f3;
+            border-radius: 15px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        /* プロフィール画像 */
+        .profile-image-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background: #e8f5fd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            color: var(--main-blue);
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-button {
+            display: inline-block;
+            padding: 7px 16px;
+            border: 1px solid var(--main-blue);
+            border-radius: 8px;
+            color: var(--main-blue);
+            background: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .image-button:hover {
+            background: #edf7fd;
+        }
+
+        /* 入力欄 */
+        .form-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            padding: 11px 13px;
+            border: 1px solid #dfe3e8;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: var(--main-blue);
+            box-shadow: 0 0 0 0.2rem rgba(66, 169, 232, 0.15);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-text {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* ボタン */
+        .btn-primary {
+            background: var(--main-blue);
+            border-color: var(--main-blue);
+            border-radius: 8px;
+            padding: 10px 28px;
+        }
+
+        .btn-primary:hover {
+            background: var(--hover-blue);
+            border-color: var(--hover-blue);
+        }
+
+        .btn-outline-secondary {
+            border-radius: 8px;
+            padding: 10px 28px;
+        }
+
+        /* スマホ表示 */
+        @media (max-width: 768px) {
+
+            /* サイドバーを画面下部に固定 */
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+                height: auto;
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                background: #fff;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+                z-index: 1000;
+            }
+
+            /* ロゴを非表示 */
+            .sidebar .logo {
+                display: none !important;
+            }
+
+            /* メニューを横並びにする */
+            .sidebar a:not(.logo):not(.logout) {
+                flex: 1;
+                text-align: center;
+                padding: 10px 4px;
+                margin: 0;
+                font-size: 12px;
+                white-space: nowrap;
+                border-radius: 8px;
+            }
+
+            /* ログアウトを非表示 */
+            .sidebar a.logout {
+                display: none !important;
+            }
+
+            /* メインコンテンツ */
+            .main-content {
+                margin-left: 0;
+                padding: 24px 16px 110px;
+            }
+
+            .page-title {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            /* 編集カード */
+            .content-card {
+                padding: 20px 16px;
+            }
+
+            .profile-image {
+                width: 90px;
+                height: 90px;
+                font-size: 40px;
+            }
+
+            /* ボタン */
+            .button-area {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 10px;
+            }
+
+            .button-area .btn {
+                width: 100%;
+            }
+        }
+
+        /* 小さめのスマホ */
+        @media (max-width: 380px) {
+            .main-content {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .content-card {
+                padding: 16px 12px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- サイドバー -->
+    <nav class="sidebar">
+
+        <a href="research-list.html" class="logo">
+            JyobiKen
+        </a>
+
+        <a href="research-list.html">
+            卒業研究一覧
+        </a>
+
+        <a href="mypage.html" class="active">
+            マイページ
+        </a>
+
+        <a href="timeline.html">
+            タイムライン
+        </a>
+
+        <a href="notifications.html">
+            通知
+        </a>
+
+        <a href="login.html" class="logout">
+            ログアウト
+        </a>
+
+    </nav>
+
+    <!-- プロフィール編集 -->
+    <main class="main-content">
+
+        <h1 class="page-title">プロフィール編集</h1>
+
+        <section class="content-card">
+
+            <form id="profile-form">
+
+                <!-- プロフィール画像 -->
+                <div class="profile-image-area">
+
+                    <div class="profile-image" id="profile-preview">
+                        👤
+                    </div>
+
+                    <label for="profile-image-input" class="image-button">
+                        画像を変更する
+                    </label>
+
+                    <input type="file" id="profile-image-input" accept="image/*" class="d-none">
+
+                    <p class="form-text mt-2">
+                        JPG・PNG形式の画像を選択してください。
+                    </p>
+
+                </div>
+
+                <hr class="mb-4">
+
+                <!-- 名前 -->
+                <div class="mb-4">
+
+                    <label for="name" class="form-label">
+                        名前
+                    </label>
+
+                    <input type="text" id="name" class="form-control" value="山田 太郎" required>
+
+                </div>
+
+                <!-- ユーザーID -->
+                <div class="mb-4">
+
+                    <label for="user-id" class="form-label">
+                        ユーザーID
+                    </label>
+
+                    <input type="text" id="user-id" class="form-control" value="yamada_taro" required>
+
+                </div>
+
+                <!-- メールアドレス -->
+                <div class="mb-4">
+
+                    <label for="email" class="form-label">
+                        メールアドレス
+                    </label>
+
+                    <input type="email" id="email" class="form-control" value="example@example.com" required>
+
+                </div>
+
+                <!-- 自己紹介 -->
+                <div class="mb-4">
+
+                    <label for="introduction" class="form-label">
+                        自己紹介
+                    </label>
+
+                    <textarea id="introduction" class="form-control" placeholder="自己紹介を入力してください">よろしくお願いします！</textarea>
+
+                    <div class="form-text">
+                        自分について自由に紹介できます。
+                    </div>
+
+                </div>
+
+                <!-- ボタン -->
+                <div class="button-area d-flex justify-content-end gap-3 mt-5">
+
+                    <a href="mypage.html" class="btn btn-outline-secondary">
+                        キャンセル
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        変更を保存する
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <script>
+        // プロフィール画像のプレビュー
+        const imageInput = document.getElementById("profile-image-input");
+        const imagePreview = document.getElementById("profile-preview");
+
+        imageInput.addEventListener("change", function () {
+
+            const file = this.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (event) {
+                    imagePreview.innerHTML = "";
+
+                    const img = document.createElement("img");
+                    img.src = event.target.result;
+
+                    imagePreview.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 保存ボタン
+        document.getElementById("profile-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            alert("プロフィールを保存しました。");
+
+            location.href = "mypage.html";
+        });
+    </script>
+
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

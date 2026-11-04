@@ -1,88 +1,98 @@
-
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>日誌投稿・編集 | JyobiKen</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
 
     <style>
         :root {
             --main-blue: #42a9e8;
             --hover-blue: #2996d6;
+            --background: #f3f6f9;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            background: #f3f6f9;
+            background-color: var(--background);
+            font-family: "Noto Sans JP", "Meiryo", sans-serif;
             color: #333;
-            font-family: Arial, "Meiryo", sans-serif;
         }
 
+        /* サイドバー */
         .sidebar {
-            width: 190px;
-            min-width: 190px;
-            min-height: 100vh;
-            background: #fff;
-            border-right: 1px solid #e5e7eb;
-            padding: 22px 15px;
+            width: 240px;
+            min-width: 240px;
+            height: 100vh;
+            background-color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 30px 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
+            z-index: 1000;
         }
 
         .logo {
-            font-size: 22px;
+            display: block;
+            margin-bottom: 40px;
+            color: var(--main-blue);
+            font-size: 25px;
             font-weight: bold;
-            color: #333;
             text-decoration: none;
-            margin-bottom: 30px;
         }
 
-        .sidebar .nav-link {
+        .sidebar a {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 10px;
             color: #555;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 14px;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.2s;
         }
 
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            color: var(--hover-blue);
-            background: #eaf6fd;
+        .sidebar a:hover {
+            background-color: #edf7fd;
+            color: var(--main-blue);
         }
 
         .logout {
             margin-top: auto;
-            padding-top: 25px;
+            padding-top: 30px;
         }
 
+        /* メインコンテンツ */
         .main-content {
-            flex: 1;
+            margin-left: 240px;
+            padding: 40px;
             min-width: 0;
-            padding: 30px;
         }
 
         .page-title {
-            font-size: 25px;
+            font-size: 26px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        .content-card {
-            max-width: 850px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
+        /* 戻るリンク */
         .back-link {
-            color: var(--hover-blue);
+            display: inline-block;
+            color: var(--main-blue);
             text-decoration: none;
+            margin-bottom: 20px;
             font-size: 14px;
         }
 
@@ -90,14 +100,28 @@
             text-decoration: underline;
         }
 
+        /* 投稿フォーム */
+        .content-card {
+            width: 100%;
+            max-width: 850px;
+            background-color: #fff;
+            border: 1px solid #edf0f3;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
         .form-label {
             font-weight: bold;
+            margin-bottom: 10px;
             font-size: 14px;
         }
 
         .form-control {
-            border-color: #d1d5db;
-            border-radius: 6px;
+            width: 100%;
+            border-radius: 9px;
+            padding: 12px;
+            border: 1px solid #ddd;
         }
 
         .form-control:focus {
@@ -105,183 +129,275 @@
             box-shadow: 0 0 0 0.2rem rgba(66, 169, 232, 0.15);
         }
 
-        .diary-image {
-            min-height: 220px;
-            background: #e5e7eb;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #666;
-            font-size: 20px;
-            margin-bottom: 15px;
+        textarea.form-control {
+            resize: vertical;
         }
 
-        .btn-primary {
-            background: var(--main-blue);
-            border-color: var(--main-blue);
-        }
-
-        .btn-primary:hover {
-            background: var(--hover-blue);
-            border-color: var(--hover-blue);
-        }
-
-        .campaign-link {
-            display: block;
-            margin: 25px 0;
-            text-align: center;
-            color: #2996d6;
-            text-decoration: none;
-            font-size: 16px;
+        /* 投稿ボタン */
+        .save-button {
+            background-color: var(--main-blue);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            padding: 12px 35px;
             font-weight: bold;
+            transition: 0.2s;
         }
 
-        .campaign-link:hover {
+        .save-button:hover {
+            background-color: var(--hover-blue);
+            color: #fff;
+        }
+
+        /* 完成したものの登録リンク */
+        .sub-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--main-blue);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .sub-link:hover {
             text-decoration: underline;
         }
 
-        @media (max-width: 767.98px) {
+        /* スマホ表示：マイページと統一 */
+        @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 min-width: 0;
+                height: auto;
                 min-height: auto;
-                border-right: none;
-                border-bottom: 1px solid #e5e7eb;
-            }
-
-            .logo {
-                margin-bottom: 12px;
-            }
-
-            .sidebar .nav {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+                display: flex;
                 flex-direction: row;
-                flex-wrap: wrap;
+                justify-content: space-around;
+                align-items: center;
+                background: #fff;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+                z-index: 1000;
             }
 
-            .logout {
-                padding-top: 10px;
+            .sidebar a.logo {
+                display: none !important;
+            }
+
+            .sidebar a {
+                flex: 1;
+                text-align: center;
+                padding: 10px 4px;
+                margin: 0;
+                font-size: 12px;
+                white-space: nowrap;
+                border-radius: 8px;
+            }
+
+            .sidebar a.logout {
+                display: none !important;
             }
 
             .main-content {
-                padding: 20px 15px;
+                margin-left: 0;
+                padding: 24px 16px 110px;
+            }
+
+            .page-title {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .back-link {
+                margin-bottom: 16px;
             }
 
             .content-card {
-                padding: 18px;
+                padding: 22px 18px;
+            }
+
+            .form-label {
+                font-size: 14px;
+            }
+
+            .form-control {
+                font-size: 14px;
+            }
+
+            textarea.form-control {
+                min-height: 150px;
+            }
+
+            .text-end {
+                text-align: center !important;
+            }
+
+            .save-button {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .sub-link {
+                font-size: 13px;
+            }
+        }
+
+        /* 小さいスマホ */
+        @media (max-width: 380px) {
+            .main-content {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .content-card {
+                padding: 18px 14px;
             }
         }
     </style>
+
+
 </head>
 
 <body>
 
-<div class="d-flex flex-column flex-md-row">
+    <!-- サイドバー -->
+    <nav class="sidebar">
 
-    <!-- 左メニュー -->
-    <aside class="sidebar">
-        <a href="#" class="logo">JyobiKen</a>
+        <a href="research-list.html" class="logo">
+            JyobiKen
+        </a>
 
-        <nav class="nav flex-column">
-            <a href="research-list.html" class="nav-link">
-                卒業研究一覧
-            </a>
-            <a href="#" class="nav-link">マイページ</a>
-            <a href="#" class="nav-link active">タイムライン</a>
-            <a href="#" class="nav-link">お知らせ</a>
-        </nav>
+        <a href="research-list.html">
+            卒業研究一覧
+        </a>
 
-        <div class="logout">
-            <a href="login.html"
-               class="btn btn-outline-secondary btn-sm w-100">
-                ログアウト →
-            </a>
-        </div>
-    </aside>
+        <a href="mypage.html">
+            マイページ
+        </a>
 
-    <!-- 日誌投稿・編集 -->
+        <a href="timeline.html">
+            タイムライン
+        </a>
+
+        <a href="notifications.html">
+            通知
+        </a>
+
+        <a href="login.html" class="logout">
+            ログアウト
+        </a>
+
+    </nav>
+
+    <!-- メインコンテンツ -->
     <main class="main-content">
+
+        <a href="#" id="back-link" class="back-link">
+            ← 戻る
+        </a>
+
+        <h1 class="page-title">日誌投稿</h1>
 
         <div class="content-card">
 
-            <a href="#" class="back-link">
-                ← 戻る
-            </a>
+            <form id="diary-form">
 
-            <h1 class="page-title mt-3">日誌投稿・編集</h1>
-
-            <form action="#" method="post">
-
+                <!-- タイトル -->
                 <div class="mb-4">
                     <label for="diary-title" class="form-label">
-                        日誌タイトル
+                        タイトル
                     </label>
 
-                    <input
-                        type="text"
-                        id="diary-title"
-                        name="diary-title"
-                        class="form-control"
-                        placeholder="タイトルを入力してください"
-                        required
-                    >
+                    <input type="text" class="form-control" id="diary-title" placeholder="日誌のタイトルを入力してください" required>
                 </div>
 
+                <!-- 日誌内容 -->
                 <div class="mb-4">
                     <label for="diary-content" class="form-label">
-                        日誌の内容
+                        日誌内容
                     </label>
 
-                    <textarea
-                        id="diary-content"
-                        name="diary-content"
-                        class="form-control"
-                        rows="8"
-                        placeholder="今日の活動内容を入力してください"
-                        required
-                    ></textarea>
+                    <textarea class="form-control" id="diary-content" rows="8" placeholder="今日の活動内容や進捗を入力してください"
+                        required></textarea>
                 </div>
 
+                <!-- 写真 -->
                 <div class="mb-4">
-                    <label for="diary-image" class="form-label">
+                    <label for="diary-photo" class="form-label">
                         写真
                     </label>
 
-                    <input
-                        type="file"
-                        id="diary-image"
-                        name="diary-image"
-                        class="form-control"
-                        accept="image/*"
-                    >
-
-                    <div class="form-text">
-                        活動の写真を選択できます。
-                    </div>
+                    <input type="file" class="form-control" id="diary-photo" accept="image/*">
                 </div>
 
-                <div class="d-flex justify-content-end gap-2">
-                    <a href="#" class="btn btn-outline-secondary">
-                        キャンセル
-                    </a>
-
-                    <button type="submit" class="btn btn-primary">
-                        保存する
+                <!-- 投稿ボタン -->
+                <div class="text-end">
+                    <button type="submit" class="save-button">
+                        投稿する
                     </button>
                 </div>
 
             </form>
 
-            <a href="kanpu-register.html" class="campaign-link">
-                カンプ登録のリンク
+            <!-- 完成したものの登録 -->
+            <a href="kanpu-register.html" class="sub-link">
+                完成したものを登録する →
             </a>
 
         </div>
-
     </main>
 
-</div>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // URLから戻り先を取得
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get("from");
+
+        // 戻り先のページ一覧
+        const pages = {
+            timeline: "timeline.html",
+            mypage: "mypage.html",
+            "research-list": "research-list.html",
+            notification: "notifications.html",
+            "research-detail": "research-detail.html"
+        };
+
+        // 戻るボタン
+        const backLink = document.getElementById("back-link");
+
+        backLink.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            // URLに戻り先が指定されている場合
+            if (from && pages[from]) {
+                window.location.href = pages[from];
+            } else {
+                // 指定されていない場合は直前のページに戻る
+                if (
+                    document.referrer &&
+                    new URL(document.referrer).origin === window.location.origin
+                ) {
+                    window.history.back();
+                } else {
+                    window.location.href = "research-list.html";
+                }
+            }
+        });
+
+        // 投稿ボタン
+        const diaryForm = document.getElementById("diary-form");
+
+        diaryForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            alert("日誌を投稿しました！");
+        });
+    </script>
+
 </body>
+
 </html>

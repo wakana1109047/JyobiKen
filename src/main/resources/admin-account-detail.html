@@ -1,88 +1,131 @@
-
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>アカウント詳細 | JyobiKen</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+
 
     <style>
-        body {
-            margin: 0;
-            background: #f3f6f9;
-            color: #333;
-            font-family: Arial, "Meiryo", sans-serif;
+        :root {
+            --main-blue: #42a9e8;
+            --hover-blue: #2996d6;
+            --background: #f3f6f9;
+            --border-color: #e5e7eb;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: #333;
+            font-family: "Noto Sans JP", "Meiryo", sans-serif;
+        }
+
+        /* サイドバー */
         .sidebar {
-            width: 190px;
-            min-width: 190px;
-            min-height: 100vh;
-            padding: 22px 15px;
-            background: white;
-            border-right: 1px solid #e5e7eb;
+            width: 240px;
+            min-width: 240px;
+            height: 100vh;
+            padding: 30px 20px;
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .logo {
-            font-size: 22px;
+            display: block;
+            color: var(--main-blue);
+            font-size: 25px;
             font-weight: bold;
-            color: #333;
             text-decoration: none;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+
+        .sidebar .nav {
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar .nav-link {
             color: #555;
             font-size: 14px;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 13px 15px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            transition: 0.2s;
         }
 
         .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
-            color: #2996d6;
-            background: #eaf6fd;
+            color: var(--main-blue);
+            background: #e8f5fd;
+        }
+
+        .sidebar .nav-link.active {
+            font-weight: bold;
         }
 
         .logout {
             margin-top: auto;
-            padding-top: 25px;
+            padding-top: 30px;
         }
 
+        /* メインエリア */
         .main-content {
             flex: 1;
             min-width: 0;
-            padding: 30px;
+            margin-left: 240px;
+            padding: 40px;
         }
 
         .page-title {
-            font-size: 25px;
+            font-size: 26px;
             font-weight: bold;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
+        /* 詳細カード */
         .content-card {
+            width: 100%;
             max-width: 800px;
-            background: white;
+            background: #fff;
             border: 1px solid #edf0f3;
-            border-radius: 12px;
-            padding: 28px;
-            box-shadow: 0 4px 20px rgba(0,0,0,.04);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
         }
 
+        .content-card>a {
+            color: var(--main-blue) !important;
+        }
+
+        .content-card>a:hover {
+            color: var(--hover-blue) !important;
+        }
+
+        /* プロフィール */
         .profile {
             text-align: center;
-            padding: 15px 0 25px;
+            padding: 20px 0 30px;
         }
 
         .avatar {
-            width: 76px;
-            height: 76px;
-            margin: 0 auto 12px;
-            background: #e5e7eb;
+            width: 82px;
+            height: 82px;
+            margin: 0 auto 14px;
+            background: #e8f5fd;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -91,8 +134,9 @@
         }
 
         .profile-name {
-            font-size: 20px;
+            font-size: 21px;
             font-weight: bold;
+            margin-bottom: 5px;
         }
 
         .subtext {
@@ -100,18 +144,20 @@
             color: #888;
         }
 
+        /* アカウント情報 */
         .detail-row {
             display: flex;
             gap: 20px;
-            padding: 14px 0;
-            border-top: 1px solid #e5e7eb;
+            padding: 17px 5px;
+            border-top: 1px solid #edf0f3;
         }
 
         .detail-label {
-            width: 130px;
+            width: 140px;
             flex-shrink: 0;
             color: #777;
             font-size: 13px;
+            font-weight: bold;
         }
 
         .detail-value {
@@ -119,94 +165,195 @@
             overflow-wrap: anywhere;
         }
 
-        @media (max-width: 767.98px) {
+        /* ボタン */
+        .btn {
+            border-radius: 8px;
+        }
+
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: #f15b64;
+            border-color: #f15b64;
+        }
+
+        .btn-danger:hover {
+            background: #d9434d;
+            border-color: #d9434d;
+        }
+
+        /* スマートフォン対応：マイページと統一 */
+        @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 min-width: 0;
+                height: auto;
                 min-height: auto;
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
                 border-right: 0;
-                border-bottom: 1px solid #e5e7eb;
+                border-top: 1px solid var(--border-color);
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                background: #fff;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+                z-index: 1000;
             }
 
-            .logo { margin-bottom: 12px; }
-            .sidebar .nav { flex-direction: row; flex-wrap: wrap; }
-            .logout { padding-top: 10px; }
-            .main-content { padding: 20px 15px; }
-            .content-card { padding: 18px; }
+            .sidebar .logo {
+                display: none !important;
+            }
+
+            .sidebar .nav {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: space-around;
+                align-items: center;
+            }
+
+            .sidebar .nav-link {
+                flex: 1;
+                text-align: center;
+                padding: 10px 4px;
+                margin: 0;
+                font-size: 12px;
+                white-space: nowrap;
+                border-radius: 8px;
+            }
+
+            .sidebar .logout {
+                display: none !important;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 24px 16px 110px;
+            }
+
+            .page-title {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .content-card {
+                padding: 20px;
+            }
+
+            .profile {
+                padding: 18px 0 25px;
+            }
 
             .detail-row {
                 flex-direction: column;
-                gap: 5px;
+                gap: 6px;
+                padding: 15px 3px;
+            }
+
+            .detail-label {
+                width: auto;
+            }
+
+            .content-card>.d-flex {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* 小さいスマートフォン */
+        @media (max-width: 380px) {
+            .main-content {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .content-card {
+                padding: 15px;
+            }
+
+            .content-card>.d-flex .btn {
+                flex: 1;
             }
         }
     </style>
+
+
 </head>
 
 <body>
-<div class="d-flex flex-column flex-md-row">
+    <div class="d-flex flex-column flex-md-row">
 
-    <aside class="sidebar">
-        <a href="admin-home.html" class="logo">JyobiKen</a>
-        <nav class="nav flex-column">
-            <a href="research-list.html" class="nav-link">卒業研究一覧</a>
-            <a href="admin-accounts.html" class="nav-link active">アカウント管理</a>
-            <a href="timeline.html" class="nav-link">タイムライン</a>
-            <a href="notifications.html" class="nav-link">お知らせ</a>
-        </nav>
-        <div class="logout">
-            <a href="login.html" class="btn btn-outline-secondary btn-sm w-100">ログアウト →</a>
-        </div>
-    </aside>
-
-    <main class="main-content">
-        <h1 class="page-title">アカウント詳細</h1>
-
-        <section class="content-card">
-            <a href="admin-accounts.html" class="text-primary text-decoration-none small">
-                ← 戻る
-            </a>
-
-            <div class="profile">
-                <div class="avatar">👤</div>
-                <div class="profile-name">山田花子</div>
-                <div class="subtext">学籍番号：4523109</div>
+        <aside class="sidebar">
+            <a href="admin-home.html" class="logo">JyobiKen</a>
+            <nav class="nav flex-column">
+                <a href="research-list.html" class="nav-link">卒業研究一覧</a>
+                <a href="admin-accounts.html" class="nav-link active">アカウント管理</a>
+                <a href="timeline.html" class="nav-link">タイムライン</a>
+                <a href="notifications.html" class="nav-link">お知らせ</a>
+            </nav>
+            <div class="logout">
+                <a href="login.html" class="btn btn-outline-secondary btn-sm w-100">ログアウト →</a>
             </div>
+        </aside>
 
-            <div class="detail-row">
-                <div class="detail-label">メールアドレス</div>
-                <div class="detail-value">hanako.yamada@example.jp</div>
-            </div>
+        <main class="main-content">
+            <h1 class="page-title">アカウント詳細</h1>
 
-            <div class="detail-row">
-                <div class="detail-label">入学年度</div>
-                <div class="detail-value">2027年度</div>
-            </div>
-
-            <div class="detail-row">
-                <div class="detail-label">所属</div>
-                <div class="detail-value">専門学生</div>
-            </div>
-
-            <div class="d-flex justify-content-end gap-2 mt-4">
-                <a href="admin-accounts.html" class="btn btn-outline-secondary btn-sm">
-                    一覧に戻る
+            <section class="content-card">
+                <a href="admin-accounts.html" class="text-primary text-decoration-none small">
+                    ← 戻る
                 </a>
-                <button type="button" id="delete-account" class="btn btn-danger btn-sm">
-                    削除
-                </button>
-            </div>
-        </section>
-    </main>
-</div>
 
-<script>
-    document.getElementById("delete-account").addEventListener("click", function () {
-        if (confirm("このアカウントを削除しますか？")) {
-            window.location.href = "admin-accounts.html";
-        }
-    });
-</script>
+                <div class="profile">
+                    <div class="avatar">👤</div>
+                    <div class="profile-name">山田花子</div>
+                    <div class="subtext">学籍番号：4523109</div>
+                </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+                <div class="detail-row">
+                    <div class="detail-label">メールアドレス</div>
+                    <div class="detail-value">hanako.yamada@example.jp</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">入学年度</div>
+                    <div class="detail-value">2027年度</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">所属</div>
+                    <div class="detail-value">専門学生</div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="admin-accounts.html" class="btn btn-outline-secondary btn-sm">
+                        一覧に戻る
+                    </a>
+                    <button type="button" id="delete-account" class="btn btn-danger btn-sm">
+                        削除
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById("delete-account").addEventListener("click", function () {
+            if (confirm("このアカウントを削除しますか？")) {
+                window.location.href = "admin-accounts.html";
+            }
+        });
+    </script>
+
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
