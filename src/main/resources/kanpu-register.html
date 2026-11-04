@@ -302,7 +302,7 @@
     <!-- メインコンテンツ -->
     <main class="main-content">
 
-        <a href="diary-edit.html" class="back-link">
+        <a href="#" id="back-link" class="back-link">
             ← 日誌投稿・編集画面に戻る
         </a>
 
@@ -390,6 +390,22 @@
 
     <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+        // URLから戻り先の情報を取得
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get("from");
+
+        // 日誌投稿画面に戻る
+        document.getElementById("back-link").addEventListener("click", function (event) {
+            event.preventDefault();
+
+            if (from) {
+                window.location.href = "diary-edit.html?from=" + encodeURIComponent(from);
+            } else {
+                window.location.href = "diary-edit.html";
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -343,7 +343,7 @@
             </form>
 
             <!-- 完成したものの登録 -->
-            <a href="kanpu-register.html" class="sub-link">
+            <a href="kanpu-register.html?from=" id="camp-link" class="sub-link">
                 完成したものを登録する →
             </a>
 
@@ -353,6 +353,7 @@
     <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+
         // URLから戻り先を取得
         const params = new URLSearchParams(window.location.search);
         const from = params.get("from");
@@ -366,25 +367,22 @@
             "research-detail": "research-detail.html"
         };
 
+        // カンプ登録画面にも戻り先情報を引き継ぐ
+        const campLink = document.getElementById("camp-link");
+
+        campLink.href = "kanpu-register.html?from=" +
+            encodeURIComponent(from || "");
+
         // 戻るボタン
         const backLink = document.getElementById("back-link");
 
         backLink.addEventListener("click", function (event) {
             event.preventDefault();
 
-            // URLに戻り先が指定されている場合
             if (from && pages[from]) {
                 window.location.href = pages[from];
             } else {
-                // 指定されていない場合は直前のページに戻る
-                if (
-                    document.referrer &&
-                    new URL(document.referrer).origin === window.location.origin
-                ) {
-                    window.history.back();
-                } else {
-                    window.location.href = "research-list.html";
-                }
+                window.location.href = "research-list.html";
             }
         });
 
@@ -396,6 +394,7 @@
 
             alert("日誌を投稿しました！");
         });
+
     </script>
 
 </body>
