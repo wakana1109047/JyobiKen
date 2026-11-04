@@ -56,11 +56,10 @@
         .sidebar a {
             display: block;
             padding: 13px 15px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             color: #555;
             text-decoration: none;
             border-radius: 10px;
-            font-size: 14px;
             transition: 0.2s;
         }
 
@@ -256,7 +255,7 @@
             }
 
             /* メニューを横並びにする */
-            .sidebar a {
+            .sidebar a:not(.logo):not(.logout) {
                 flex: 1;
                 text-align: center;
                 padding: 10px 4px;
@@ -312,7 +311,7 @@
         /* 小さいスマートフォン */
         @media (max-width: 380px) {
 
-            .sidebar a {
+            .sidebar a:not(.logo):not(.logout) {
                 font-size: 11px;
                 padding: 10px 2px;
             }
@@ -341,9 +340,9 @@
     <!-- サイドバー -->
     <nav class="sidebar">
 
-        <a href="research-list.html" class="logo">
+        <div class="logo">
             JyobiKen
-        </a>
+        </div>
 
         <a href="research-list.html">
             卒業研究一覧
