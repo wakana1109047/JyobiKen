@@ -1,12 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>アカウント詳細 | JyobiKen</title>
-    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
-
+    <title>卒研詳細 | JyobiKen</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 
     <style>
         :root {
@@ -32,6 +32,7 @@
             width: 240px;
             min-width: 240px;
             height: 100vh;
+            min-height: 100vh;
             padding: 30px 20px;
             background: #fff;
             border-right: 1px solid var(--border-color);
@@ -46,9 +47,9 @@
 
         .logo {
             display: block;
-            color: var(--main-blue);
             font-size: 25px;
             font-weight: bold;
+            color: var(--main-blue);
             text-decoration: none;
             margin-bottom: 40px;
         }
@@ -62,18 +63,18 @@
             color: #555;
             font-size: 14px;
             padding: 13px 15px;
-            margin-bottom: 5px;
             border-radius: 10px;
             transition: 0.2s;
         }
 
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
+        .sidebar .nav-link:hover {
             color: var(--main-blue);
-            background: #e8f5fd;
+            background: #edf7fd;
         }
 
         .sidebar .nav-link.active {
+            color: var(--main-blue);
+            background: #e8f5fd;
             font-weight: bold;
         }
 
@@ -82,7 +83,7 @@
             padding-top: 30px;
         }
 
-        /* メインエリア */
+        /* メインコンテンツ */
         .main-content {
             flex: 1;
             min-width: 0;
@@ -93,13 +94,13 @@
         .page-title {
             font-size: 26px;
             font-weight: bold;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         /* 詳細カード */
         .content-card {
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             background: #fff;
             border: 1px solid #edf0f3;
             border-radius: 15px;
@@ -107,85 +108,64 @@
             box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
         }
 
-        .content-card>a {
-            color: var(--main-blue) !important;
-        }
-
-        .content-card>a:hover {
-            color: var(--hover-blue) !important;
-        }
-
-        /* プロフィール */
-        .profile {
-            text-align: center;
-            padding: 20px 0 30px;
-        }
-
-        .avatar {
-            width: 82px;
-            height: 82px;
-            margin: 0 auto 14px;
-            background: #e8f5fd;
-            border-radius: 50%;
+        /* 画像 */
+        .research-image {
+            min-height: 220px;
+            background: #e5e7eb;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
+            font-size: 22px;
+            color: #666;
+            margin-bottom: 24px;
         }
 
-        .profile-name {
-            font-size: 21px;
+        /* 研究タイトル */
+        .research-title {
+            font-size: 22px;
             font-weight: bold;
-            margin-bottom: 5px;
         }
 
-        .subtext {
-            font-size: 12px;
-            color: #888;
-        }
-
-        /* アカウント情報 */
-        .detail-row {
-            display: flex;
-            gap: 20px;
-            padding: 17px 5px;
-            border-top: 1px solid #edf0f3;
-        }
-
-        .detail-label {
-            width: 140px;
-            flex-shrink: 0;
+        .research-meta {
             color: #777;
             font-size: 13px;
-            font-weight: bold;
+            margin-bottom: 16px;
         }
 
-        .detail-value {
-            font-size: 14px;
-            overflow-wrap: anywhere;
+        /* メンバー */
+        .member-chip {
+            background: #f0f4f7;
+            border: 1px solid var(--border-color);
+            border-radius: 7px;
+            padding: 8px 12px;
+            font-size: 13px;
         }
 
-        /* ボタン */
-        .btn {
+        /* 研究内容 */
+        .research-description {
+            background: #f7f9fb;
+            border-radius: 9px;
+            padding: 24px;
+            min-height: 150px;
+            line-height: 1.8;
+        }
+
+        /* 戻るリンク */
+        .text-primary {
+            color: var(--main-blue) !important;
+        }
+
+        /* 編集ボタン */
+        .btn-success {
             border-radius: 8px;
         }
 
-        .btn-sm {
-            padding: 7px 14px;
-            font-size: 12px;
-        }
-
         .btn-danger {
-            background: #f15b64;
-            border-color: #f15b64;
+            border-radius: 8px;
         }
 
-        .btn-danger:hover {
-            background: #d9434d;
-            border-color: #d9434d;
-        }
-
-        /* スマートフォン対応：マイページと統一 */
+        /* スマホ表示：マイページと統一 */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -208,19 +188,22 @@
                 z-index: 1000;
             }
 
+            /* ロゴを非表示 */
             .sidebar .logo {
                 display: none !important;
             }
 
+            /* メニューを横一列にする */
             .sidebar .nav {
                 width: 100%;
                 display: flex;
-                flex-direction: row;
+                flex-direction: row !important;
                 flex-wrap: nowrap;
                 justify-content: space-around;
                 align-items: center;
             }
 
+            /* メニューの文字 */
             .sidebar .nav-link {
                 flex: 1;
                 text-align: center;
@@ -231,10 +214,12 @@
                 border-radius: 8px;
             }
 
+            /* ログアウトを非表示 */
             .sidebar .logout {
                 display: none !important;
             }
 
+            /* メインコンテンツ */
             .main-content {
                 margin-left: 0;
                 padding: 24px 16px 110px;
@@ -246,29 +231,40 @@
             }
 
             .content-card {
-                padding: 20px;
+                padding: 22px 18px;
             }
 
-            .profile {
-                padding: 18px 0 25px;
+            .research-image {
+                min-height: 160px;
+                font-size: 18px;
             }
 
-            .detail-row {
+            .research-title {
+                font-size: 20px;
+            }
+
+            .member-chip {
+                font-size: 12px;
+                padding: 7px 10px;
+            }
+
+            .research-description {
+                padding: 18px;
+                font-size: 14px;
+            }
+
+            /* 編集・削除ボタン */
+            .content-card > .d-flex:last-child {
                 flex-direction: column;
-                gap: 6px;
-                padding: 15px 3px;
+                gap: 10px !important;
             }
 
-            .detail-label {
-                width: auto;
-            }
-
-            .content-card>.d-flex {
-                flex-wrap: wrap;
+            .content-card > .d-flex:last-child .btn {
+                width: 100%;
             }
         }
 
-        /* 小さいスマートフォン */
+        /* 小さいスマホ */
         @media (max-width: 380px) {
             .main-content {
                 padding-left: 12px;
@@ -276,15 +272,10 @@
             }
 
             .content-card {
-                padding: 15px;
-            }
-
-            .content-card>.d-flex .btn {
-                flex: 1;
+                padding: 18px 14px;
             }
         }
     </style>
-
 
 </head>
 
@@ -293,51 +284,63 @@
 
         <aside class="sidebar">
             <a href="admin-home.html" class="logo">JyobiKen</a>
+
             <nav class="nav flex-column">
                 <a href="research-list.html" class="nav-link">卒業研究一覧</a>
-                <a href="admin-accounts.html" class="nav-link active">アカウント管理</a>
+                <a href="admin-accounts.html" class="nav-link">アカウント管理</a>
                 <a href="timeline.html" class="nav-link">タイムライン</a>
-                <a href="notifications.html" class="nav-link">お知らせ</a>
+                <a href="notifications.html" class="nav-link">通知</a>
             </nav>
+
             <div class="logout">
-                <a href="login.html" class="btn btn-outline-secondary btn-sm w-100">ログアウト →</a>
+                <a href="login.html" class="btn btn-outline-secondary btn-sm w-100">
+                    ログアウト →
+                </a>
             </div>
         </aside>
 
         <main class="main-content">
-            <h1 class="page-title">アカウント詳細</h1>
+            <h1 class="page-title">卒研詳細</h1>
 
             <section class="content-card">
-                <a href="admin-accounts.html" class="text-primary text-decoration-none small">
+                <a href="research-list.html" class="text-primary text-decoration-none small">
                     ← 戻る
                 </a>
 
-                <div class="profile">
-                    <div class="avatar">👤</div>
-                    <div class="profile-name">山田花子</div>
-                    <div class="subtext">学籍番号：4523109</div>
+                <div class="research-image mt-3">画像など</div>
+
+                <h2 class="research-title">研究概要</h2>
+
+                <p class="research-meta">
+                    グループA　2027年度卒業研究
+                </p>
+
+                <div class="mb-4">
+                    <h3 class="h6 fw-bold">タイトル</h3>
+                    <p class="mb-0">研究概要</p>
                 </div>
 
-                <div class="detail-row">
-                    <div class="detail-label">メールアドレス</div>
-                    <div class="detail-value">hanako.yamada@example.jp</div>
+                <div class="mb-4">
+                    <h3 class="h6 fw-bold">メンバー</h3>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="member-chip">👤 山田花子</span>
+                        <span class="member-chip">👤 山田花子</span>
+                        <span class="member-chip">👤 山田花子</span>
+                        <span class="member-chip">👤 山田花子</span>
+                        <span class="member-chip">👤 山田花子</span>
+                    </div>
                 </div>
 
-                <div class="detail-row">
-                    <div class="detail-label">入学年度</div>
-                    <div class="detail-value">2027年度</div>
+                <div class="research-description mb-4">
+                    研究内容や概要をここに表示します。
                 </div>
 
-                <div class="detail-row">
-                    <div class="detail-label">所属</div>
-                    <div class="detail-value">専門学生</div>
-                </div>
-
-                <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a href="admin-accounts.html" class="btn btn-outline-secondary btn-sm">
-                        一覧に戻る
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="admin-research-edit.html" class="btn btn-success px-4">
+                        編集
                     </a>
-                    <button type="button" id="delete-account" class="btn btn-danger btn-sm">
+
+                    <button type="button" id="delete-research" class="btn btn-danger px-4">
                         削除
                     </button>
                 </div>
@@ -346,14 +349,14 @@
     </div>
 
     <script>
-        document.getElementById("delete-account").addEventListener("click", function () {
-            if (confirm("このアカウントを削除しますか？")) {
-                window.location.href = "admin-accounts.html";
+        document.getElementById("delete-research").addEventListener("click", function () {
+            if (confirm("この卒業研究を削除しますか？")) {
+                window.location.href = "research-list.html";
             }
         });
     </script>
 
-    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

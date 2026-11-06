@@ -2,7 +2,7 @@ FROM eclipse-temurin:17-jdk AS build
 WORKDIR /workspace
 
 COPY . .
-RUN ./JyobiKen/mvnw -f JyobiKen/pom.xml -B clean package
+RUN ./mvnw -f pom.xml -B clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-jammy
 RUN apt-get update \
@@ -12,7 +12,7 @@ RUN apt-get update \
     && useradd --system --gid app --no-create-home --shell /usr/sbin/nologin app
 WORKDIR /app
 
-COPY --from=build --chown=app:app /workspace/JyobiKen/target/jyobiken-*.jar /app/app.jar
+COPY --from=build --chown=app:app /workspace/target/jyobiken-*.jar /app/app.jar
 
 USER app:app
 EXPOSE 8080
