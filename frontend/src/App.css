@@ -1,0 +1,284 @@
+/* ==========================================================================
+   1. 変数・全体ベース設定
+   ========================================================================== */
+:root {
+  --main-blue: #42a9e8;
+  --hover-blue: #2996d6;
+  --background: #f3f6f9;
+  --border-color: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans JP", Arial, "Meiryo", sans-serif;
+  background: var(--background);
+  color: #333;
+}
+
+/* 全体レイアウト */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   2. 共通コンポーネント
+   ========================================================================== */
+/* サイドバー */
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  min-height: 100vh;
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
+  z-index: 1000;
+}
+
+.logo {
+  display: block;
+  margin-bottom: 40px;
+  color: var(--main-blue);
+  font-size: 25px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.sidebar a,
+.sidebar .nav-link {
+  display: block;
+  padding: 13px 15px;
+  margin-bottom: 10px;
+  color: #555;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+
+.sidebar a:hover,
+.sidebar .nav-link:hover {
+  background: #edf7fd;
+  color: var(--main-blue);
+}
+
+.sidebar a.active,
+.sidebar .nav-link.active {
+  background: #e8f5fd;
+  color: var(--main-blue);
+  font-weight: bold;
+}
+
+.logout {
+  margin-top: auto;
+  padding-top: 30px;
+}
+
+/* メインコンテンツエリア */
+.main-content {
+  margin-left: 240px;
+  flex: 1;
+  min-width: 0;
+  padding: 40px;
+}
+
+.page-title {
+  margin: 0 0 24px 0;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 24px;
+}
+
+.user-name {
+  font-size: 14px;
+  color: #555;
+}
+
+/* カード・コンテンツ共通 */
+.content-card,
+.search-card {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #edf0f3;
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 24px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* フォーム要素共通 */
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.form-control,
+.form-select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #dfe3e8;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--main-blue);
+  box-shadow: 0 0 0 0.2rem rgba(66, 169, 232, 0.15);
+  outline: none;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-text {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ボタン共通 */
+.btn-primary {
+  background: var(--main-blue);
+  border-color: var(--main-blue);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 28px;
+}
+
+.btn-primary:hover {
+  background: var(--hover-blue);
+  border-color: var(--hover-blue);
+  color: #fff;
+}
+
+.btn-outline-secondary {
+  border-radius: 8px;
+  padding: 10px 28px;
+}
+
+.filter-button,
+.category-button {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #555;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.filter-button.active,
+.filter-button:hover,
+.category-button.active,
+.category-button:hover {
+  background: #eaf6fd;
+  border-color: var(--main-blue);
+  color: var(--hover-blue);
+}
+
+.back-link {
+  display: inline-block;
+  color: var(--main-blue);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   3. レスポンシブ共通設定 (スマホ対応)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    min-height: auto;
+    height: auto;
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background: #fff;
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+  }
+
+  .sidebar .logo,
+  .sidebar a.logo {
+    display: none !important;
+  }
+
+  .sidebar a:not(.logo):not(.logout),
+  .sidebar .nav-link {
+    flex: 1;
+    text-align: center;
+    padding: 10px 4px;
+    margin: 0;
+    font-size: 12px;
+    white-space: nowrap;
+    border-radius: 8px;
+  }
+
+  .sidebar a.logout {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 24px 16px 110px;
+  }
+
+  .page-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .content-card,
+  .search-card {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .main-content {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .content-card {
+    padding: 16px 12px;
+  }
+}
