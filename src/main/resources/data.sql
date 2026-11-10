@@ -1,5 +1,15 @@
-INSERT INTO roles(code, name)
-VALUES('student', '学生');
+INSERT INTO roles (code, name)
+SELECT 'GENERAL_STUDENT', '一般生'
+WHERE NOT EXISTS (SELECT 1 FROM roles WHERE code = 'GENERAL_STUDENT');
 
-INSERT INTO roles(code, name)
-VALUES('admin', '管理者');
+INSERT INTO roles (code, name)
+SELECT 'RESEARCH_STUDENT', '卒研生'
+WHERE NOT EXISTS (SELECT 1 FROM roles WHERE code = 'RESEARCH_STUDENT');
+
+INSERT INTO roles (code, name)
+SELECT 'ALUMNI', '既卒者'
+WHERE NOT EXISTS (SELECT 1 FROM roles WHERE code = 'ALUMNI');
+
+INSERT INTO roles (code, name)
+SELECT 'ADMIN', '管理者'
+WHERE NOT EXISTS (SELECT 1 FROM roles WHERE code = 'ADMIN');
