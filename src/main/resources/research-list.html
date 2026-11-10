@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -7,7 +8,6 @@
     <title>卒業研究一覧 | JyobiKen</title>
 
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
-
 
     <style>
         :root {
@@ -90,7 +90,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 15px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .page-title {
@@ -102,6 +102,24 @@
         .user-name {
             font-size: 14px;
             color: #555;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .user-name:hover {
+            color: #42a9e8;
+        }
+
+        /* パンくずリスト */
+        .breadcrumb-area {
+            margin-bottom: 24px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .breadcrumb-area a {
+            color: var(--main-blue);
+            text-decoration: none;
         }
 
         /* 検索エリア */
@@ -160,7 +178,7 @@
             border-color: var(--main-blue);
         }
 
-        /* 卒業研究カード */
+        /* 卒業研究カード一覧 */
         .research-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -172,22 +190,31 @@
             background: white;
             border: 1px solid var(--border-color);
             border-radius: 15px;
-            transition: box-shadow .2s;
         }
 
-        .research-card:hover {
-            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
-        }
-
+        /* 作品サムネイル */
         .research-image {
             width: 100%;
             height: 150px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #e9ecef;
-            color: #777;
-            font-size: 16px;
+            flex-direction: column;
+            gap: 8px;
+            background: linear-gradient(135deg, #e5f4fc, #f3f6f9);
+            color: #5d9fc4;
+            font-size: 13px;
+            overflow: hidden;
+        }
+
+        .research-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail-icon {
+            font-size: 38px;
         }
 
         .research-body {
@@ -223,6 +250,43 @@
             gap: 8px;
         }
 
+        /* NEWバッジ */
+        .new-badge {
+            display: inline-block;
+            margin-left: 7px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            background: #fff0f2;
+            color: #e45b78;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        /* カテゴリータグ */
+        .category-tag {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .category-system {
+            color: #287db5;
+            background: #e8f5fd;
+        }
+
+        .category-life {
+            color: #278568;
+            background: #e8f7f0;
+        }
+
+        .category-other {
+            color: #8564a8;
+            background: #f2ecfa;
+        }
+
+        /* 検索結果なし */
         .empty-message {
             display: none;
             padding: 35px;
@@ -232,10 +296,30 @@
             color: #777;
         }
 
+        /* フッター */
+        .page-footer {
+            margin-top: 40px;
+            padding: 22px 10px;
+            border-top: 1px solid var(--border-color);
+            color: #9299a1;
+            text-align: center;
+            font-size: 11px;
+            line-height: 2;
+        }
+
+        .footer-links {
+            margin: 8px 0;
+        }
+
+        .footer-links a {
+            color: #6c9fbd;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
         /* スマートフォン対応 */
         @media (max-width: 768px) {
 
-            /* サイドバーを画面下部に固定 */
             .sidebar {
                 width: 100%;
                 min-width: 0;
@@ -256,12 +340,10 @@
                 z-index: 1000;
             }
 
-            /* ロゴを非表示 */
             .sidebar a.logo {
                 display: none !important;
             }
 
-            /* メニューを横並びにする */
             .sidebar a:not(.logo):not(.logout) {
                 flex: 1;
                 text-align: center;
@@ -272,35 +354,29 @@
                 border-radius: 8px;
             }
 
-            /* ログアウトを非表示 */
             .sidebar a.logout {
                 display: none !important;
             }
 
-            /* メインコンテンツ */
             .main-content {
                 margin-left: 0;
                 padding: 24px 16px 110px;
             }
 
-            /* ヘッダー */
             .top-header {
                 align-items: flex-start;
                 flex-direction: column;
                 gap: 10px;
             }
 
-            /* ページタイトル */
             .page-title {
                 font-size: 22px;
             }
 
-            /* 検索エリア */
             .search-card {
                 padding: 16px;
             }
 
-            /* 卒業研究カード */
             .research-grid {
                 grid-template-columns: 1fr;
                 gap: 15px;
@@ -335,7 +411,6 @@
             }
         }
     </style>
-
 </head>
 
 <body>
@@ -346,6 +421,7 @@
         <div class="logo">
             JyobiKen
         </div>
+
         <a href="research-list.html" class="active">
             卒業研究一覧
         </a>
@@ -371,9 +447,13 @@
     <!-- メインエリア -->
     <main class="main-content">
 
+        <!-- ヘッダー -->
         <header class="top-header">
             <h1 class="page-title">卒業研究一覧</h1>
-            <div class="user-name">👤 山田太郎</div>
+
+            <a href="mypage.html" class="user-name">
+                👤 山田太郎
+            </a>
         </header>
 
         <!-- 検索エリア -->
@@ -388,7 +468,8 @@
                             キーワード検索
                         </label>
 
-                        <input type="search" id="keyword" class="form-control" placeholder="研究タイトルを検索">
+                        <input type="search" id="keyword" class="form-control"
+                            placeholder="研究タイトルを検索">
                     </div>
 
                     <div class="col-12 col-md-4">
@@ -428,7 +509,8 @@
                     </div>
 
                     <div class="col-12 col-md-3">
-                        <button type="button" id="reset-search" class="btn btn-outline-secondary w-100">
+                        <button type="button" id="reset-search"
+                            class="btn btn-outline-secondary w-100">
                             リセット
                         </button>
                     </div>
@@ -439,23 +521,29 @@
 
             <!-- カテゴリボタン -->
             <div class="mt-4">
-                <div class="form-label mb-2">カテゴリから探す</div>
+                <div class="form-label mb-2">
+                    カテゴリから探す
+                </div>
 
                 <div class="d-flex flex-wrap gap-2">
 
-                    <button type="button" class="category-button active" data-category="">
+                    <button type="button" class="category-button active"
+                        data-category="">
                         すべて
                     </button>
 
-                    <button type="button" class="category-button" data-category="研究システム">
+                    <button type="button" class="category-button"
+                        data-category="研究システム">
                         研究システム
                     </button>
 
-                    <button type="button" class="category-button" data-category="生活・便利ツール">
+                    <button type="button" class="category-button"
+                        data-category="生活・便利ツール">
                         生活・便利ツール
                     </button>
 
-                    <button type="button" class="category-button" data-category="その他">
+                    <button type="button" class="category-button"
+                        data-category="その他">
                         その他
                     </button>
 
@@ -464,7 +552,8 @@
 
             <!-- 日誌投稿ボタン -->
             <div class="text-end mt-3">
-                <a href="diary-edit.html?from=research-list" class="btn btn-primary btn-sm">
+                <a href="diary-edit.html?from=research-list"
+                    class="btn btn-primary btn-sm">
                     ＋ 日誌を投稿する
                 </a>
             </div>
@@ -474,15 +563,27 @@
         <!-- 卒業研究一覧 -->
         <section class="research-grid" id="research-grid">
 
-            <!-- 研究1 -->
-            <article class="research-card" data-title="研究概要" data-category="研究システム" data-year="2027">
+            <!-- 研究1：編集画面の保存内容が反映される -->
+            <article class="research-card"
+                data-title="研究概要"
+                data-category="研究システム"
+                data-year="2027">
 
-                <div class="research-image">写真</div>
+                <div class="research-image">
+                    <span class="thumbnail-icon">💻</span>
+                    <span>研究作品の画像</span>
+                </div>
 
                 <div class="research-body">
 
-                    <div class="group-name">グループA</div>
-                    <h2 class="research-title">研究概要</h2>
+                    <div class="group-name">
+                        グループA
+                        <span class="new-badge">NEW</span>
+                    </div>
+
+                    <h2 class="research-title">
+                        研究概要
+                    </h2>
 
                     <div class="research-info">
                         <span>メンバー 3人</span>
@@ -491,11 +592,12 @@
 
                     <div class="card-actions">
 
-                        <span class="badge text-bg-light">
+                        <span class="category-tag category-system">
                             研究システム
                         </span>
 
-                        <a href="research-detail.html" class="btn btn-primary btn-sm">
+                        <a href="research-detail.html"
+                            class="btn btn-primary btn-sm">
                             詳細を見る
                         </a>
 
@@ -504,14 +606,26 @@
             </article>
 
             <!-- 研究2 -->
-            <article class="research-card" data-title="アプリ制作" data-category="生活・便利ツール" data-year="2027">
+            <article class="research-card"
+                data-title="アプリ制作"
+                data-category="生活・便利ツール"
+                data-year="2027">
 
-                <div class="research-image">写真</div>
+                <div class="research-image">
+                    <span class="thumbnail-icon">📱</span>
+                    <span>研究作品の画像</span>
+                </div>
 
                 <div class="research-body">
 
-                    <div class="group-name">グループB</div>
-                    <h2 class="research-title">アプリ制作</h2>
+                    <div class="group-name">
+                        グループB
+                        <span class="new-badge">NEW</span>
+                    </div>
+
+                    <h2 class="research-title">
+                        アプリ制作
+                    </h2>
 
                     <div class="research-info">
                         <span>メンバー 4人</span>
@@ -520,11 +634,12 @@
 
                     <div class="card-actions">
 
-                        <span class="badge text-bg-light">
+                        <span class="category-tag category-life">
                             生活・便利ツール
                         </span>
 
-                        <a href="research-detail.html" class="btn btn-primary btn-sm">
+                        <a href="research-detail.html"
+                            class="btn btn-primary btn-sm">
                             詳細を見る
                         </a>
 
@@ -533,14 +648,25 @@
             </article>
 
             <!-- 研究3 -->
-            <article class="research-card" data-title="Webシステム" data-category="研究システム" data-year="2028">
+            <article class="research-card"
+                data-title="Webシステム"
+                data-category="研究システム"
+                data-year="2028">
 
-                <div class="research-image">写真</div>
+                <div class="research-image">
+                    <span class="thumbnail-icon">🌐</span>
+                    <span>研究作品の画像</span>
+                </div>
 
                 <div class="research-body">
 
-                    <div class="group-name">グループC</div>
-                    <h2 class="research-title">Webシステム</h2>
+                    <div class="group-name">
+                        グループC
+                    </div>
+
+                    <h2 class="research-title">
+                        Webシステム
+                    </h2>
 
                     <div class="research-info">
                         <span>メンバー 3人</span>
@@ -549,11 +675,12 @@
 
                     <div class="card-actions">
 
-                        <span class="badge text-bg-light">
+                        <span class="category-tag category-system">
                             研究システム
                         </span>
 
-                        <a href="research-detail.html" class="btn btn-primary btn-sm">
+                        <a href="research-detail.html"
+                            class="btn btn-primary btn-sm">
                             詳細を見る
                         </a>
 
@@ -562,14 +689,25 @@
             </article>
 
             <!-- 研究4 -->
-            <article class="research-card" data-title="便利ツール" data-category="その他" data-year="2028">
+            <article class="research-card"
+                data-title="便利ツール"
+                data-category="その他"
+                data-year="2028">
 
-                <div class="research-image">写真</div>
+                <div class="research-image">
+                    <span class="thumbnail-icon">🛠️</span>
+                    <span>研究作品の画像</span>
+                </div>
 
                 <div class="research-body">
 
-                    <div class="group-name">グループD</div>
-                    <h2 class="research-title">便利ツール</h2>
+                    <div class="group-name">
+                        グループD
+                    </div>
+
+                    <h2 class="research-title">
+                        便利ツール
+                    </h2>
 
                     <div class="research-info">
                         <span>メンバー 2人</span>
@@ -578,11 +716,12 @@
 
                     <div class="card-actions">
 
-                        <span class="badge text-bg-light">
+                        <span class="category-tag category-other">
                             その他
                         </span>
 
-                        <a href="research-detail.html" class="btn btn-primary btn-sm">
+                        <a href="research-detail.html"
+                            class="btn btn-primary btn-sm">
                             詳細を見る
                         </a>
 
@@ -597,6 +736,27 @@
             該当する卒業研究がありません。
         </div>
 
+        <!-- フッター -->
+        <footer class="page-footer">
+
+            <strong>JyobiKen</strong>
+
+            <div>
+                卒業研究を共有し、学びをつなげる場所
+            </div>
+
+            <div class="footer-links">
+                <a href="research-list.html">卒業研究一覧</a>
+                <a href="mypage.html">マイページ</a>
+                <a href="notifications.html">通知</a>
+            </div>
+
+            <div>
+                © 2026 JyobiKen. All Rights Reserved.
+            </div>
+
+        </footer>
+
     </main>
 
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -606,15 +766,153 @@
         const keyword = document.getElementById("keyword");
         const category = document.getElementById("category");
         const year = document.getElementById("year");
-        const cards = document.querySelectorAll(".research-card");
         const emptyMessage = document.getElementById("empty-message");
         const categoryButtons = document.querySelectorAll(".category-button");
+
+        // カテゴリの表示名とCSSクラス
+        const categoryMap = {
+            system: {
+                name: "研究システム",
+                className: "category-system"
+            },
+            life: {
+                name: "生活・便利ツール",
+                className: "category-life"
+            },
+            other: {
+                name: "その他",
+                className: "category-other"
+            }
+        };
+
+        // 保存された研究データを取得
+        function getResearchData() {
+            try {
+                const savedData = sessionStorage.getItem("researchData");
+
+                if (!savedData) {
+                    return null;
+                }
+
+                return JSON.parse(savedData);
+
+            } catch (error) {
+                console.error("研究データの読み込みに失敗しました。", error);
+                return null;
+            }
+        }
+
+        // 保存された年度を選択肢に追加
+        function updateYearOptions(savedYear) {
+            const exists = Array.from(year.options).some(function (option) {
+                return option.value === savedYear;
+            });
+
+            if (!exists) {
+                const option = document.createElement("option");
+                option.value = savedYear;
+                option.textContent = savedYear + "年度";
+                year.appendChild(option);
+            }
+        }
+
+        // 編集画面で保存した内容を一覧の1件目に反映
+        function reflectResearchData() {
+            const data = getResearchData();
+
+            if (!data) {
+                return;
+            }
+
+            const firstCard = document.querySelector(".research-card");
+
+            if (!firstCard) {
+                return;
+            }
+
+            // タイトル
+            if (data.title) {
+                firstCard.dataset.title = data.title;
+                firstCard.querySelector(".research-title").textContent = data.title;
+            }
+
+            // グループ名
+            if (data.group) {
+                const groupName = firstCard.querySelector(".group-name");
+                const newBadge = groupName.querySelector(".new-badge");
+
+                groupName.textContent = data.group + " ";
+
+                if (newBadge) {
+                    groupName.appendChild(newBadge);
+                }
+            }
+
+            // 卒業年度
+            if (data.year) {
+                const yearMatch = String(data.year).match(/\d{4}/);
+
+                if (yearMatch) {
+                    firstCard.dataset.year = yearMatch[0];
+                    updateYearOptions(yearMatch[0]);
+                }
+            }
+
+            // カテゴリ
+            if (data.category) {
+                const categoryInfo = categoryMap[data.category];
+
+                const categoryName = categoryInfo
+                    ? categoryInfo.name
+                    : data.category;
+
+                const categoryClass = categoryInfo
+                    ? categoryInfo.className
+                    : "category-other";
+
+                firstCard.dataset.category = categoryName;
+
+                const categoryTag = firstCard.querySelector(".category-tag");
+
+                categoryTag.textContent = categoryName;
+                categoryTag.className = "category-tag " + categoryClass;
+            }
+
+            // メンバー数
+            if (Array.isArray(data.members)) {
+                const memberCount = data.members.filter(function (member) {
+                    return String(member).trim() !== "";
+                }).length;
+
+                firstCard.querySelector(
+                    ".research-info span:first-child"
+                ).textContent = "メンバー " + memberCount + "人";
+            }
+
+            // 研究画像
+            if (data.researchImage) {
+                const imageArea = firstCard.querySelector(".research-image");
+
+                imageArea.innerHTML = "";
+
+                const image = document.createElement("img");
+                image.src = data.researchImage;
+                image.alt = data.title || "研究作品の画像";
+
+                imageArea.appendChild(image);
+            }
+
+            // 保存内容を反映したあと検索にも反映
+            filterResearch();
+        }
 
         // 検索と絞り込み
         function filterResearch() {
             const keywordValue = keyword.value.trim().toLowerCase();
             const categoryValue = category.value;
             const yearValue = year.value;
+
+            const cards = document.querySelectorAll(".research-card");
 
             let visibleCount = 0;
 
@@ -680,6 +978,9 @@
 
             filterResearch();
         });
+
+        // ページを開いたときに保存データを反映
+        reflectResearchData();
     </script>
 
 </body>

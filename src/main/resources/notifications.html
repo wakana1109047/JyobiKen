@@ -8,6 +8,9 @@
 
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
         :root {
@@ -26,6 +29,7 @@
             background: var(--background);
             color: #333;
             font-family: "Noto Sans JP", "Meiryo", sans-serif;
+            overflow-y: scroll;
         }
 
         /* サイドバー */
@@ -308,201 +312,192 @@
             }
         }
     </style>
-
-
 </head>
 
 <body>
 
-    <!-- サイドバー -->
-    <nav class="sidebar">
+    <div id="root"></div>
 
-        <div class="logo">
-            JyobiKen
-        </div>
+    <script type="text/babel">
+        const { useState } = React;
 
-        <a href="research-list.html">
-            卒業研究一覧
-        </a>
+        function Notifications() {
 
-        <a href="mypage.html">
-            マイページ
-        </a>
-
-        <a href="timeline.html">
-            タイムライン
-        </a>
-
-        <a href="notifications.html" class="active">
-            通知
-        </a>
-
-        <a href="login.html" class="logout">
-            ログアウト
-        </a>
-
-    </nav>
-
-    <!-- 通知一覧 -->
-    <main class="main-content">
-
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-
-            <h1 class="page-title mb-0">通知</h1>
-
-            <button type="button" id="read-all" class="btn btn-outline-primary btn-sm">
-                すべて既読にする
-            </button>
-
-        </div>
-
-        <!-- 絞り込み -->
-        <div class="d-flex gap-2 mb-3">
-
-            <button type="button" class="filter-button active" data-filter="all">
-                すべて
-            </button>
-
-            <button type="button" class="filter-button" data-filter="unread">
-                未読
-            </button>
-
-        </div>
-
-        <!-- 通知リスト -->
-        <section class="content-card" id="notification-list">
-
-            <a href="notification-detail.html?id=1" class="notification-item unread" data-read="false">
-
-                <div class="notification-icon">👤</div>
-
-                <div class="notification-text">
-                    <div class="notification-title">
-                        いいねされました
-                    </div>
-
-                    <p class="notification-message">
-                        ○○さんがあなたの投稿に「いいね」しました。
-                    </p>
-
-                    <div class="notification-date">
-                        2026年10月27日 09:30
-                    </div>
-                </div>
-
-                <span class="unread-dot"></span>
-                <span class="arrow">›</span>
-
-            </a>
-
-            <a href="notification-detail.html?id=2" class="notification-item unread" data-read="false">
-
-                <div class="notification-icon">👤</div>
-
-                <div class="notification-text">
-                    <div class="notification-title">
-                        いいねされました
-                    </div>
-
-                    <p class="notification-message">
-                        ○○さんがあなたの投稿に「いいね」しました。
-                    </p>
-
-                    <div class="notification-date">
-                        2026年10月26日 15:20
-                    </div>
-                </div>
-
-                <span class="unread-dot"></span>
-                <span class="arrow">›</span>
-
-            </a>
-
-            <a href="notification-detail.html?id=3" class="notification-item" data-read="true">
-
-                <div class="notification-icon">👤</div>
-
-                <div class="notification-text">
-                    <div class="notification-title">
-                        いいねされました
-                    </div>
-
-                    <p class="notification-message">
-                        ○○さんがあなたの投稿に「いいね」しました。
-                    </p>
-
-                    <div class="notification-date">
-                        2026年10月25日 12:00
-                    </div>
-                </div>
-
-                <span class="arrow">›</span>
-
-            </a>
-
-        </section>
-
-        <p id="empty-message" class="text-center text-secondary mt-4 d-none">
-            通知はありません。
-        </p>
-
-    </main>
-
-    <script>
-        const filterButtons = document.querySelectorAll(".filter-button");
-        const notificationItems = document.querySelectorAll(".notification-item");
-        const emptyMessage = document.getElementById("empty-message");
-
-        let currentFilter = "all";
-
-        // 通知の表示を更新
-        function updateNotifications() {
-            let visibleCount = 0;
-
-            notificationItems.forEach(function (item) {
-                const isUnread = item.dataset.read === "false";
-                const visible = currentFilter === "all" || isUnread;
-
-                item.classList.toggle("d-none", !visible);
-
-                if (visible) {
-                    visibleCount++;
+            // 通知データ
+            const [notifications, setNotifications] = useState([
+                {
+                    id: 1,
+                    title: "いいねされました",
+                    message: "○○さんがあなたの投稿に「いいね」しました。",
+                    date: "2026年10月27日 09:30",
+                    read: false
+                },
+                {
+                    id: 2,
+                    title: "いいねされました",
+                    message: "○○さんがあなたの投稿に「いいね」しました。",
+                    date: "2026年10月26日 15:20",
+                    read: false
+                },
+                {
+                    id: 3,
+                    title: "いいねされました",
+                    message: "○○さんがあなたの投稿に「いいね」しました。",
+                    date: "2026年10月25日 12:00",
+                    read: true
                 }
+            ]);
+
+            // 絞り込み状態
+            const [currentFilter, setCurrentFilter] = useState("all");
+
+            // すべて既読にする
+            const handleReadAll = () => {
+                setNotifications((prev) =>
+                    prev.map((notification) => ({
+                        ...notification,
+                        read: true
+                    }))
+                );
+            };
+
+            // 表示する通知を絞り込む
+            const filteredNotifications = notifications.filter((notification) => {
+                return currentFilter === "all" || !notification.read;
             });
 
-            emptyMessage.classList.toggle("d-none", visibleCount > 0);
+            return (
+                <>
+                    {/* サイドバー */}
+                    <nav className="sidebar">
+
+                        <div className="logo">
+                            JyobiKen
+                        </div>
+
+                        <a href="research-list.html">
+                            卒業研究一覧
+                        </a>
+
+                        <a href="mypage.html">
+                            マイページ
+                        </a>
+
+                        <a href="timeline.html">
+                            タイムライン
+                        </a>
+
+                        <a href="notifications.html" className="active">
+                            通知
+                        </a>
+
+                        <a href="login.html" className="logout">
+                            ログアウト
+                        </a>
+
+                    </nav>
+
+                    {/* 通知一覧 */}
+                    <main className="main-content">
+
+                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+                            <h1 className="page-title mb-0">
+                                通知
+                            </h1>
+
+                            <button
+                                type="button"
+                                id="read-all"
+                                className="btn btn-outline-primary btn-sm"
+                                onClick={handleReadAll}
+                            >
+                                すべて既読にする
+                            </button>
+
+                        </div>
+
+                        {/* 絞り込み */}
+                        <div className="d-flex gap-2 mb-3">
+
+                            <button
+                                type="button"
+                                className={`filter-button ${currentFilter === "all" ? "active" : ""}`}
+                                onClick={() => setCurrentFilter("all")}
+                            >
+                                すべて
+                            </button>
+
+                            <button
+                                type="button"
+                                className={`filter-button ${currentFilter === "unread" ? "active" : ""}`}
+                                onClick={() => setCurrentFilter("unread")}
+                            >
+                                未読
+                            </button>
+
+                        </div>
+
+                        {/* 通知リスト */}
+                        <section className="content-card" id="notification-list">
+
+                            {filteredNotifications.map((notification) => (
+
+                                <a
+                                    href={`notification-detail.html?id=${notification.id}`}
+                                    className={`notification-item ${notification.read ? "" : "unread"}`}
+                                    key={notification.id}
+                                >
+
+                                    <div className="notification-icon">
+                                        👤
+                                    </div>
+
+                                    <div className="notification-text">
+
+                                        <div className="notification-title">
+                                            {notification.title}
+                                        </div>
+
+                                        <p className="notification-message">
+                                            {notification.message}
+                                        </p>
+
+                                        <div className="notification-date">
+                                            {notification.date}
+                                        </div>
+
+                                    </div>
+
+                                    {!notification.read && (
+                                        <span className="unread-dot"></span>
+                                    )}
+
+                                    <span className="arrow">
+                                        ›
+                                    </span>
+
+                                </a>
+
+                            ))}
+
+                        </section>
+
+                        {/* 通知がない場合 */}
+                        {filteredNotifications.length === 0 && (
+                            <p className="text-center text-secondary mt-4">
+                                通知はありません。
+                            </p>
+                        )}
+
+                    </main>
+                </>
+            );
         }
 
-        // すべて・未読の切り替え
-        filterButtons.forEach(function (button) {
-            button.addEventListener("click", function () {
-                currentFilter = button.dataset.filter;
-
-                filterButtons.forEach(function (item) {
-                    item.classList.remove("active");
-                });
-
-                button.classList.add("active");
-
-                updateNotifications();
-            });
-        });
-
-        // すべて既読にする
-        document.getElementById("read-all").addEventListener("click", function () {
-            notificationItems.forEach(function (item) {
-                item.dataset.read = "true";
-                item.classList.remove("unread");
-
-                const dot = item.querySelector(".unread-dot");
-
-                if (dot) {
-                    dot.remove();
-                }
-            });
-
-            updateNotifications();
-        });
+        ReactDOM.createRoot(document.getElementById("root")).render(
+            <Notifications />
+        );
     </script>
 
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
