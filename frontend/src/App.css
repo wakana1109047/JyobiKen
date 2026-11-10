@@ -41,16 +41,23 @@ body {
   display: flex;
   flex-direction: column;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
-  z-index: 1000;
+  z-index: 9999;
+  /* 重なり防止用に高めに設定 */
 }
 
+/* 共通ロゴ */
 .logo {
-  display: block;
-  margin-bottom: 40px;
+  display: inline-block;
   color: var(--main-blue);
   font-size: 25px;
   font-weight: bold;
   text-decoration: none;
+}
+
+/* サイドバー内のロゴ固有設定 */
+.sidebar .logo {
+  display: block;
+  margin-bottom: 40px;
 }
 
 .sidebar a,
@@ -88,6 +95,8 @@ body {
   flex: 1;
   min-width: 0;
   padding: 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .page-title {
@@ -233,7 +242,7 @@ textarea.form-control {
     background: #fff;
     border-top: 1px solid var(--border-color);
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
-    z-index: 1000;
+    z-index: 9999;
   }
 
   .sidebar .logo,
