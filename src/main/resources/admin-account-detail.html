@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>アカウント詳細 | JyobiKen</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 
 
@@ -300,7 +302,9 @@
                 <a href="notifications.html" class="nav-link">お知らせ</a>
             </nav>
             <div class="logout">
-                <a href="login.html" class="btn btn-outline-secondary btn-sm w-100">ログアウト →</a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm w-100">ログアウト →</button>
+                </form>
             </div>
         </aside>
 
@@ -312,43 +316,161 @@
                     ← 戻る
                 </a>
 
+                <p id="load-error" class="alert alert-danger d-none" role="alert"></p>
+                <p id="save-message" class="alert d-none" role="status"></p>
+
                 <div class="profile">
                     <div class="avatar">👤</div>
-                    <div class="profile-name">山田花子</div>
-                    <div class="subtext">学籍番号：4523109</div>
+                    <div id="profile-name" class="profile-name"></div>
+                    <div id="profile-status" class="subtext"></div>
                 </div>
 
-                <div class="detail-row">
-                    <div class="detail-label">メールアドレス</div>
-                    <div class="detail-value">hanako.yamada@example.jp</div>
-                </div>
+                <form id="profile-form">
+                    <div class="detail-row">
+                        <label class="detail-label" for="name">氏名</label>
+                        <input id="name" class="form-control" name="name" required>
+                    </div>
+                    <div class="detail-row">
+                        <label class="detail-label" for="email">メールアドレス</label>
+                        <input id="email" class="form-control" name="email" type="email" required>
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-outline-primary btn-sm">基本情報を保存</button>
+                    </div>
+                </form>
 
-                <div class="detail-row">
-                    <div class="detail-label">入学年度</div>
-                    <div class="detail-value">2027年度</div>
-                </div>
-
-                <div class="detail-row">
-                    <div class="detail-label">所属</div>
-                    <div class="detail-value">専門学生</div>
-                </div>
+                <form id="access-form" class="mt-4">
+                    <h2 class="h5">利用者区分・アカウント状態</h2>
+                    <div class="detail-row">
+                        <label class="detail-label" for="user-type">利用者区分</label>
+                        <select id="user-type" class="form-select" name="userType" required>
+                            <option value="GENERAL_STUDENT">一般生</option>
+                            <option value="RESEARCH_STUDENT">卒研生</option>
+                            <option value="ALUMNI">既卒者</option>
+                            <option value="ADMIN">管理者</option>
+                        </select>
+                    </div>
+                    <div class="detail-row">
+                        <label class="detail-label" for="account-status">アカウント状態</label>
+                        <select id="account-status" class="form-select" name="accountStatus" required>
+                            <option value="ACTIVE">有効</option>
+                            <option value="SUSPENDED">停止</option>
+                            <option value="EXPIRED">利用期限切れ</option>
+                        </select>
+                    </div>
+                    <div class="detail-row">
+                        <label class="detail-label" for="expires-at">既卒者の利用期限</label>
+                        <input id="expires-at" class="form-control" name="expiresAt" type="date">
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-primary btn-sm">区分・状態を保存</button>
+                    </div>
+                </form>
 
                 <div class="d-flex justify-content-end gap-2 mt-4">
                     <a href="admin-accounts.html" class="btn btn-outline-secondary btn-sm">
                         一覧に戻る
                     </a>
-                    <button type="button" id="delete-account" class="btn btn-danger btn-sm">
-                        削除
-                    </button>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        document.getElementById("delete-account").addEventListener("click", function () {
-            if (confirm("このアカウントを削除しますか？")) {
-                window.location.href = "admin-accounts.html";
+        const accountId = new URLSearchParams(window.location.search).get("id");
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+        const accountForm = document.getElementById("profile-form");
+        const accessForm = document.getElementById("access-form");
+        const userType = document.getElementById("user-type");
+        const expiresAt = document.getElementById("expires-at");
+
+        function showMessage(message, isError = false) {
+            const element = document.getElementById("save-message");
+            element.textContent = message;
+            element.className = `alert ${isError ? "alert-danger" : "alert-success"}`;
+        }
+
+        function updateExpiryRequirement() {
+            expiresAt.required = userType.value === "ALUMNI";
+        }
+
+        userType.addEventListener("change", updateExpiryRequirement);
+
+        if (!accountId || !/^\d+$/.test(accountId)) {
+            document.getElementById("load-error").textContent = "アカウントIDが指定されていません。";
+            document.getElementById("load-error").classList.remove("d-none");
+            accountForm.hidden = true;
+            accessForm.hidden = true;
+        } else {
+            fetch(`/api/users/${encodeURIComponent(accountId)}`)
+                .then(async response => {
+                    if (!response.ok) throw new Error("アカウント情報を読み込めませんでした。");
+                    return response.json();
+                })
+                .then(account => {
+                    document.getElementById("profile-name").textContent = account.name;
+                    document.getElementById("profile-status").textContent =
+                        `${account.email} / ${account.accountStatus}`;
+                    document.getElementById("name").value = account.name;
+                    document.getElementById("email").value = account.email;
+                    userType.value = account.userType;
+                    document.getElementById("account-status").value = account.accountStatus;
+                    expiresAt.value = account.expiresAt ?? "";
+                    updateExpiryRequirement();
+                })
+                .catch(error => {
+                    const message = document.getElementById("load-error");
+                    message.textContent = error.message;
+                    message.classList.remove("d-none");
+                    accountForm.hidden = true;
+                    accessForm.hidden = true;
+                });
+        }
+
+        accountForm.addEventListener("submit", async event => {
+            event.preventDefault();
+            try {
+                const response = await fetch(`/api/users/${encodeURIComponent(accountId)}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        [csrfHeader]: csrfToken
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById("name").value,
+                        email: document.getElementById("email").value
+                    })
+                });
+                if (!response.ok) throw new Error("基本情報を保存できませんでした。");
+                showMessage("基本情報を保存しました。");
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        });
+
+        accessForm.addEventListener("submit", async event => {
+            event.preventDefault();
+            try {
+                const response = await fetch(`/api/users/${encodeURIComponent(accountId)}/access`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        [csrfHeader]: csrfToken
+                    },
+                    body: JSON.stringify({
+                        userType: userType.value,
+                        accountStatus: document.getElementById("account-status").value,
+                        expiresAt: expiresAt.value || null
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.message || "区分・状態を保存できませんでした。");
+                document.getElementById("profile-status").textContent =
+                    `${result.email} / ${result.accountStatus}`;
+                showMessage("利用者区分・アカウント状態を保存しました。");
+            } catch (error) {
+                showMessage(error.message, true);
             }
         });
     </script>

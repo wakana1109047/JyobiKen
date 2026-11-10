@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>アカウント管理 | JyobiKen</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 
 
@@ -280,9 +282,9 @@
             </nav>
 
             <div class="logout">
-                <a href="login.html" class="btn btn-outline-secondary btn-sm w-100">
-                    ログアウト →
-                </a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm w-100">ログアウト →</button>
+                </form>
             </div>
         </aside>
 
@@ -290,58 +292,12 @@
             <h1 class="page-title">アカウント管理</h1>
 
             <section class="content-card">
-                <label for="search" class="form-label">アカウント検索</label>
+                <label for="search" class="form-label">名前・メールアドレスで検索</label>
 
-                <input type="search" id="search" class="form-control mb-4" placeholder="氏名・学籍番号で検索">
+                <input type="search" id="search" class="form-control mb-4" placeholder="名前・メールアドレスで検索">
 
-                <div id="account-list">
-
-                    <div class="account-row" data-search="山田花子 4523109">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                            <div>
-                                <div class="account-name">山田花子</div>
-                                <div class="account-number">学籍番号：4523109</div>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-danger btn-sm delete-account">
-                                    削除
-                                </button>
-                                <a href="admin-account-detail.html" class="btn btn-outline-primary btn-sm">詳細 →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="account-row" data-search="山田花子 4523110">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                            <div>
-                                <div class="account-name">山田花子</div>
-                                <div class="account-number">学籍番号：4523110</div>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-danger btn-sm delete-account">
-                                    削除
-                                </button>
-                                <a href="admin-account-detail.html" class="btn btn-outline-primary btn-sm">詳細 →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="account-row" data-search="山田花子 4523111">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                            <div>
-                                <div class="account-name">山田花子</div>
-                                <div class="account-number">学籍番号：4523111</div>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-danger btn-sm delete-account">
-                                    削除
-                                </button>
-                                <a href="admin-account-detail.html" class="btn btn-outline-primary btn-sm">詳細 →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                <div id="account-list" aria-live="polite"></div>
+                <p id="load-error" class="text-danger text-center mt-4 d-none" role="alert"></p>
 
                 <p id="no-results" class="text-secondary text-center mt-4 d-none">
                     該当するアカウントがありません。
@@ -352,26 +308,77 @@
 
     <script>
         const search = document.getElementById("search");
-        const rows = document.querySelectorAll(".account-row");
+        const accountList = document.getElementById("account-list");
         const noResults = document.getElementById("no-results");
 
-        search.addEventListener("input", function () {
-            let count = 0;
-            rows.forEach(function (row) {
-                const visible = row.dataset.search.includes(search.value.trim());
-                row.classList.toggle("d-none", !visible);
-                if (visible) count++;
-            });
-            noResults.classList.toggle("d-none", count > 0);
-        });
+        const userTypeLabels = {
+            GENERAL_STUDENT: "一般生",
+            RESEARCH_STUDENT: "卒研生",
+            ALUMNI: "既卒者",
+            ADMIN: "管理者"
+        };
+        const accountStatusLabels = {
+            ACTIVE: "有効",
+            SUSPENDED: "停止",
+            EXPIRED: "利用期限切れ"
+        };
 
-        document.querySelectorAll(".delete-account").forEach(function (button) {
-            button.addEventListener("click", function () {
-                if (confirm("このアカウントを削除しますか？")) {
-                    button.closest(".account-row").remove();
-                }
+        function renderAccounts(accounts) {
+            accountList.replaceChildren();
+            const query = search.value.trim().toLocaleLowerCase();
+            const matches = accounts.filter(account =>
+                `${account.name} ${account.email}`.toLocaleLowerCase().includes(query));
+
+            for (const account of matches) {
+                const row = document.createElement("div");
+                row.className = "account-row";
+                const details = document.createElement("div");
+                details.className = "d-flex justify-content-between align-items-center flex-wrap gap-3";
+                const summary = document.createElement("div");
+                const name = document.createElement("div");
+                name.className = "account-name";
+                name.textContent = account.name;
+                const email = document.createElement("div");
+                email.className = "account-number";
+                email.textContent = account.email;
+                const access = document.createElement("div");
+                access.className = "account-number";
+                access.textContent =
+                    `${userTypeLabels[account.userType] ?? account.userType} / ${accountStatusLabels[account.accountStatus] ?? account.accountStatus}`;
+                summary.append(name, email, access);
+
+                const detailLink = document.createElement("a");
+                detailLink.className = "btn btn-outline-primary btn-sm";
+                detailLink.href = `/admin-account-detail.html?id=${encodeURIComponent(account.id)}`;
+                detailLink.textContent = "詳細・権限変更 →";
+                const actions = document.createElement("div");
+                actions.className = "d-flex gap-2";
+                actions.append(detailLink);
+                details.append(summary, actions);
+                row.append(details);
+                accountList.append(row);
+            }
+
+            noResults.classList.toggle("d-none", matches.length > 0);
+        }
+
+        search.addEventListener("input", () => renderAccounts(accounts));
+
+        let accounts = [];
+        fetch("/api/users")
+            .then(response => {
+                if (!response.ok) throw new Error("アカウント一覧を読み込めませんでした。");
+                return response.json();
+            })
+            .then(data => {
+                accounts = data;
+                renderAccounts(accounts);
+            })
+            .catch(error => {
+                const message = document.getElementById("load-error");
+                message.textContent = error.message;
+                message.classList.remove("d-none");
             });
-        });
     </script>
 
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

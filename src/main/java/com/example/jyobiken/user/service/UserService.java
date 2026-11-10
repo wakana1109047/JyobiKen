@@ -3,6 +3,7 @@ package com.example.jyobiken.user.service;
 import java.util.List;
 
 import com.example.jyobiken.user.dto.UserCreateRequest;
+import com.example.jyobiken.user.dto.UserAccessUpdateRequest;
 import com.example.jyobiken.user.dto.UserResponse;
 import com.example.jyobiken.user.dto.UserUpdateRequest;
 
@@ -11,9 +12,9 @@ public interface UserService {
 
     UserResponse getUserById(Long id);
 
-    UserResponse createUser(UserCreateRequest request);
+    UserResponse createUser(UserCreateRequest request, String actorEmail);
 
     UserResponse updateUser(Long id, UserUpdateRequest request);
 
-    void deleteUser(Long id);
+    UserResponse updateAccess(Long id, UserAccessUpdateRequest request, String actorEmail);
 }

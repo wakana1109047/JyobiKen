@@ -20,6 +20,14 @@ Docker Compose、PostgreSQL、Caddyを使い、CaddyがLet's EncryptのHTTPS証�
    ```
 
    `.env` とパスワードファイルはデプロイユーザーだけが読める権限（`chmod 600 .env secrets/*.txt`）にしてください。
+   初回起動時に `INITIAL_ADMIN_EMAIL` を `.env` に設定し、初期管理者パスワードを一時ファイルに設定します。
+
+   ```sh
+   openssl rand -hex 32 > secrets/initial_admin_password.txt
+   chmod 600 secrets/initial_admin_password.txt
+   ```
+
+   アプリは管理者アカウントがまだない場合だけ初期管理者を作成します。ログイン確認後はパスワードファイルを不要なランダム値に置き換えてください。以降の管理者アカウント発行は管理者専用APIから行います。
 
 5. リポジトリのルートから起動します。
 

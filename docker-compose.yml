@@ -34,10 +34,13 @@ services:
       SPRING_DATASOURCE_USERNAME: jyobiken_app
       SPRING_SQL_INIT_MODE: always
       SPRING_SQL_INIT_PLATFORM: postgres
+      APP_BOOTSTRAP_ADMIN_EMAIL: ${INITIAL_ADMIN_EMAIL:-}
     user: "${APP_UID:?Set APP_UID in JyobiKen/.env}:${APP_GID:?Set APP_GID in JyobiKen/.env}"
     secrets:
       - source: app_db_password
         target: spring.datasource.password
+      - source: initial_admin_password
+        target: app.bootstrap-admin.password
     depends_on:
       db:
         condition: service_healthy
@@ -85,6 +88,8 @@ secrets:
     file: ./secrets/postgres_password.txt
   app_db_password:
     file: ./secrets/app_db_password.txt
+  initial_admin_password:
+    file: ./secrets/initial_admin_password.txt
 
 networks:
   proxy:
