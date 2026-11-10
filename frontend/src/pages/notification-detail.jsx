@@ -1,51 +1,36 @@
-import { useParams, Link } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
-// 各通知のダミー詳細データ
-const NOTIFICATION_DETAILS = {
-    '1': {
-        id: 1,
-        title: 'いいねされました',
-        date: '2026年10月27日 09:30',
-        message: 'あなたの投稿が山田太郎さんに「いいね」されました。',
-        postId: 1,
-        postTitle: '活動記録',
-        postPreviewText: '今日の卒業研究では、アプリの画面設計を進めました。',
-    },
-    '2': {
-        id: 2,
-        title: 'いいねされました',
-        date: '2026年10月26日 15:20',
-        message: 'あなたの投稿が佐藤花子さんに「いいね」されました。',
-        postId: 2,
-        postTitle: '画面設計',
-        postPreviewText: '画面のデザインをチームで相談しました。',
-    },
-    '3': {
-        id: 3,
-        title: 'コメントされました',
-        date: '2026年10月25日 12:00',
-        message: 'あなたの投稿に鈴木花子さんからコメントが届きました。',
-        postId: 3,
-        postTitle: '進捗報告',
-        postPreviewText: 'プログラムの実装を少しずつ進めています。',
-    },
-};
-
-export default function NotificationDetail() {
+export default function NotificationDetail({ notifications, onMarkAsRead }) {
     const { id } = useParams();
+    const navigate = useNavigate();
 
-    // URLの id に対応するデータを取得（存在しない場合は '1' または null）
-    const detail = NOTIFICATION_DETAILS[id] || NOTIFICATION_DETAILS['1'];
+    // 画面開時に1度だけ処理を実行するための参照フラグ
+    const isExecRef = useRef(false);
 
-    // データが存在しない場合の安全処理
+    // Appから受け取った通知リストの中から該当するIDのものを検索
+    const detail = notifications.find((item) => item.id === Number(id)) || notifications[0];
+
+    // 画面が開いたら自動的に既読フラグを更新（重複実行を防止）
+    useEffect(() => {
+        if (id && !isExecRef.current) {
+            onMarkAsRead(id);
+            isExecRef.current = true;
+        }
+    }, [id, onMarkAsRead]);
+
     if (!detail) {
         return (
             <main className="main-content flex-grow-1 p-4">
                 <div className="text-center py-5">
                     <p className="text-secondary">該当する通知が見つかりませんでした。</p>
-                    <Link to="/notifications" className="btn btn-primary btn-sm">
+                    <button
+                        type="button"
+                        onClick={() => navigate('/notifications')}
+                        className="btn btn-primary btn-sm"
+                    >
                         通知一覧に戻る
-                    </Link>
+                    </button>
                 </div>
             </main>
         );
@@ -56,9 +41,14 @@ export default function NotificationDetail() {
             <h1 className="page-title h4 mb-4">通知詳細</h1>
 
             <section className="content-card bg-white p-4 rounded-3 border mx-auto" style={{ maxWidth: '850px' }}>
-                <Link to="/notifications" className="back-link text-decoration-none small text-primary">
+                <button
+                    type="button"
+                    onClick={() => navigate('/notifications')}
+                    className="back-link border-0 bg-transparent p-0 small text-primary mb-3"
+                    style={{ cursor: 'pointer' }}
+                >
                     ← 戻る
-                </Link>
+                </button>
 
                 <div className="d-flex align-items-center gap-3 mt-3">
                     <div className="notification-icon bg-secondary-subtle rounded-circle d-flex align-items-center justify-content-center" style={{ width: '48px', height: '48px', fontSize: '22px' }}>
@@ -85,22 +75,26 @@ export default function NotificationDetail() {
                         <p className="text-secondary small mb-0">{detail.postPreviewText}</p>
                     </div>
 
-                    {/* 対象の投稿にジャンプするボタン */}
                     <div className="mt-3 text-end">
-                        <Link
-                            to={`/timeline#post-${detail.postId}`}
+                        <button
+                            type="button"
+                            onClick={() => navigate(`/timeline#post-${detail.postId}`)}
                             className="btn btn-outline-primary btn-sm"
                         >
                             投稿を見る →
-                        </Link>
+                        </button>
                     </div>
                 </div>
 
-                {/* 通知一覧に戻る */}
+                {/* 通知一覧に戻るボタン */}
                 <div className="text-end mt-4">
-                    <Link to="/notifications" className="btn btn-primary">
+                    <button
+                        type="button"
+                        onClick={() => navigate('/notifications')}
+                        className="btn btn-primary"
+                    >
                         通知一覧に戻る
-                    </Link>
+                    </button>
                 </div>
             </section>
         </main>
