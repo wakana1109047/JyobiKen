@@ -38,9 +38,6 @@ public class InitialAdminProvisioner implements ApplicationRunner {
     @Transactional
     public void run(ApplicationArguments args) {
         if (email.isBlank()) {
-            if (!password.isBlank()) {
-                throw new IllegalStateException("Initial admin email must be configured with its password.");
-            }
             return;
         }
         Integer adminCount = jdbcTemplate.queryForObject(
