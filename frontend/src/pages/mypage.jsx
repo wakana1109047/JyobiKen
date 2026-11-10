@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import DiaryEditModal from "../components/DiaryEditModal";
+
 export default function MyPage() {
     const [activeTab, setActiveTab] = useState('posts');
     const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの状態
@@ -47,14 +48,16 @@ export default function MyPage() {
                         </button>
                     </div>
 
-                    {/* 投稿ボタンをクリックでポップアップ表示 */}
-                    <button
-                        type="button"
-                        className="btn btn-primary btn-sm"
-                        onClick={() => setIsModalOpen(true)}
-                    >
-                        ＋ 投稿する
-                    </button>
+                    {/* 投稿一覧（posts）の時だけ「＋ 投稿する」ボタンを表示 */}
+                    {activeTab === 'posts' && (
+                        <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={() => setIsModalOpen(true)}
+                        >
+                            ＋ 投稿する
+                        </button>
+                    )}
                 </div>
 
                 {activeTab === 'posts' && (

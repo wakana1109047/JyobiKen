@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import DiaryEditModal from '../components/DiaryEditModal';
 
 const INITIAL_RESEARCH_DATA = [
   { id: 1, title: '研究概要', category: '研究システム', year: '2027', group: 'グループA', members: 3, likes: 2, isLiked: false },
@@ -14,7 +13,6 @@ export default function Home() {
   const [keyword, setKeyword] = useState('');
   const [category, setCategory] = useState('');
   const [year, setYear] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの表示状態
 
   const filteredList = useMemo(() => {
     return researchList.filter((item) => {
@@ -133,17 +131,6 @@ export default function Home() {
             ))}
           </div>
         </div>
-
-        {/* 投稿ボタンをクリックでポップアップ表示 */}
-        <div className="text-end mt-3">
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            onClick={() => setIsModalOpen(true)}
-          >
-            ＋ 日誌を投稿する
-          </button>
-        </div>
       </section>
 
       {filteredList.length > 0 ? (
@@ -179,13 +166,6 @@ export default function Home() {
           該当する卒業研究がありません。
         </div>
       )}
-
-      {/* モーダル表示 */}
-      <DiaryEditModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        from="research-list"
-      />
     </main>
   );
 }
