@@ -1,44 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-// ダミーの通知データ一覧
-const INITIAL_NOTIFICATIONS = [
-    {
-        id: 1,
-        title: 'いいねされました',
-        message: '山田太郎さんがあなたの投稿「活動記録」に「いいね」しました。',
-        date: '2026年10月27日 09:30',
-        isRead: false,
-        postId: 1, // 対象の投稿ID
-    },
-    {
-        id: 2,
-        title: 'いいねされました',
-        message: '佐藤花子さんがあなたの投稿「画面設計」に「いいね」しました。',
-        date: '2026年10月26日 15:20',
-        isRead: false,
-        postId: 2,
-    },
-    {
-        id: 3,
-        title: 'コメントされました',
-        message: '鈴木花子さんがあなたの投稿「進捗報告」にコメントしました。',
-        date: '2026年10月25日 12:00',
-        isRead: true,
-        postId: 3,
-    },
-];
-
-export default function Notifications() {
-    const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+export default function Notifications({ notifications, onReadAll }) {
     const [filter, setFilter] = useState('all'); // 'all' | 'unread'
-
-    // すべて既読にする
-    const handleReadAll = () => {
-        setNotifications((prev) =>
-            prev.map((item) => ({ ...item, isRead: true }))
-        );
-    };
 
     // 絞り込み判定
     const filteredNotifications = notifications.filter((item) => {
@@ -53,7 +17,7 @@ export default function Notifications() {
                 <button
                     type="button"
                     className="btn btn-outline-primary btn-sm"
-                    onClick={handleReadAll}
+                    onClick={onReadAll}
                 >
                     すべて既読にする
                 </button>
@@ -84,8 +48,7 @@ export default function Notifications() {
                         <Link
                             key={item.id}
                             to={`/notifications/${item.id}`}
-                            className={`notification-item d-flex align-items-center gap-3 p-3 text-decoration-none border-bottom ${!item.isRead ? 'bg-light-blue' : ''
-                                }`}
+                            className={`notification-item d-flex align-items-center gap-3 p-3 text-decoration-none border-bottom ${!item.isRead ? 'unread' : ''}`}
                         >
                             <div className="notification-icon bg-secondary-subtle rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '42px', height: '42px' }}>
                                 👤

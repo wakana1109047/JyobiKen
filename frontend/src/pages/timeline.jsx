@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import DiaryEditModal from '../components/DiaryEditModal';
-
 
 const initialDiaries = [
     {
@@ -53,7 +51,6 @@ export default function Timeline() {
     const [activeKeyword, setActiveKeyword] = useState('');
     const [filter, setFilter] = useState('all');
     const [commentInputs, setCommentInputs] = useState({});
-    const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの状態
 
     const location = useLocation();
 
@@ -150,14 +147,6 @@ export default function Timeline() {
         <main className="main-content flex-grow-1 p-4">
             <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                 <h1 className="page-title mb-0">タイムライン</h1>
-                {/* 投稿ボタンをクリックでポップアップ表示 */}
-                <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => setIsModalOpen(true)}
-                >
-                    ＋ 日誌を投稿
-                </button>
             </div>
 
             <section className="content-card p-3 mb-4">
@@ -289,13 +278,6 @@ export default function Timeline() {
                     該当する日誌がありません。
                 </p>
             )}
-
-            {/* モーダル表示 */}
-            <DiaryEditModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                from="timeline"
-            />
         </main>
     );
 }
