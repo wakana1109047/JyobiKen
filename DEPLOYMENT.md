@@ -30,7 +30,7 @@ Docker Compose、PostgreSQL、Caddyを使い、CaddyがLet's EncryptのHTTPS証�
 
 アプリのHTTPポートとPostgreSQLポートはホストへ公開せず、Caddyのみ80/443を公開します。DBパスワードはGit管理外のCompose secretとして渡します。`application-prod.properties` はHTTPSプロキシ用のセキュアCookieを有効にするため、Caddyを通さず直接公開しないでください。
 
-PostgreSQLのデータは `postgres_data` named volume に保存されます。DBの初回作成時だけ `db/create-app-user.sh` がアプリ専用ロールを作成し、Flywayがバージョン管理されたスキーマを適用します。開発用H2のデータはPostgreSQLへ自動移行されないため、既存ユーザーを引き継ぐ場合は公開前に別途データ移行が必要です。永続データは定期的に暗号化して別ストレージへバックアップしてください。例:
+PostgreSQLのデータは `postgres_data` named volume に保存されます。DBの初回作成時に `db/create-app-user.sh` がアプリ専用ロールを作成し、アプリ起動時に `schema.sql` が `app_user` テーブルを作成します。開発用H2のデータはPostgreSQLへ自動移行されないため、既存ユーザーを引き継ぐ場合は公開前に別途データ移行が必要です。永続データは定期的に暗号化して別ストレージへバックアップしてください。例:
 
 ```sh
 umask 077

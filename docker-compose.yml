@@ -23,12 +23,17 @@ services:
 
   app:
     build:
-      context: ..
-      dockerfile: JyobiKen/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_IMPORT: configtree:/run/secrets/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/jyobiken
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_DATASOURCE_USERNAME: jyobiken_app
+      SPRING_SQL_INIT_MODE: always
+      SPRING_SQL_INIT_PLATFORM: postgres
     user: "${APP_UID:?Set APP_UID in JyobiKen/.env}:${APP_GID:?Set APP_GID in JyobiKen/.env}"
     secrets:
       - source: app_db_password
@@ -38,6 +43,8 @@ services:
         condition: service_healthy
     expose:
       - "8080"
+    ports:
+      - "127.0.0.1:8080:8080"
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid,size=64m
