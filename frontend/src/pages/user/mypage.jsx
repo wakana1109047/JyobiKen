@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import DiaryEditModal from "../components/DiaryEditModal";
-
+import DiaryEditModal from "../../components/DiaryEditModal";
 export default function MyPage() {
     const [activeTab, setActiveTab] = useState('posts');
     const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの状態
