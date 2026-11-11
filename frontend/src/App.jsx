@@ -1,16 +1,18 @@
-import { useState, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom';
-import Home from './pages/research-list';
-import MyPage from './pages/mypage';
-import TimeLine from './pages/timeline';
-import Notifications from './pages/notifications';
-import NotificationDetail from './pages/notification-detail';
-import DiaryEdit from './pages/diary-edit';
-import ProfileEdit from './pages/profile-edit';
-import ResearchDetail from './pages/research-detail';
+import { useState, useCallback } from 'react'
+import { BrowserRouter, Routes, Route, NavLink, Link, Outlet } from 'react-router-dom'
+import Home from './pages/research-list'
+import MyPage from './pages/mypage'
+import TimeLine from './pages/timeline'
+import Notifications from './pages/notifications'
+import NotificationDetail from './pages/notification-detail'
+import DiaryEdit from './pages/diary-edit'
+import ProfileEdit from './pages/profile-edit'
+import ResearchDetail from './pages/research-detail'
+import Login from './pages/login'
 
-import "./App.css";
-import "./page.css";
+import "./App.css"
+import "./page.css"
+import "bootstrap/dist/css/bootstrap.min.css" // 画面ごとでなく、一括管理
 
 // ダミー通知データ一覧
 const INITIAL_NOTIFICATIONS = [
@@ -44,31 +46,17 @@ const INITIAL_NOTIFICATIONS = [
     postTitle: '進捗報告',
     postPreviewText: 'プログラムの実装を少しずつ進めています。',
   },
-];
+]
 
-export default function App() {
-  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
-
-  // 単一の通知を既読に変更する関数（useCallbackで参照を固定）
-  const markAsRead = useCallback((id) => {
-    setNotifications((prev) =>
-      prev.map((item) => (item.id === Number(id) ? { ...item, isRead: true } : item))
-    );
-  }, []);
-
-  // すべての通知を既読に変更する関数
-  const handleReadAll = useCallback(() => {
-    setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
-  }, []);
-
+// ログイン後の共通レイアウト（サイドバー付き）
+function MainLayout() {
   return (
-    <BrowserRouter>
       <div className="layout d-flex">
         {/* 全ページで共通表示するサイドバー */}
         <aside className="sidebar">
-          <Link to="/" className="logo">JyobiKen</Link>
+          <Link to="/research-list" className="logo">JyobiKen</Link>
           <nav className="nav flex-column">
-            <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            <NavLink to="/research-list" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               卒業研究一覧
             </NavLink>
             <NavLink to="/mypage" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
@@ -82,30 +70,57 @@ export default function App() {
             </NavLink>
           </nav>
           <div className="logout">
-            <button type="button" className="btn btn-outline-secondary btn-sm w-100">
+            {/* ログアウトボタンで初期のログイン画面 (/) へ移動 */}
+            <Link to="/" className="btn btn-outline-secondary btn-sm w-100">
               ログアウト →
-            </button>
+            </Link>
           </div>
         </aside>
 
-        {/* ページ切り替えエリア */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/mypage" element={<MyPage />} />
-          <Route path="/timeline" element={<TimeLine />} />
-          <Route
-            path="/notifications"
-            element={<Notifications notifications={notifications} onReadAll={handleReadAll} />}
-          />
-          <Route
-            path="/notifications/:id"
-            element={<NotificationDetail notifications={notifications} onMarkAsRead={markAsRead} />}
-          />
-          <Route path="/diary-edit" element={<DiaryEdit />} />
-          <Route path="/profile-edit" element={<ProfileEdit />} />
-          <Route path="/research-detail" element={<ResearchDetail />} />
-        </Routes>
+        <Outlet />
       </div>
-    </BrowserRouter>
-  );
+  )
+}
+
+export default function App() {
+  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS)
+
+  // 単一の通知を既読に変更する関数（useCallbackで参照を固定）
+  const markAsRead = useCallback((id) => {
+    setNotifications((prev) =>
+        prev.map((item) => (item.id === Number(id) ? { ...item, isRead: true } : item))
+    )
+  }, [])
+
+  // すべての通知を既読に変更する関数
+  const handleReadAll = useCallback(() => {
+    setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })))
+  }, [])
+
+  return (
+      <BrowserRouter>
+        <Routes>
+          {/* 1. アプリ初期画面 (/) はサイドバーなしのログイン画面 */}
+          <Route path="/" element={<Login />} />
+
+          {/* 2. ログイン後の画面群（MainLayoutのサイドバー付き枠の中で表示） */}
+          <Route element={<MainLayout />}>
+            <Route path="/research-list" element={<Home />} />
+            <Route path="/mypage" element={<MyPage />} />
+            <Route path="/timeline" element={<TimeLine />} />
+            <Route
+                path="/notifications"
+                element={<Notifications notifications={notifications} onReadAll={handleReadAll} />}
+            />
+            <Route
+                path="/notifications/:id"
+                element={<NotificationDetail notifications={notifications} onMarkAsRead={markAsRead} />}
+            />
+            <Route path="/diary-edit" element={<DiaryEdit />} />
+            <Route path="/profile-edit" element={<ProfileEdit />} />
+            <Route path="/research-detail" element={<ResearchDetail />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+  )
 }

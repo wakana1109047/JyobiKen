@@ -1,4 +1,111 @@
 /* ==========================================================================
+   ログイン (Login)
+   ========================================================================== */
+/* ヘッダー */
+header {
+    background: #fff;
+    padding: 20px 40px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+    color: var(--main-blue);
+    text-decoration: none;
+}
+
+/* ログインエリア */
+.login-area {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* ログインカード */
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    border: 1px solid #edf0f3;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.login-title {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.description {
+    color: #777;
+    font-size: 14px;
+}
+
+/* 入力欄 */
+.form-label {
+    font-size: 14px;
+}
+
+.form-control {
+    min-height: 46px;
+    border-color: #d1d5db;
+    border-radius: 9px;
+}
+
+.form-control:focus {
+    border-color: var(--main-blue);
+    box-shadow: 0 0 0 3px rgba(66, 169, 232, 0.15);
+}
+
+/* ログインボタン */
+.btn-primary {
+    min-height: 46px;
+    background: var(--main-blue);
+    border-color: var(--main-blue);
+    border-radius: 9px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background: var(--hover-blue);
+    border-color: var(--hover-blue);
+}
+
+/* 新規登録リンク */
+.register-link {
+    color: var(--hover-blue);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+/* スマホ表示 */
+@media (max-width: 480px) {
+    header {
+        padding: 18px 20px;
+    }
+
+    .login-area {
+        padding: 25px 15px;
+    }
+
+    .login-card .card-body {
+        padding: 30px 24px !important;
+    }
+
+    .login-title {
+        font-size: 23px;
+    }
+}
+
+/* ==========================================================================
    研究一覧 (Research List)
    ========================================================================== */
 .research-grid {
