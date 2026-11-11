@@ -8,12 +8,17 @@
 
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 
+    <!-- React -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
         :root {
             --main-blue: #42a9e8;
             --hover-blue: #2996d6;
             --background: #f3f6f9;
+            --border-color: #e5e7eb;
         }
 
         * {
@@ -24,14 +29,14 @@
             margin: 0;
             background: var(--background);
             color: #333;
-            font-family: Arial, "Meiryo", sans-serif;
+            font-family: "Noto Sans JP", "Meiryo", sans-serif;
         }
 
         /* サイドバー */
         .sidebar {
             width: 240px;
             min-width: 240px;
-            height: 100vh;
+            min-height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
@@ -39,40 +44,61 @@
             padding: 30px 20px;
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.03);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
             z-index: 100;
         }
 
         .logo {
+            display: block;
+            margin-bottom: 40px;
+            color: #42a9e8;
             font-size: 25px;
             font-weight: bold;
-            color: var(--main-blue);
             text-decoration: none;
-            margin-bottom: 40px;
         }
 
         .sidebar .nav-link {
-            color: #555;
+            display: block;
             padding: 13px 15px;
             margin-bottom: 10px;
+            color: #555;
+            font-size: 16px;
+            text-decoration: none;
             border-radius: 10px;
-            font-size: 14px;
-            transition: background 0.2s;
+            transition: 0.2s;
         }
 
         .sidebar .nav-link:hover {
-            color: var(--hover-blue);
-            background: #f0f8fd;
+            background-color: #edf7fd;
+            color: #42a9e8;
         }
 
         .sidebar .nav-link.active {
-            color: var(--hover-blue);
-            background: #e8f5fd;
+            background-color: #e8f5fd;
+            color: #42a9e8;
             font-weight: bold;
         }
 
+        /* ログアウト */
         .logout {
             margin-top: auto;
+            padding-top: 30px;
+        }
+
+        .logout-btn {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background-color: #edf7fd;
+            color: #42a9e8;
         }
 
         /* メインコンテンツ */
@@ -83,9 +109,9 @@
         }
 
         .page-title {
-            font-size: 25px;
+            font-size: 26px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         /* 詳細カード */
@@ -94,70 +120,154 @@
             margin: 0 auto;
             background: #fff;
             padding: 30px;
+            border: 1px solid var(--border-color);
             border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
         .back-link {
+            display: inline-block;
             color: var(--hover-blue);
             text-decoration: none;
             font-size: 14px;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
+            margin-bottom: 5px;
         }
 
         .research-image {
             width: 100%;
-            min-height: 180px;
-            background: #e5e7eb;
+            min-height: 220px;
+            background: linear-gradient(135deg, #e5f4fc, #f3f6f9);
             border-radius: 10px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #666;
-            font-size: 20px;
+            gap: 10px;
+            color: #5d9fc4;
+            font-size: 14px;
             margin: 20px 0;
+            padding: 15px;
+        }
+
+        .research-image-icon {
+            font-size: 48px;
+        }
+
+        .research-image img {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
         }
 
         .research-title {
-            font-size: 23px;
+            font-size: 25px;
             font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .research-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        /* カテゴリータグ */
+        .category-tag {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .category-system {
+            color: #287db5;
+            background: #e8f5fd;
+        }
+
+        .category-life {
+            color: #278568;
+            background: #e8f7f0;
+        }
+
+        .category-other {
+            color: #8564a8;
+            background: #f2ecfa;
+        }
+
+        /* セクション */
+        .detail-section {
+            margin-bottom: 28px;
         }
 
         .section-label {
-            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 16px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 13px;
         }
 
+        .section-label::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 19px;
+            background: var(--main-blue);
+            border-radius: 5px;
+        }
+
+        .section-content {
+            padding: 18px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.9;
+            white-space: pre-wrap;
+        }
+
+        /* メンバー */
         .member-list {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 25px;
         }
 
         .member {
             background: #f3f6f9;
-            border: 1px solid #e5e7eb;
-            padding: 9px 13px;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
             border-radius: 8px;
             font-size: 13px;
         }
 
+        /* 研究内容 */
         .research-description {
             min-height: 180px;
-            background: #e5e7eb;
+            background: linear-gradient(135deg, #e5f4fc, #f3f6f9);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
-            color: #666;
+            gap: 10px;
+            font-size: 14px;
+            color: #5d9fc4;
             padding: 20px;
             text-align: center;
+            white-space: pre-wrap;
+        }
+
+        .description-icon {
+            font-size: 38px;
         }
 
         /* ボタン */
@@ -179,7 +289,6 @@
         /* スマートフォン対応 */
         @media (max-width: 768px) {
 
-            /* サイドバーを画面下部に固定 */
             .sidebar {
                 width: 100%;
                 min-width: 0;
@@ -195,17 +304,15 @@
                 justify-content: space-around;
                 align-items: center;
                 background: #fff;
-                border-top: 1px solid #e5e7eb;
+                border-top: 1px solid var(--border-color);
                 box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
                 z-index: 1000;
             }
 
-            /* ロゴを非表示 */
             .sidebar .logo {
                 display: none !important;
             }
 
-            /* メニューを横並びにする */
             .sidebar .nav {
                 width: 100%;
                 display: flex;
@@ -225,41 +332,52 @@
                 border-radius: 8px;
             }
 
-            /* ログアウトを非表示 */
             .sidebar .logout {
                 display: none !important;
             }
 
-            /* メインコンテンツ */
             .main-content {
                 margin-left: 0;
                 padding: 24px 16px 110px;
             }
 
-            /* 詳細カード */
+            .page-title {
+                font-size: 22px;
+            }
+
             .content-card {
                 padding: 20px 16px;
                 border-radius: 12px;
             }
 
-            /* 戻るリンク */
             .back-link {
                 font-size: 13px;
             }
 
-            /* 研究画像 */
             .research-image {
-                min-height: 150px;
-                font-size: 16px;
+                min-height: 160px;
+                font-size: 14px;
                 margin: 16px 0;
             }
 
-            /* 研究タイトル */
             .research-title {
                 font-size: 21px;
             }
 
-            /* メンバー */
+            .research-meta {
+                gap: 8px;
+                font-size: 12px;
+            }
+
+            .section-label {
+                font-size: 15px;
+            }
+
+            .section-content {
+                padding: 14px;
+                font-size: 13px;
+            }
+
             .member-list {
                 gap: 8px;
             }
@@ -269,14 +387,12 @@
                 font-size: 12px;
             }
 
-            /* 研究内容 */
             .research-description {
                 min-height: 150px;
-                font-size: 16px;
+                font-size: 14px;
                 padding: 15px;
             }
 
-            /* ボタン */
             .content-card .d-flex.justify-content-end {
                 justify-content: flex-start !important;
             }
@@ -298,118 +414,240 @@
             }
         }
     </style>
-
 </head>
 
 <body>
 
-    <!-- 左メニュー -->
-    <aside class="sidebar">
+    <div id="root"></div>
 
-        <div class="logo">
-            JyobiKen
-        </div>
+    <script type="text/babel">
 
-        <nav class="nav flex-column">
+        // 保存済みデータを取得
+        function getSavedData() {
+            try {
+                return JSON.parse(
+                    sessionStorage.getItem("researchData") || "null"
+                );
+            } catch (error) {
+                return null;
+            }
+        }
 
-            <a href="research-list.html" class="nav-link active">
-                卒業研究一覧
-            </a>
+        function Sidebar() {
+            return (
+                <aside className="sidebar">
 
-            <a href="mypage.html" class="nav-link">
-                マイページ
-            </a>
+                    <div className="logo">
+                        JyobiKen
+                    </div>
 
-            <a href="timeline.html" class="nav-link">
-                タイムライン
-            </a>
+                    <nav className="nav flex-column">
 
-            <a href="notifications.html" class="nav-link">
-                通知
-            </a>
+                        <a href="research-list.html" className="nav-link active">
+                            卒業研究一覧
+                        </a>
 
-        </nav>
+                        <a href="mypage.html" className="nav-link">
+                            マイページ
+                        </a>
 
-        <div class="logout">
-            <a href="login.html" class="btn btn-outline-secondary btn-sm w-100">
-                ログアウト →
-            </a>
-        </div>
+                        <a href="timeline.html" className="nav-link">
+                            タイムライン
+                        </a>
 
-    </aside>
+                        <a href="notifications.html" className="nav-link">
+                            通知
+                        </a>
 
-    <!-- 詳細画面 -->
-    <main class="main-content">
+                    </nav>
 
-        <div class="content-card">
+                    <div className="logout">
+                        <a href="login.html" className="logout-btn">
+                            ログアウト 
+                        </a>
+                    </div>
 
-            <a href="research-list.html" class="back-link">
-                ← 戻る
-            </a>
+                </aside>
+            );
+        }
 
-            <div class="research-image">
-                画像など
-            </div>
+        function ResearchDetail() {
 
-            <h1 class="research-title">
-                タイトル
-            </h1>
+            const savedData = getSavedData();
 
-            <p class="text-secondary small mb-4">
-                グループA　2027年度卒業研究
-            </p>
+            const title = savedData?.title || "タイトル";
+            const group = savedData?.group || "グループA";
+            const year = savedData?.year || "2027年度";
+            const overview = savedData?.overview ||
+                "卒業研究の内容をここに表示します。研究の目的や、どのような課題を解決するために制作したのかなどを記載します。";
 
-            <!-- 研究概要 -->
-            <div class="mb-4">
+            const members = savedData?.members || [
+                "山田花子",
+                "山田花子",
+                "山田花子",
+                "山田花子",
+                "山田花子"
+            ];
 
-                <h2 class="section-label">
-                    研究概要
-                </h2>
+            const category = savedData?.category || "system";
+            const researchContent = savedData?.researchContent || "";
+            const researchImage = savedData?.researchImage || "";
 
-                <div class="border rounded-2 p-3">
-                    卒業研究の内容をここに表示します。
-                </div>
+            const categoryName = {
+                system: "研究システム",
+                life: "生活・暮らし",
+                other: "その他"
+            };
 
-            </div>
+            return (
+                <>
+                    <Sidebar />
 
-            <!-- メンバー -->
-            <div class="mb-4">
+                    <main className="main-content">
 
-                <h2 class="section-label">
-                    メンバー
-                </h2>
+                        <h1 className="page-title">
+                            卒研詳細
+                        </h1>
 
-                <div class="member-list">
-                    <span class="member">👤 山田花子</span>
-                    <span class="member">👤 山田花子</span>
-                    <span class="member">👤 山田花子</span>
-                    <span class="member">👤 山田花子</span>
-                    <span class="member">👤 山田花子</span>
-                </div>
+                        <div className="content-card">
 
-            </div>
+                            {/* 戻るリンク */}
+                            <a href="research-list.html" className="back-link">
+                                ← 卒業研究一覧に戻る
+                            </a>
 
-            <!-- 研究内容 -->
-            <div class="research-description">
-                研究内容・画像など
-            </div>
+                            {/* 研究画像 */}
+                            <div className="research-image">
 
-            <!-- ボタン -->
-            <div class="d-flex justify-content-end gap-2 mt-4 flex-wrap">
+                                {researchImage ? (
+                                    <img
+                                        src={researchImage}
+                                        alt="研究作品の画像"
+                                    />
+                                ) : (
+                                    <>
+                                        <span className="research-image-icon">
+                                            💻
+                                        </span>
+                                        <span>
+                                            研究作品の画像
+                                        </span>
+                                    </>
+                                )}
 
-                <a href="research-list.html" class="btn btn-outline-secondary">
-                    一覧に戻る
-                </a>
+                            </div>
 
-                <a href="#" class="btn btn-primary">
-                    編集する
-                </a>
+                            {/* 研究タイトル */}
+                            <h2 className="research-title">
+                                {title}
+                            </h2>
 
-            </div>
+                            {/* 研究情報 */}
+                            <div className="research-meta">
 
-        </div>
+                                <span>{group}</span>
 
-    </main>
+                                <span>・</span>
+
+                                <span>{year}卒業研究</span>
+
+                                <span className={`category-tag category-${category}`}>
+                                    {categoryName[category] || "その他"}
+                                </span>
+
+                            </div>
+
+                            {/* 研究概要 */}
+                            <section className="detail-section">
+
+                                <h3 className="section-label">
+                                    研究概要
+                                </h3>
+
+                                <div className="section-content">
+                                    {overview}
+                                </div>
+
+                            </section>
+
+                            {/* メンバー */}
+                            <section className="detail-section">
+
+                                <h3 className="section-label">
+                                    メンバー
+                                </h3>
+
+                                <div className="member-list">
+
+                                    {members
+                                        .filter(member => member.trim() !== "")
+                                        .map((member, index) => (
+                                            <span className="member" key={index}>
+                                                👤 {member}
+                                            </span>
+                                        ))}
+
+                                </div>
+
+                            </section>
+
+                            {/* 研究内容 */}
+                            <section className="detail-section">
+
+                                <h3 className="section-label">
+                                    研究内容・制作物
+                                </h3>
+
+                                <div className="research-description">
+
+                                    {researchContent ? (
+                                        <span>{researchContent}</span>
+                                    ) : (
+                                        <>
+                                            <span className="description-icon">
+                                                🖼️
+                                            </span>
+                                            <span>
+                                                研究内容・制作物の画像などを表示
+                                            </span>
+                                        </>
+                                    )}
+
+                                </div>
+
+                            </section>
+
+                            {/* ボタン */}
+                            <div className="d-flex justify-content-end gap-2 mt-4 flex-wrap">
+
+                                <a
+                                    href="research-list.html"
+                                    className="btn btn-outline-secondary"
+                                >
+                                    一覧に戻る
+                                </a>
+
+                                <a
+                                    href="research-edit.html"
+                                    className="btn btn-primary"
+                                >
+                                    編集する
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </main>
+                </>
+            );
+        }
+
+        ReactDOM.createRoot(
+            document.getElementById("root")
+        ).render(<ResearchDetail />);
+
+    </script>
 
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 

@@ -193,7 +193,6 @@
         /* スマホ表示 */
         @media (max-width: 768px) {
 
-            /* サイドバーを画面下部に固定 */
             .sidebar {
                 width: 100%;
                 min-width: 0;
@@ -213,12 +212,10 @@
                 z-index: 1000;
             }
 
-            /* ロゴを非表示 */
             .sidebar .logo {
                 display: none !important;
             }
 
-            /* メニューを横並びにする */
             .sidebar a:not(.logo):not(.logout) {
                 flex: 1;
                 text-align: center;
@@ -229,12 +226,10 @@
                 border-radius: 8px;
             }
 
-            /* ログアウトを非表示 */
             .sidebar a.logout {
                 display: none !important;
             }
 
-            /* メインコンテンツ */
             .main-content {
                 margin-left: 0;
                 padding: 24px 16px 110px;
@@ -245,7 +240,6 @@
                 margin-bottom: 20px;
             }
 
-            /* 編集カード */
             .content-card {
                 padding: 20px 16px;
             }
@@ -256,7 +250,6 @@
                 font-size: 40px;
             }
 
-            /* ボタン */
             .button-area {
                 display: flex;
                 flex-direction: column-reverse;
@@ -280,7 +273,6 @@
             }
         }
     </style>
-
 </head>
 
 <body>
@@ -314,136 +306,263 @@
 
     </nav>
 
-    <!-- プロフィール編集 -->
-    <main class="main-content">
+    <!-- React表示エリア -->
+    <div id="root"></div>
 
-        <h1 class="page-title">プロフィール編集</h1>
+    <!-- React -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-        <section class="content-card">
+    <!-- プロフィール編集画面 -->
+    <script type="text/babel">
 
-            <form id="profile-form">
+        const { useState } = React;
 
-                <!-- プロフィール画像 -->
-                <div class="profile-image-area">
+        function ProfileEdit() {
 
-                    <div class="profile-image" id="profile-preview">
-                        👤
-                    </div>
+            // マイページと共有するプロフィール情報
+            const STORAGE_KEY = "jyobikenProfile";
 
-                    <label for="profile-image-input" class="image-button">
-                        画像を変更する
-                    </label>
+            // 保存済みのプロフィールがあれば編集画面に読み込む
+            const savedProfile = JSON.parse(
+                sessionStorage.getItem(STORAGE_KEY) || "null"
+            );
 
-                    <input type="file" id="profile-image-input" accept="image/*" class="d-none">
+            // 入力内容の管理
+            const [name, setName] = useState(savedProfile?.name ?? "山田 太郎");
+            const [userId, setUserId] = useState(savedProfile?.userId ?? "yamada_taro");
+            const [email, setEmail] = useState(savedProfile?.email ?? "example@example.com");
+            const [introduction, setIntroduction] = useState(
+                savedProfile?.introduction ?? "よろしくお願いします！"
+            );
 
-                    <p class="form-text mt-2">
-                        JPG・PNG形式の画像を選択してください。
-                    </p>
+            // プロフィール画像
+            const [profileImage, setProfileImage] = useState(
+                savedProfile?.profileImage ?? ""
+            );
 
-                </div>
+            // 画像変更処理
+            const handleImageChange = (event) => {
 
-                <hr class="mb-4">
+                const file = event.target.files[0];
 
-                <!-- 名前 -->
-                <div class="mb-4">
+                if (!file) {
+                    return;
+                }
 
-                    <label for="name" class="form-label">
-                        名前
-                    </label>
+                // 画像形式の確認
+                if (!["image/jpeg", "image/png"].includes(file.type)) {
 
-                    <input type="text" id="name" class="form-control" value="山田 太郎" required>
+                    alert("JPG・PNG形式の画像を選択してください。");
 
-                </div>
+                    event.target.value = "";
 
-                <!-- ユーザーID -->
-                <div class="mb-4">
+                    return;
+                }
 
-                    <label for="user-id" class="form-label">
-                        ユーザーID
-                    </label>
-
-                    <input type="text" id="user-id" class="form-control" value="yamada_taro" required>
-
-                </div>
-
-                <!-- メールアドレス -->
-                <div class="mb-4">
-
-                    <label for="email" class="form-label">
-                        メールアドレス
-                    </label>
-
-                    <input type="email" id="email" class="form-control" value="example@example.com" required>
-
-                </div>
-
-                <!-- 自己紹介 -->
-                <div class="mb-4">
-
-                    <label for="introduction" class="form-label">
-                        自己紹介
-                    </label>
-
-                    <textarea id="introduction" class="form-control" placeholder="自己紹介を入力してください">よろしくお願いします！</textarea>
-
-                    <div class="form-text">
-                        自分について自由に紹介できます。
-                    </div>
-
-                </div>
-
-                <!-- ボタン -->
-                <div class="button-area d-flex justify-content-end gap-3 mt-5">
-
-                    <a href="mypage.html" class="btn btn-outline-secondary">
-                        キャンセル
-                    </a>
-
-                    <button type="submit" class="btn btn-primary">
-                        変更を保存する
-                    </button>
-
-                </div>
-
-            </form>
-
-        </section>
-
-    </main>
-
-    <script>
-        // プロフィール画像のプレビュー
-        const imageInput = document.getElementById("profile-image-input");
-        const imagePreview = document.getElementById("profile-preview");
-
-        imageInput.addEventListener("change", function () {
-
-            const file = this.files[0];
-
-            if (file) {
                 const reader = new FileReader();
 
-                reader.onload = function (event) {
-                    imagePreview.innerHTML = "";
-
-                    const img = document.createElement("img");
-                    img.src = event.target.result;
-
-                    imagePreview.appendChild(img);
+                reader.onload = (e) => {
+                    setProfileImage(e.target.result);
                 };
 
                 reader.readAsDataURL(file);
-            }
-        });
+            };
 
-        // 保存ボタン
-        document.getElementById("profile-form").addEventListener("submit", function (event) {
-            event.preventDefault();
+            // 保存処理
+            const handleSubmit = (event) => {
 
-            alert("プロフィールを保存しました。");
+                event.preventDefault();
 
-            location.href = "mypage.html";
-        });
+                // プロフィール情報を保存
+                const profile = {
+                    name,
+                    userId,
+                    email,
+                    introduction,
+                    profileImage
+                };
+
+                try {
+
+                    sessionStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify(profile)
+                    );
+
+                    alert("プロフィールを保存しました。");
+
+                    window.location.href = "mypage.html";
+
+                } catch (error) {
+
+                    alert(
+                        "保存できませんでした。画像のサイズを小さくして、もう一度お試しください。"
+                    );
+
+                }
+            };
+
+            return (
+
+                <main className="main-content">
+
+                    <h1 className="page-title">
+                        プロフィール編集
+                    </h1>
+
+                    <section className="content-card">
+
+                        <form onSubmit={handleSubmit}>
+
+                            {/* プロフィール画像 */}
+                            <div className="profile-image-area">
+
+                                <div className="profile-image">
+
+                                    {profileImage ? (
+
+                                        <img
+                                            src={profileImage}
+                                            alt="プロフィール画像"
+                                        />
+
+                                    ) : (
+
+                                        "👤"
+
+                                    )}
+
+                                </div>
+
+                                <label
+                                    htmlFor="profile-image-input"
+                                    className="image-button"
+                                >
+                                    画像を変更する
+                                </label>
+
+                                <input
+                                    type="file"
+                                    id="profile-image-input"
+                                    accept="image/jpeg,image/png"
+                                    className="d-none"
+                                    onChange={handleImageChange}
+                                />
+
+                                <p className="form-text mt-2">
+                                    JPG・PNG形式の画像を選択してください。
+                                </p>
+
+                            </div>
+
+                            <hr className="mb-4" />
+
+                            {/* 名前 */}
+                            <div className="mb-4">
+
+                                <label htmlFor="name" className="form-label">
+                                    名前
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="name"
+                                    className="form-control"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                />
+
+                            </div>
+
+                            {/* ユーザーID */}
+                            <div className="mb-4">
+
+                                <label htmlFor="user-id" className="form-label">
+                                    ユーザーID
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="user-id"
+                                    className="form-control"
+                                    value={userId}
+                                    onChange={(e) => setUserId(e.target.value)}
+                                    required
+                                />
+
+                            </div>
+
+                            {/* メールアドレス */}
+                            <div className="mb-4">
+
+                                <label htmlFor="email" className="form-label">
+                                    メールアドレス
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    className="form-control"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+
+                            </div>
+
+                            {/* 自己紹介 */}
+                            <div className="mb-4">
+
+                                <label htmlFor="introduction" className="form-label">
+                                    自己紹介
+                                </label>
+
+                                <textarea
+                                    id="introduction"
+                                    className="form-control"
+                                    placeholder="自己紹介を入力してください"
+                                    value={introduction}
+                                    onChange={(e) => setIntroduction(e.target.value)}
+                                />
+
+                                <div className="form-text">
+                                    自分について自由に紹介できます。
+                                </div>
+
+                            </div>
+
+                            {/* ボタン */}
+                            <div className="button-area d-flex justify-content-end gap-3 mt-5">
+
+                                <a href="mypage.html" className="btn btn-outline-secondary">
+                                    キャンセル
+                                </a>
+
+                                <button type="submit" className="btn btn-primary">
+                                    変更を保存する
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </section>
+
+                </main>
+
+            );
+        }
+
+        // React画面の表示
+        const root = ReactDOM.createRoot(
+            document.getElementById("root")
+        );
+
+        root.render(<ProfileEdit />);
+
     </script>
 
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

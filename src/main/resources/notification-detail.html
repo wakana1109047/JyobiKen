@@ -8,6 +8,9 @@
 
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
         :root {
@@ -26,6 +29,7 @@
             background: var(--background);
             color: #333;
             font-family: "Noto Sans JP", "Meiryo", sans-serif;
+            overflow-y: scroll;
         }
 
         /* サイドバー */
@@ -275,100 +279,122 @@
             }
         }
     </style>
-
 </head>
 
 <body>
 
-    <!-- サイドバー -->
-    <nav class="sidebar">
+    <div id="root"></div>
 
-        <div class="logo">
-            JyobiKen
-        </div>
+    <script type="text/babel">
 
-        <a href="research-list.html">
-            卒業研究一覧
-        </a>
+        function NotificationDetail() {
 
-        <a href="mypage.html">
-            マイページ
-        </a>
+            return (
+                <>
+                    {/* サイドバー */}
+                    <nav className="sidebar">
 
-        <a href="timeline.html">
-            タイムライン
-        </a>
+                        <div className="logo">
+                            JyobiKen
+                        </div>
 
-        <a href="notifications.html" class="active">
-            通知
-        </a>
+                        <a href="research-list.html">
+                            卒業研究一覧
+                        </a>
 
-        <a href="login.html" class="logout">
-            ログアウト
-        </a>
+                        <a href="mypage.html">
+                            マイページ
+                        </a>
 
-    </nav>
+                        <a href="timeline.html">
+                            タイムライン
+                        </a>
 
-    <!-- 通知詳細 -->
-    <main class="main-content">
+                        <a href="notifications.html" className="active">
+                            通知
+                        </a>
 
-        <h1 class="page-title">通知詳細</h1>
+                        <a href="login.html" className="logout">
+                            ログアウト
+                        </a>
 
-        <section class="content-card">
+                    </nav>
 
-            <a href="notifications.html" class="back-link">
-                ← 戻る
-            </a>
+                    {/* 通知詳細 */}
+                    <main className="main-content">
 
-            <div class="d-flex align-items-center gap-3 mt-4">
+                        <h1 className="page-title">
+                            通知詳細
+                        </h1>
 
-                <div class="notification-icon">👤</div>
+                        <section className="content-card">
 
-                <div>
-                    <h2 class="notification-title mb-1">
-                        いいねされました
-                    </h2>
+                            <a href="notifications.html" className="back-link">
+                                ← 戻る
+                            </a>
 
-                    <p class="notification-date mb-0">
-                        2026年10月27日 09:30
-                    </p>
-                </div>
+                            <div className="d-flex align-items-center gap-3 mt-4">
 
-            </div>
+                                <div className="notification-icon">
+                                    👤
+                                </div>
 
-            <p class="notification-message">
-                あなたの投稿が○○さんに「いいね」されました。
-            </p>
+                                <div>
 
-            <!-- 対象の投稿 -->
-            <div class="border rounded-3 p-3">
+                                    <h2 className="notification-title mb-1">
+                                        いいねされました
+                                    </h2>
 
-                <h3 class="fs-6 fw-bold mb-3">
-                    対象の投稿
-                </h3>
+                                    <p className="notification-date mb-0">
+                                        2026年10月27日 09:30
+                                    </p>
 
-                <div class="post-preview">
-                    自分の投稿
-                </div>
+                                </div>
 
-                <p class="text-secondary small mt-3 mb-0">
-                    卒業研究の日誌投稿
-                </p>
+                            </div>
 
-            </div>
+                            <p className="notification-message">
+                                あなたの投稿が○○さんに「いいね」されました。
+                            </p>
 
-            <!-- 通知一覧に戻る -->
-            <div class="text-end mt-4">
+                            {/* 対象の投稿 */}
+                            <div className="border rounded-3 p-3">
 
-                <a href="notifications.html" class="btn btn-primary">
-                    通知一覧に戻る
-                </a>
+                                <h3 className="fs-6 fw-bold mb-3">
+                                    対象の投稿
+                                </h3>
 
-            </div>
+                                <div className="post-preview">
+                                    自分の投稿
+                                </div>
 
-        </section>
+                                <p className="text-secondary small mt-3 mb-0">
+                                    卒業研究の日誌投稿
+                                </p>
 
-    </main>
+                            </div>
+
+                            {/* 通知一覧に戻る */}
+                            <div className="text-end mt-4">
+
+                                <a href="notifications.html" className="btn btn-primary">
+                                    通知一覧に戻る
+                                </a>
+
+                            </div>
+
+                        </section>
+
+                    </main>
+                </>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(
+            <NotificationDetail />
+        );
+
+    </script>
 
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 

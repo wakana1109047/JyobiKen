@@ -1,18 +1,63 @@
 import { useState, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom';
-import Home from './pages/research-list';
-import MyPage from './pages/mypage';
-import TimeLine from './pages/timeline';
-import Notifications from './pages/notifications';
-import NotificationDetail from './pages/notification-detail';
-import DiaryEdit from './pages/diary-edit';
-import ProfileEdit from './pages/profile-edit';
-import ResearchDetail from './pages/research-detail';
+import { BrowserRouter, Routes, Route, NavLink, Link, Outlet } from 'react-router-dom';
+
+// ユーザー系 (user/)
+import Home from './pages/user/research-list';
+import MyPage from './pages/user/mypage';
+import TimeLine from './pages/user/timeline';
+import Notifications from './pages/user/notifications';
+import NotificationDetail from './pages/user/notification-detail';
+import DiaryEdit from './pages/user/diary-edit';
+import ProfileEdit from './pages/user/profile-edit';
+import ResearchDetail from './pages/user/research-detail';
+import KanpuRegister from './pages/user/kanpu-register';
+
+// 認証系 (certification/)
+import Login from './pages/certification/login';
+import Register from './pages/certification/register';
+
+// 管理者系 (admin/)
+import AdminHome from './pages/admin/admin-home';
+import AdminAccounts from './pages/admin/admin-accouts';
+import AdminAccountDetail from './pages/admin/admin-accout-detail';
+import AdminResearchEdit from './pages/admin/admin-research-edit';
+import AdminResearchDetail from './pages/admin/admin-research-detail';
 
 import "./App.css";
 import "./page.css";
 
-// ダミー通知データ一覧
+// サイドバー付き共通レイアウト
+function MainLayout() {
+  return (
+    <div className="layout d-flex">
+      <aside className="sidebar">
+        <Link to="/" className="logo">JyobiKen</Link>
+        <nav className="nav flex-column">
+          <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            卒業研究一覧
+          </NavLink>
+          <NavLink to="/mypage" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            マイページ
+          </NavLink>
+          <NavLink to="/timeline" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            タイムライン
+          </NavLink>
+          <NavLink to="/notifications" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            通知
+          </NavLink>
+        </nav>
+        <div className="logout">
+          <Link to="/login" className="btn btn-outline-secondary btn-sm w-100">
+            ログアウト →
+          </Link>
+        </div>
+      </aside>
+
+      <Outlet />
+    </div>
+  );
+}
+
 const INITIAL_NOTIFICATIONS = [
   {
     id: 1,
@@ -49,47 +94,25 @@ const INITIAL_NOTIFICATIONS = [
 export default function App() {
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
 
-  // 単一の通知を既読に変更する関数（useCallbackで参照を固定）
   const markAsRead = useCallback((id) => {
     setNotifications((prev) =>
       prev.map((item) => (item.id === Number(id) ? { ...item, isRead: true } : item))
     );
   }, []);
 
-  // すべての通知を既読に変更する関数
   const handleReadAll = useCallback(() => {
     setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
   }, []);
 
   return (
     <BrowserRouter>
-      <div className="layout d-flex">
-        {/* 全ページで共通表示するサイドバー */}
-        <aside className="sidebar">
-          <Link to="/" className="logo">JyobiKen</Link>
-          <nav className="nav flex-column">
-            <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-              卒業研究一覧
-            </NavLink>
-            <NavLink to="/mypage" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-              マイページ
-            </NavLink>
-            <NavLink to="/timeline" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-              タイムライン
-            </NavLink>
-            <NavLink to="/notifications" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-              通知
-            </NavLink>
-          </nav>
-          <div className="logout">
-            <button type="button" className="btn btn-outline-secondary btn-sm w-100">
-              ログアウト →
-            </button>
-          </div>
-        </aside>
+      <Routes>
+        {/* 認証画面（サイドバーなし） */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-        {/* ページ切り替えエリア */}
-        <Routes>
+        {/* メイン画面（サイドバーあり） */}
+        <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/timeline" element={<TimeLine />} />
@@ -104,8 +127,14 @@ export default function App() {
           <Route path="/diary-edit" element={<DiaryEdit />} />
           <Route path="/profile-edit" element={<ProfileEdit />} />
           <Route path="/research-detail" element={<ResearchDetail />} />
-        </Routes>
-      </div>
+          <Route path="/kanpu-register" element={<KanpuRegister />} />
+          <Route path="/admin-home" element={<AdminHome />} />
+          <Route path="/admin-accounts" element={<AdminAccounts />} />
+          <Route path="/admin-account-detail" element={<AdminAccountDetail />} />
+          <Route path="/admin-research-detail" element={<AdminResearchDetail />} />
+          <Route path="/admin-research-edit" element={<AdminResearchEdit />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }

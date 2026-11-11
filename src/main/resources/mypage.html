@@ -113,6 +113,7 @@
             justify-content: center;
             font-size: 32px;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
         .profile-name {
@@ -179,16 +180,14 @@
         }
 
         /* 投稿カード */
-        #posts-content article,
-        #favorites-content article {
+        .post-card {
             background: #fff;
             border-color: #edf0f3 !important;
             border-radius: 12px !important;
             transition: box-shadow 0.2s;
         }
 
-        #posts-content article:hover,
-        #favorites-content article:hover {
+        .post-card:hover {
             box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
         }
 
@@ -227,7 +226,6 @@
         /* スマートフォン対応 */
         @media (max-width: 768px) {
 
-            /* サイドバーを画面下部に固定 */
             .sidebar {
                 width: 100%;
                 min-width: 0;
@@ -249,12 +247,10 @@
                 z-index: 1000;
             }
 
-            /* ロゴを非表示 */
-            .sidebar a.logo {
+            .sidebar .logo {
                 display: none !important;
             }
 
-            /* メニューを横並びにする */
             .sidebar a:not(.logo):not(.logout) {
                 flex: 1;
                 text-align: center;
@@ -265,12 +261,10 @@
                 border-radius: 8px;
             }
 
-            /* ログアウトを非表示 */
             .sidebar a.logout {
                 display: none !important;
             }
 
-            /* メインコンテンツ */
             .main-content {
                 margin-left: 0;
                 padding: 24px 16px 110px;
@@ -281,13 +275,11 @@
                 margin-bottom: 20px;
             }
 
-            /* カード */
             .content-card {
                 padding: 20px;
                 margin-bottom: 18px;
             }
 
-            /* プロフィール */
             .profile-name {
                 font-size: 17px;
             }
@@ -296,13 +288,11 @@
                 margin-top: 5px;
             }
 
-            /* タブ */
             .tab-button {
                 padding: 10px 12px;
                 font-size: 13px;
             }
 
-            /* 投稿画像 */
             .post-image {
                 height: 150px;
             }
@@ -332,7 +322,6 @@
             }
         }
     </style>
-
 </head>
 
 <body>
@@ -366,143 +355,301 @@
 
     </nav>
 
-    <!-- メイン画面 -->
-    <main class="main-content">
+    <!-- React表示エリア -->
+    <div id="root"></div>
 
-        <h1 class="page-title">マイページ</h1>
+    <!-- React -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-        <!-- プロフィール -->
-        <section class="content-card">
+    <!-- マイページ -->
+    <script type="text/babel">
 
-            <div class="d-flex flex-wrap align-items-center gap-3">
+        const { useState } = React;
 
-                <div class="profile-icon">👤</div>
+        function MyPage() {
 
-                <div class="flex-grow-1">
-                    <h2 class="profile-name mb-1">山田太郎</h2>
+            // 表示するタブ
+            const [activeTab, setActiveTab] = useState("posts");
 
-                    <p class="profile-info mb-0">
-                        学籍番号：123456<br>
-                        所属：2027年度
-                    </p>
-                </div>
+            // プロフィール編集画面と共通の保存キー
+            const STORAGE_KEY = "jyobikenProfile";
 
-                <a href="profile-edit.html" class="btn btn-outline-primary btn-sm profile-edit">
-                    プロフィール編集
-                </a>
+            // 編集画面で保存したプロフィール情報を読み込む
+            const [profile] = useState(() => {
 
-            </div>
+                const savedProfile = sessionStorage.getItem(STORAGE_KEY);
 
-        </section>
+                if (savedProfile) {
 
-        <!-- 投稿・お気に入り -->
-        <section class="content-card">
+                    try {
+                        return JSON.parse(savedProfile);
 
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                    } catch (error) {
 
-                <div class="d-flex flex-wrap">
+                        console.error(
+                            "プロフィール情報を読み込めませんでした。",
+                            error
+                        );
 
-                    <button type="button" class="tab-button active" id="posts-tab">
-                        投稿一覧
-                    </button>
+                    }
+                }
 
-                    <button type="button" class="tab-button" id="favorites-tab">
-                        お気に入り一覧
-                    </button>
+                // 初回表示時のサンプル情報
+                return {
+                    name: "山田 太郎",
+                    userId: "yamada_taro",
+                    email: "example@example.com",
+                    introduction: "よろしくお願いします！",
+                    profileImage: ""
+                };
 
-                </div>
+            });
 
-                <a href="diary-edit.html?from=mypage" class="btn btn-primary btn-sm">
-                    ＋ 投稿する
-                </a>
+            // タイムラインと共通の投稿データを読み込む
+            const [posts] = useState(() => {
+                try {
+                    const savedDiaries = JSON.parse(
+                        sessionStorage.getItem("jyobikenDiaries") || "[]"
+                    );
 
-            </div>
+                    return savedDiaries.map((diary) => ({
+                        id: diary.id,
+                        title: diary.title,
+                        description: diary.text,
+                        image: diary.image || "",
+                        tags: []
+                    }));
+                } catch (error) {
+                    console.error("投稿データを読み込めませんでした。", error);
+                    return [];
+                }
+            });
 
-            <!-- 投稿一覧 -->
-            <div id="posts-content" class="row g-3">
+            // お気に入り一覧
+            const favorites = [
+                {
+                    id: 1,
+                    title: "お気に入りの研究",
+                    description: "保存した卒業研究"
+                }
+            ];
 
-                <div class="col-12 col-sm-6">
-                    <article class="border rounded-3 p-3 h-100">
+            return (
 
-                        <div class="post-image">写真</div>
+                <main className="main-content">
 
-                        <h3 class="post-title">グループ名</h3>
+                    <h1 className="page-title">
+                        マイページ
+                    </h1>
 
-                        <p class="post-description mb-2">
-                            卒業研究の活動記録
-                        </p>
+                    {/* プロフィール */}
+                    <section className="content-card">
 
-                        <span class="tag">アプリ</span>
-                        <span class="tag">活動記録</span>
+                        <div className="d-flex flex-wrap align-items-center gap-3">
 
-                    </article>
-                </div>
+                            <div className="profile-icon">
 
-                <div class="col-12 col-sm-6">
-                    <article class="border rounded-3 p-3 h-100">
+                                {profile.profileImage ? (
 
-                        <div class="post-image">写真</div>
+                                    <img
+                                        src={profile.profileImage}
+                                        alt="プロフィール画像"
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            objectFit: "cover",
+                                            borderRadius: "50%"
+                                        }}
+                                    />
 
-                        <h3 class="post-title">グループ名</h3>
+                                ) : (
 
-                        <p class="post-description mb-2">
-                            制作の進捗を記録
-                        </p>
+                                    "👤"
 
-                        <span class="tag">制作</span>
-                        <span class="tag">日誌</span>
+                                )}
 
-                    </article>
-                </div>
+                            </div>
 
-            </div>
+                            <div className="flex-grow-1">
 
-            <!-- お気に入り一覧 -->
-            <div id="favorites-content" class="row g-3 d-none">
+                                <h2 className="profile-name mb-1">
+                                    {profile.name}
+                                </h2>
 
-                <div class="col-12 col-sm-6">
-                    <article class="border rounded-3 p-3 h-100">
+                                <p className="profile-info mb-0">
+                                    ユーザーID：{profile.userId || "未設定"}<br />
+                                    メールアドレス：{profile.email || "未設定"}
+                                </p>
 
-                        <div class="post-image">写真</div>
+                                {profile.introduction && (
 
-                        <h3 class="post-title">お気に入りの研究</h3>
+                                    <p className="profile-info mt-2 mb-0">
+                                        {profile.introduction}
+                                    </p>
 
-                        <p class="post-description mb-0">
-                            保存した卒業研究
-                        </p>
+                                )}
 
-                    </article>
-                </div>
+                            </div>
 
-            </div>
+                            <a
+                                href="profile-edit.html"
+                                className="btn btn-outline-primary btn-sm profile-edit"
+                            >
+                                プロフィール編集
+                            </a>
 
-        </section>
+                        </div>
 
-    </main>
+                    </section>
 
-    <script>
-        const postsTab = document.getElementById("posts-tab");
-        const favoritesTab = document.getElementById("favorites-tab");
-        const postsContent = document.getElementById("posts-content");
-        const favoritesContent = document.getElementById("favorites-content");
+                    {/* 投稿・お気に入り */}
+                    <section className="content-card">
 
-        // 投稿一覧を表示
-        postsTab.addEventListener("click", function () {
-            postsTab.classList.add("active");
-            favoritesTab.classList.remove("active");
+                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
 
-            postsContent.classList.remove("d-none");
-            favoritesContent.classList.add("d-none");
-        });
+                            {/* タブ */}
+                            <div className="d-flex flex-wrap">
 
-        // お気に入り一覧を表示
-        favoritesTab.addEventListener("click", function () {
-            favoritesTab.classList.add("active");
-            postsTab.classList.remove("active");
+                                <button
+                                    type="button"
+                                    className={`tab-button ${activeTab === "posts" ? "active" : ""}`}
+                                    onClick={() => setActiveTab("posts")}
+                                >
+                                    投稿一覧
+                                </button>
 
-            favoritesContent.classList.remove("d-none");
-            postsContent.classList.add("d-none");
-        });
+                                <button
+                                    type="button"
+                                    className={`tab-button ${activeTab === "favorites" ? "active" : ""}`}
+                                    onClick={() => setActiveTab("favorites")}
+                                >
+                                    お気に入り一覧
+                                </button>
+
+                            </div>
+
+                            <a
+                                href="diary-edit.html?from=mypage"
+                                className="btn btn-primary btn-sm"
+                            >
+                                ＋ 投稿する
+                            </a>
+
+                        </div>
+
+                        {/* 投稿一覧 */}
+                        {activeTab === "posts" && (
+
+                            <div className="row g-3">
+
+                                {posts.length > 0 ? (
+
+                                    posts.map((post) => (
+
+                                        <div className="col-12 col-sm-6" key={post.id}>
+
+                                            <article className="post-card border rounded-3 p-3 h-100">
+
+                                                <div className="post-image">
+                                                    {post.image ? (
+                                                        <img
+                                                            src={post.image}
+                                                            alt="投稿写真"
+                                                            style={{
+                                                                width: "100%",
+                                                                height: "100%",
+                                                                objectFit: "cover",
+                                                                borderRadius: "9px"
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        "写真"
+                                                    )}
+                                                </div>
+
+                                                <h3 className="post-title">
+                                                    {post.title}
+                                                </h3>
+
+                                                <p className="post-description mb-2">
+                                                    {post.description}
+                                                </p>
+
+                                                {post.tags.map((tag, index) => (
+
+                                                    <span className="tag" key={index}>
+                                                        {tag}
+                                                    </span>
+
+                                                ))}
+
+                                            </article>
+
+                                        </div>
+
+                                    ))
+
+                                ) : (
+
+                                    <p className="text-center text-secondary py-4 mb-0">
+                                        まだ投稿はありません。
+                                    </p>
+
+                                )}
+
+                            </div>
+
+                        )}
+
+                        {/* お気に入り一覧 */}
+                        {activeTab === "favorites" && (
+
+                            <div className="row g-3">
+
+                                {favorites.map((favorite) => (
+
+                                    <div className="col-12 col-sm-6" key={favorite.id}>
+
+                                        <article className="post-card border rounded-3 p-3 h-100">
+
+                                            <div className="post-image">
+                                                写真
+                                            </div>
+
+                                            <h3 className="post-title">
+                                                {favorite.title}
+                                            </h3>
+
+                                            <p className="post-description mb-0">
+                                                {favorite.description}
+                                            </p>
+
+                                        </article>
+
+                                    </div>
+
+                                ))}
+
+                            </div>
+
+                        )}
+
+                    </section>
+
+                </main>
+
+            );
+        }
+
+        // React画面の表示
+        const root = ReactDOM.createRoot(
+            document.getElementById("root")
+        );
+
+        root.render(<MyPage />);
+
     </script>
 
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

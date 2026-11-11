@@ -8,6 +8,9 @@
 
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
         :root {
@@ -26,6 +29,7 @@
             background: var(--background);
             color: #333;
             font-family: "Noto Sans JP", "Meiryo", sans-serif;
+            overflow-y: scroll;
         }
 
         /* サイドバー */
@@ -279,260 +283,392 @@
             }
         }
     </style>
-
 </head>
 
 <body>
 
-    <!-- サイドバー -->
-    <nav class="sidebar">
+    <div id="root"></div>
 
-        <div class="logo">
-            JyobiKen
-        </div>
+    <script type="text/babel">
+        const { useState } = React;
 
-        <a href="research-list.html">
-            卒業研究一覧
-        </a>
+        function Timeline() {
 
-        <a href="mypage.html">
-            マイページ
-        </a>
+            // 検索キーワード
+            const [keyword, setKeyword] = useState("");
+            const [searchKeyword, setSearchKeyword] = useState("");
 
-        <a href="timeline.html" class="active">
-            タイムライン
-        </a>
+            // 絞り込み
+            const [currentFilter, setCurrentFilter] = useState("all");
 
-        <a href="notifications.html">
-            通知
-        </a>
+            // いいねの状態
+            const [likedPosts, setLikedPosts] = useState([]);
 
-        <a href="login.html" class="logout">
-            ログアウト
-        </a>
+            // コメント欄の開閉状態
+            const [openComments, setOpenComments] = useState([]);
 
-    </nav>
+            // コメント入力内容
+            const [commentInputs, setCommentInputs] = useState({});
 
-    <!-- メイン画面 -->
-    <main class="main-content">
+            // コメント一覧
+            const [comments, setComments] = useState({});
 
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-
-            <h1 class="page-title mb-0">
-                タイムライン
-            </h1>
-
-            <a href="diary-edit.html?from=timeline" class="btn btn-primary">
-                ＋ 日誌を投稿
-            </a>
-
-        </div>
-
-        <!-- 検索・絞り込み -->
-        <section class="content-card p-3 mb-4">
-
-            <div class="row g-2 mb-3">
-
-                <div class="col-12 col-md-8">
-                    <input type="search" id="search-input" class="form-control" placeholder="⌕ キーワードを検索"
-                        aria-label="日誌を検索">
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <button type="button" id="search-button" class="btn btn-primary w-100">
-                        検索
-                    </button>
-                </div>
-
-            </div>
-
-            <div class="d-flex gap-2 flex-wrap">
-
-                <button type="button" class="filter-button active" data-filter="all">
-                    全て
-                </button>
-
-                <button type="button" class="filter-button" data-filter="mine">
-                    自分
-                </button>
-
-            </div>
-
-        </section>
-
-        <!-- 日誌一覧 -->
-        <section id="diary-list">
-
-            <!-- 日誌1 -->
-            <article class="content-card diary-card" data-author="mine" data-search="活動記録 研究 制作">
-
-                <div class="d-flex align-items-center gap-3">
-
-                    <div class="avatar">👤</div>
-
-                    <div>
-                        <div class="user-name">山田太郎</div>
-                        <div class="post-date">2026年10月27日</div>
-                    </div>
-
-                </div>
-
-                <h2 class="diary-title">活動記録</h2>
-
-                <p class="diary-text mb-0">
-                    今日の卒業研究では、アプリの画面設計を進めました。
-                </p>
-
-                <div class="post-actions d-flex gap-3">
-
-                    <button type="button" class="action-button">
-                        ♡ いいね
-                    </button>
-
-                    <button type="button" class="action-button">
-                        コメント
-                    </button>
-
-                </div>
-
-            </article>
-
-            <!-- 日誌2 -->
-            <article class="content-card diary-card" data-author="other" data-search="画面設計 デザイン">
-
-                <div class="d-flex align-items-center gap-3">
-
-                    <div class="avatar">👤</div>
-
-                    <div>
-                        <div class="user-name">佐藤花子</div>
-                        <div class="post-date">2026年10月26日</div>
-                    </div>
-
-                </div>
-
-                <h2 class="diary-title">画面設計</h2>
-
-                <p class="diary-text mb-0">
-                    画面のデザインをチームで相談しました。
-                </p>
-
-                <div class="post-actions d-flex gap-3">
-
-                    <button type="button" class="action-button">
-                        ♡ いいね
-                    </button>
-
-                    <button type="button" class="action-button">
-                        コメント
-                    </button>
-
-                </div>
-
-            </article>
-
-            <!-- 日誌3 -->
-            <article class="content-card diary-card" data-author="other" data-search="進捗 報告 プログラム">
-
-                <div class="d-flex align-items-center gap-3">
-
-                    <div class="avatar">👤</div>
-
-                    <div>
-                        <div class="user-name">鈴木花子</div>
-                        <div class="post-date">2026年10月25日</div>
-                    </div>
-
-                </div>
-
-                <h2 class="diary-title">進捗報告</h2>
-
-                <p class="diary-text mb-0">
-                    プログラムの実装を少しずつ進めています。
-                </p>
-
-                <div class="post-actions d-flex gap-3">
-
-                    <button type="button" class="action-button">
-                        ♡ いいね
-                    </button>
-
-                    <button type="button" class="action-button">
-                        コメント
-                    </button>
-
-                </div>
-
-            </article>
-
-        </section>
-
-        <p id="no-results" class="text-center text-secondary py-4 d-none">
-            該当する日誌がありません。
-        </p>
-
-    </main>
-
-    <script>
-        const searchInput = document.getElementById("search-input");
-        const searchButton = document.getElementById("search-button");
-        const diaryCards = document.querySelectorAll(".diary-card");
-        const filterButtons = document.querySelectorAll(".filter-button");
-        const noResults = document.getElementById("no-results");
-
-        let currentFilter = "all";
-
-        function filterDiaries() {
-            const keyword = searchInput.value.trim().toLowerCase();
-            let visibleCount = 0;
-
-            diaryCards.forEach(function (card) {
-                const text = (
-                    card.innerText + " " + card.dataset.search
-                ).toLowerCase();
-
-                const matchesKeyword = text.includes(keyword);
-
-                const matchesFilter =
-                    currentFilter === "all" ||
-                    card.dataset.author === currentFilter;
-
-                const visible = matchesKeyword && matchesFilter;
-
-                card.classList.toggle("d-none", !visible);
-
-                if (visible) {
-                    visibleCount++;
+            // 自分が投稿した日誌を読み込む
+            const [myDiaries] = useState(() => {
+                try {
+                    return JSON.parse(
+                        sessionStorage.getItem("jyobikenDiaries") || "[]"
+                    );
+                } catch (error) {
+                    console.error("投稿データを読み込めませんでした。", error);
+                    return [];
                 }
             });
 
-            noResults.classList.toggle("d-none", visibleCount !== 0);
+            // 他のユーザーの日誌（表示確認用サンプル）
+            const otherDiaries = [
+                {
+                    id: 2,
+                    author: "other",
+                    search: "画面設計 デザイン",
+                    name: "佐藤花子",
+                    date: "2026年10月26日",
+                    title: "画面設計",
+                    text: "画面のデザインをチームで相談しました。",
+                    image: ""
+                },
+                {
+                    id: 3,
+                    author: "other",
+                    search: "進捗 報告 プログラム",
+                    name: "鈴木花子",
+                    date: "2026年10月25日",
+                    title: "進捗報告",
+                    text: "プログラムの実装を少しずつ進めています。",
+                    image: ""
+                }
+            ];
+
+            // 自分の投稿と他のユーザーの投稿をまとめる
+            const diaries = [...myDiaries, ...otherDiaries];
+
+            // 検索処理
+            const handleSearch = () => {
+                setSearchKeyword(keyword.trim().toLowerCase());
+            };
+
+            // Enterキーで検索
+            const handleKeyDown = (event) => {
+                if (event.key === "Enter") {
+                    handleSearch();
+                }
+            };
+
+            // いいねの切り替え
+            const handleLike = (id) => {
+                setLikedPosts((prev) =>
+                    prev.includes(id)
+                        ? prev.filter((item) => item !== id)
+                        : [...prev, id]
+                );
+            };
+
+            // コメント欄の開閉
+            const handleComment = (id) => {
+                setOpenComments((prev) =>
+                    prev.includes(id)
+                        ? prev.filter((item) => item !== id)
+                        : [...prev, id]
+                );
+            };
+
+            // コメント入力
+            const handleCommentInput = (id, value) => {
+                setCommentInputs((prev) => ({
+                    ...prev,
+                    [id]: value
+                }));
+            };
+
+            // コメント投稿
+            const handleCommentSubmit = (id) => {
+                const value = commentInputs[id]?.trim();
+
+                if (!value) return;
+
+                setComments((prev) => ({
+                    ...prev,
+                    [id]: [...(prev[id] || []), value]
+                }));
+
+                setCommentInputs((prev) => ({
+                    ...prev,
+                    [id]: ""
+                }));
+            };
+
+            // 日誌の絞り込み
+            const filteredDiaries = diaries.filter((diary) => {
+
+                const text = (
+                    diary.name +
+                    diary.title +
+                    diary.text +
+                    diary.search
+                ).toLowerCase();
+
+                const matchesKeyword = text.includes(searchKeyword);
+
+                const matchesFilter =
+                    currentFilter === "all" ||
+                    diary.author === currentFilter;
+
+                return matchesKeyword && matchesFilter;
+            });
+
+            return (
+                <>
+                    {/* サイドバー */}
+                    <nav className="sidebar">
+
+                        <div className="logo">
+                            JyobiKen
+                        </div>
+
+                        <a href="research-list.html">
+                            卒業研究一覧
+                        </a>
+
+                        <a href="mypage.html">
+                            マイページ
+                        </a>
+
+                        <a href="timeline.html" className="active">
+                            タイムライン
+                        </a>
+
+                        <a href="notifications.html">
+                            通知
+                        </a>
+
+                        <a href="login.html" className="logout">
+                            ログアウト
+                        </a>
+
+                    </nav>
+
+                    {/* メイン画面 */}
+                    <main className="main-content">
+
+                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+                            <h1 className="page-title mb-0">
+                                タイムライン
+                            </h1>
+
+                            <a href="diary-edit.html?from=timeline" className="btn btn-primary">
+                                ＋ 日誌を投稿
+                            </a>
+
+                        </div>
+
+                        {/* 検索・絞り込み */}
+                        <section className="content-card p-3 mb-4">
+
+                            <div className="row g-2 mb-3">
+
+                                <div className="col-12 col-md-8">
+                                    <input
+                                        type="search"
+                                        className="form-control"
+                                        placeholder="⌕ キーワードを検索"
+                                        aria-label="日誌を検索"
+                                        value={keyword}
+                                        onChange={(event) => setKeyword(event.target.value)}
+                                        onKeyDown={handleKeyDown}
+                                    />
+                                </div>
+
+                                <div className="col-12 col-md-4">
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary w-100"
+                                        onClick={handleSearch}
+                                    >
+                                        検索
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            <div className="d-flex gap-2 flex-wrap">
+
+                                <button
+                                    type="button"
+                                    className={`filter-button ${currentFilter === "all" ? "active" : ""}`}
+                                    onClick={() => setCurrentFilter("all")}
+                                >
+                                    全て
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className={`filter-button ${currentFilter === "mine" ? "active" : ""}`}
+                                    onClick={() => setCurrentFilter("mine")}
+                                >
+                                    自分
+                                </button>
+
+                            </div>
+
+                        </section>
+
+                        {/* 日誌一覧 */}
+                        <section id="diary-list">
+
+                            {filteredDiaries.map((diary) => (
+
+                                <article
+                                    className="content-card diary-card"
+                                    key={diary.id}
+                                >
+
+                                    <div className="d-flex align-items-center gap-3">
+
+                                        <div className="avatar">👤</div>
+
+                                        <div>
+                                            <div className="user-name">
+                                                {diary.name}
+                                            </div>
+
+                                            <div className="post-date">
+                                                {diary.date}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <h2 className="diary-title">
+                                        {diary.title}
+                                    </h2>
+
+                                    <p className="diary-text mb-0">
+                                        {diary.text}
+                                    </p>
+
+                                    {diary.image && (
+                                        <img
+                                            src={diary.image}
+                                            alt="投稿写真"
+                                            className="post-image"
+                                        />
+                                    )}
+
+                                    {/* いいね・コメントボタン */}
+                                    <div className="post-actions d-flex gap-3">
+
+                                        <button
+                                            type="button"
+                                            className="action-button"
+                                            onClick={() => handleLike(diary.id)}
+                                            style={{
+                                                color: likedPosts.includes(diary.id)
+                                                    ? "#e85b78"
+                                                    : "#777"
+                                            }}
+                                        >
+                                            {likedPosts.includes(diary.id)
+                                                ? "♥ いいね済み"
+                                                : "♡ いいね"}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className="action-button"
+                                            onClick={() => handleComment(diary.id)}
+                                        >
+                                            コメント
+                                            {(comments[diary.id] || []).length > 0 &&
+                                                ` (${comments[diary.id].length})`
+                                            }
+                                        </button>
+
+                                    </div>
+
+                                    {/* コメント欄 */}
+                                    {openComments.includes(diary.id) && (
+                                        <div className="mt-3">
+
+                                            {/* コメント一覧 */}
+                                            {(comments[diary.id] || []).map(
+                                                (comment, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="mb-2"
+                                                    >
+                                                        👤 山田太郎：{comment}
+                                                    </div>
+                                                )
+                                            )}
+
+                                            {/* コメント入力 */}
+                                            <div className="d-flex gap-2 mt-3">
+
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="コメントを入力..."
+                                                    value={commentInputs[diary.id] || ""}
+                                                    onChange={(event) =>
+                                                        handleCommentInput(
+                                                            diary.id,
+                                                            event.target.value
+                                                        )
+                                                    }
+                                                    onKeyDown={(event) => {
+                                                        if (event.key === "Enter") {
+                                                            handleCommentSubmit(diary.id);
+                                                        }
+                                                    }}
+                                                />
+
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary"
+                                                    onClick={() =>
+                                                        handleCommentSubmit(diary.id)
+                                                    }
+                                                >
+                                                    投稿
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+                                    )}
+
+                                </article>
+
+                            ))}
+
+                        </section>
+
+                        {/* 検索結果なし */}
+                        {filteredDiaries.length === 0 && (
+                            <p className="text-center text-secondary py-4">
+                                該当する日誌がありません。
+                            </p>
+                        )}
+
+                    </main>
+                </>
+            );
         }
 
-        // 検索ボタン
-        searchButton.addEventListener("click", filterDiaries);
-
-        // Enterキーでも検索
-        searchInput.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
-                filterDiaries();
-            }
-        });
-
-        // 絞り込みボタン
-        filterButtons.forEach(function (button) {
-            button.addEventListener("click", function () {
-                currentFilter = button.dataset.filter;
-
-                filterButtons.forEach(function (item) {
-                    item.classList.remove("active");
-                });
-
-                button.classList.add("active");
-
-                filterDiaries();
-            });
-        });
+        ReactDOM.createRoot(document.getElementById("root")).render(
+            <Timeline />
+        );
     </script>
 
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
