@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
+import { useState } from 'react'; import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 
 export default function DiaryEditModal({ isOpen, onClose, from = '' }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [photo, setPhoto] = useState(null);
-
+    const [, setPhoto] = useState(null);
     if (!isOpen) return null;
 
     const handleSubmit = (e) => {
