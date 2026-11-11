@@ -128,7 +128,6 @@ export default function Register() {
                                     name="agreement"
                                     checked={formData.agreement}
                                     onChange={handleChange}
-                                    required
                                 />
                                 <label className="form-check-label" htmlFor="agreement">
                                     修了制作を受講します
