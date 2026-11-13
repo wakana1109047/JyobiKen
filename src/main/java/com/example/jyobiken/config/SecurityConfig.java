@@ -3,6 +3,7 @@ package com.example.jyobiken.config;
 import java.util.Locale;
 import java.time.LocalDate;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import com.example.jyobiken.user.entity.AccountStatus;
 import com.example.jyobiken.user.entity.UserType;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -36,10 +38,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .loginProcessingUrl("/api/auth/login")
                         .usernameParameter("email")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error")
+                        .successHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        })
                         .permitAll())
+
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
