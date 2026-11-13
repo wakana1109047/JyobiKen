@@ -135,7 +135,7 @@ export default function Register() {
                             </div>
 
                             {/* 登録ボタン */}
-                            <button type="submit" className="btn btn-primary w-100">
+                            <button type="submit" className="btn btn-primary auth-submit-btn">
                                 登録する
                             </button>
                         </form>

@@ -484,15 +484,7 @@
     padding: 40px 20px;
 }
 
-.login-card {
-    width: 100%;
-    max-width: 420px;
-    border: 1px solid #edf0f3;
-    border-radius: 15px;
-    background: #fff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
+.login-card,
 .register-card {
     width: 100%;
     max-width: 460px;
@@ -530,6 +522,22 @@
     border-color: var(--main-blue);
 }
 
+/* ログイン・新規登録ボタン共通 */
+.auth-submit-btn {
+    width: 100%;
+    background-color: #42a9e8;
+    border-color: #42a9e8;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.auth-submit-btn:hover {
+    background-color: #2996d6;
+    border-color: #2996d6;
+}
+
 @media (max-width: 480px) {
     .auth-header {
         padding: 18px 20px;
@@ -549,6 +557,8 @@
     .register-title {
         font-size: 23px;
     }
+
+
 }
 
 /* ==========================================================================
