@@ -63,13 +63,6 @@ export default function Login() {
                                 </label>
 
                                 <input
-                                    // type="email"
-                                    // className="form-control"
-                                    // id="email"
-                                    // name="email"
-                                    // placeholder="example@email.com"
-                                    // autoComplete="email"
-                                    // required
                                     type="email"
                                     id="email"
                                     className={`form-control ${errors.email ? 'is-invalid' : ''}`}
@@ -99,13 +92,6 @@ export default function Login() {
                                 </label>
 
                                 <input
-                                    // type="password"
-                                    // className="form-control"
-                                    // id="password"
-                                    // name="password"
-                                    // placeholder="パスワードを入力"
-                                    // autoComplete="current-password"
-                                    // required
                                     type="password"
                                     id="password"
                                     className={`form-control ${errors.password ? 'is-invalid' : ''}`}
