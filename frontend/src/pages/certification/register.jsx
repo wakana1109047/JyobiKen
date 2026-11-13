@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react'; import { Link, useNavigate } from 'react-router-dom';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -129,7 +128,6 @@ export default function Register() {
                                     name="agreement"
                                     checked={formData.agreement}
                                     onChange={handleChange}
-                                    required
                                 />
                                 <label className="form-check-label" htmlFor="agreement">
                                     修了制作を受講します

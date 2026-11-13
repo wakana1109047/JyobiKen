@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ログイン | JyobiKen</title>
 
-    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
 
     <style>
         :root {
@@ -26,6 +26,7 @@
             color: #333;
         }
 
+        /* ヘッダー */
         header {
             background: #fff;
             padding: 20px 40px;
@@ -39,6 +40,7 @@
             text-decoration: none;
         }
 
+        /* ログインエリア */
         .login-area {
             min-height: calc(100vh - 70px);
             display: flex;
@@ -47,6 +49,7 @@
             padding: 40px 20px;
         }
 
+        /* ログインカード */
         .login-card {
             width: 100%;
             max-width: 420px;
@@ -66,6 +69,7 @@
             font-size: 14px;
         }
 
+        /* 入力欄 */
         .form-label {
             font-size: 14px;
         }
@@ -81,6 +85,7 @@
             box-shadow: 0 0 0 3px rgba(66, 169, 232, 0.15);
         }
 
+        /* ログインボタン */
         .btn-primary {
             min-height: 46px;
             background: var(--main-blue);
@@ -95,6 +100,7 @@
             border-color: var(--hover-blue);
         }
 
+        /* 新規登録リンク */
         .register-link {
             color: var(--hover-blue);
             font-weight: bold;
@@ -105,6 +111,7 @@
             text-decoration: underline;
         }
 
+        /* スマホ表示 */
         @media (max-width: 480px) {
             header {
                 padding: 18px 20px;
@@ -127,92 +134,163 @@
 
 <body>
 
+    <!-- ヘッダー -->
     <header>
-        <a href="/login" class="logo">JyobiKen</a>
+        <a href="login.html" class="logo">
+            JyobiKen
+        </a>
     </header>
 
-    <main class="login-area">
+    <!-- React表示エリア -->
+    <div id="root"></div>
 
-        <div class="card login-card">
+    <!-- React -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-            <div class="card-body p-5">
+    <!-- ログイン画面 -->
+    <script type="text/babel">
 
-                <h1 class="login-title text-center mb-2">
-                    ログイン
-                </h1>
+        const { useState } = React;
 
-                <p class="description text-center mb-4">
-                    アカウントにログインしてください
-                </p>
+        function Login() {
 
-                <!-- Spring Securityのメッセージ -->
-                <div class="alert alert-danger" role="alert" th:if="${param.error}">
-                    メールアドレスまたはパスワードが正しくありません。
-                </div>
+            const [email, setEmail] = useState("");
+            const [password, setPassword] = useState("");
+            const [error, setError] = useState("");
 
-                <div class="alert alert-success" role="status" th:if="${param.registered}">
-                    アカウントを作成しました。ログインしてください。
-                </div>
+            // ログイン処理
+            const handleSubmit = async (event) => {
 
-                <div class="alert alert-info" role="status" th:if="${param.logout}">
-                    ログアウトしました。
-                </div>
+                event.preventDefault();
+                setError("");
 
-                <div class="alert alert-warning" role="alert" th:if="${param.reauth}">
-                    アカウントの状態または権限が変更されました。もう一度ログインしてください。
-                </div>
+                // メールアドレスの入力チェック
+                if (!email.trim()) {
+                    setError("メールアドレスを入力してください。");
+                    return;
+                }
 
-                <!-- ログインフォーム -->
-                <form th:action="@{/login}" method="post">
+                // パスワードの入力チェック
+                if (!password) {
+                    setError("パスワードを入力してください。");
+                    return;
+                }
 
-                    <div class="mb-4">
+                // ログイン成功時の画面遷移（動作確認用）
+                window.location.href = "research-list.html";
+            };
 
-                        <label for="email" class="form-label fw-bold">
-                            メールアドレス
-                        </label>
+            return (
+                <main className="login-area">
 
-                        <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com"
-                            autocomplete="email" required>
+                    <div className="card login-card">
+
+                        <div className="card-body p-5">
+
+                            <h1 className="login-title text-center mb-2">
+                                ログイン
+                            </h1>
+
+                            <p className="description text-center mb-4">
+                                アカウントにログインしてください
+                            </p>
+
+                            {/* エラーメッセージ */}
+                            {error && (
+                                <div className="alert alert-danger text-center mb-4"
+                                    role="alert">
+                                    {error}
+                                </div>
+                            )}
+
+                            <form onSubmit={handleSubmit}>
+
+                                {/* メールアドレス */}
+                                <div className="mb-4">
+
+                                    <label htmlFor="email"
+                                        className="form-label fw-bold">
+                                        メールアドレス
+                                    </label>
+
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        id="email"
+                                        name="email"
+                                        placeholder="example@email.com"
+                                        autoComplete="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+
+                                </div>
+
+                                {/* パスワード */}
+                                <div className="mb-4">
+
+                                    <label htmlFor="password"
+                                        className="form-label fw-bold">
+                                        パスワード
+                                    </label>
+
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        id="password"
+                                        name="password"
+                                        placeholder="パスワードを入力"
+                                        autoComplete="current-password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+
+                                </div>
+
+                                {/* ログインボタン */}
+                                <button type="submit"
+                                    className="btn btn-primary w-100">
+                                    ログイン
+                                </button>
+
+                            </form>
+
+                            {/* 新規登録リンク */}
+                            <div className="text-center mt-4">
+
+                                <p className="text-secondary small mb-2">
+                                    アカウントをお持ちでない方は
+                                </p>
+
+                                <a href="register.html"
+                                    className="register-link">
+                                    新規登録はこちら →
+                                </a>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                    <div class="mb-4">
+                </main>
+            );
+        }
 
-                        <label for="password" class="form-label fw-bold">
-                            パスワード
-                        </label>
+        // React画面の表示
+        const root = ReactDOM.createRoot(
+            document.getElementById("root")
+        );
 
-                        <input type="password" class="form-control" id="password" name="password" placeholder="パスワードを入力"
-                            autocomplete="current-password" required>
+        root.render(<Login />);
 
-                    </div>
+    </script>
 
-                    <button type="submit" class="btn btn-primary w-100">
-                        ログイン
-                    </button>
-
-                </form>
-
-                <!-- 新規登録リンク -->
-                <div class="text-center mt-4">
-
-                    <p class="text-secondary small mb-2">
-                        アカウントをお持ちでない方は
-                    </p>
-
-                    <a href="/register" class="register-link">
-                        新規登録はこちら →
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </main>
-
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

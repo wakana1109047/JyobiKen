@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useState } from 'react'; import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 
 export default function DiaryEdit() {
   const navigate = useNavigate();
@@ -9,8 +8,7 @@ export default function DiaryEdit() {
   // フォーム入力の状態管理
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [photo, setPhoto] = useState(null);
-
+  const [, setPhoto] = useState(null);
   // 戻り先ページのルーティング定義
   const pageRoutes = {
     timeline: '/timeline',

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState } from 'react'; import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function ProfileEdit() {
     // フォームの状態管理
