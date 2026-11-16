@@ -10,3 +10,8 @@
 1. `cd frontend`で移動
 2. node.jsがインストール前なら、`npm install`
 3. `npm run dev`でReact起動
+
+### Reactの役割
+- 画面を作ること
+- API(バックエンド)からJSON形式のデータをもらい、HTMLの可変部分にデータをはめ込む
+- ユーザが入力したデータをJSON形式に変換し、APIへ送る
