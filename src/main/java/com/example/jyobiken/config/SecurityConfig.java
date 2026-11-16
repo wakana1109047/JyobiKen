@@ -33,9 +33,14 @@ public class SecurityConfig {
                                 "/admin/**", "/admin-*.html").hasRole("ADMIN")
                         .requestMatchers("/login", "/register", "/error", "/h2-console/**", "/css/**", "/js/**", "/images/**", "/node_modules/bootstrap/**").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
+                        .requestMatchers("/api/auth/csrf").permitAll()
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, exception) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        }))
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/api/auth/login")
@@ -49,10 +54,16 @@ public class SecurityConfig {
                         .permitAll())
 
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutUrl("/api/auth/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                            // 成功時に204を返す
+                        })
+                        // サーバーのセッションを無効化
                         .invalidateHttpSession(true)
+                        // 認証譲歩を解除する
                         .clearAuthentication(true)
+                        // クッキー削除
                         .deleteCookies("JSESSIONID"))
                 .addFilterBefore(new AccountSessionValidationFilter(jdbcTemplate), AuthorizationFilter.class)
                 .build();
