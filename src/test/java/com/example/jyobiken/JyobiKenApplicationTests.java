@@ -209,7 +209,7 @@ class JyobiKenApplicationTests {
         jdbcTemplate.update("DELETE FROM app_user WHERE email = ?", newEmail);
     }
 
-    @Test
+    @Test // アカウントが停止状態の時のテスト
     void activeSessionIsInvalidatedWhenAccountIsSuspended() throws Exception {
         MvcResult loginResult = mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
@@ -222,9 +222,11 @@ class JyobiKenApplicationTests {
 
         jdbcTemplate.update("UPDATE app_user SET account_status = 'SUSPENDED' WHERE email = ?", EMAIL);
 
-        mockMvc.perform(get("/").session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?reauth"));
+        mockMvc.perform(get("/api/me").session(session))
+                .andExpect(status().isUnauthorized())
+                .andExpect(unauthenticated());
+
+        assertTrue(session.isInvalid());
     }
 
     @Test
