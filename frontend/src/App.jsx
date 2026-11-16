@@ -13,6 +13,7 @@ import Login from './pages/login'
 import "./App.css"
 import "./page.css"
 import "bootstrap/dist/css/bootstrap.min.css" // 画面ごとでなく、一括管理
+import Register from "./pages/register.jsx";
 
 // ダミー通知データ一覧
 const INITIAL_NOTIFICATIONS = [
@@ -82,6 +83,22 @@ function MainLayout() {
   )
 }
 
+// 認証共通ヘッダー
+function Certification() {
+  return(
+      <div>
+        <header>
+          <Link to="/login" className="logo">
+            JyobiKen
+          </Link>
+        </header>
+        {/*ログイン画面や新規登録画面*/}
+        <Outlet />
+      </div>
+
+  )
+}
+
 export default function App() {
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS)
 
@@ -100,10 +117,15 @@ export default function App() {
   return (
       <BrowserRouter>
         <Routes>
-          {/* 1. アプリ初期画面 (/) はサイドバーなしのログイン画面 */}
-          <Route path="/" element={<Login />} />
 
-          {/* 2. ログイン後の画面群（MainLayoutのサイドバー付き枠の中で表示） */}
+          {/* 1. 未ログイン時（認証ヘッダー Certification 付きの画面群） */}
+          <Route element={<Certification />}>
+            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
+
+          {/* 2. ログイン後（サイドバー付きレイアウト MainLayout の画面群） */}
           <Route element={<MainLayout />}>
             <Route path="/research-list" element={<Home />} />
             <Route path="/mypage" element={<MyPage />} />
@@ -120,6 +142,7 @@ export default function App() {
             <Route path="/profile-edit" element={<ProfileEdit />} />
             <Route path="/research-detail" element={<ResearchDetail />} />
           </Route>
+
         </Routes>
       </BrowserRouter>
   )

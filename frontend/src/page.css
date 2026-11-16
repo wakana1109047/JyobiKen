@@ -6,6 +6,9 @@ header {
     background: #fff;
     padding: 20px 40px;
     border-bottom: 1px solid #e5e7eb;
+    z-index: 1000;   /* ヘッダーを沈ませる */
+    position: sticky;
+    top: 0;
 }
 
 .logo {
@@ -35,6 +38,32 @@ header {
 }
 
 .login-title {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+/* 登録エリア */
+.register-area {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    width: 100%;
+}
+
+/* 登録カード */
+.register-card {
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto;
+    border: 1px solid #edf0f3;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.register-title {
     font-size: 26px;
     font-weight: bold;
 }

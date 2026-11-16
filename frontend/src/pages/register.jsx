@@ -1,15 +1,18 @@
+import {Link, useNavigate} from "react-router-dom"
+import { useForm }  from "react-hook-form"
+
 export default function Register () {
     return (
         <div>
 
-            <!-- ヘッダー -->
-            <header>
-                <a href="login.html" className="logo">
-                    JyobiKen
-                </a>
-            </header>
+            {/* ヘッダー */}
+            {/*<header>*/}
+            {/*    <a href="login.html" className="logo">*/}
+            {/*        JyobiKen*/}
+            {/*    </a>*/}
+            {/*</header>*/}
 
-            <!-- 新規登録フォーム -->
+            {/* 新規登録フォーム */}
             <main className="register-area">
 
                 <div className="card register-card">
@@ -26,7 +29,7 @@ export default function Register () {
 
                         <form action="#" method="post">
 
-                            <!-- 氏名 -->
+                            {/* 氏名 */}
                             <div className="mb-3">
 
                                 <label htmlFor="name" className="form-label fw-bold">
@@ -45,7 +48,7 @@ export default function Register () {
 
                             </div>
 
-                            <!-- メールアドレス -->
+                            {/*メールアドレス */}
                             <div className="mb-3">
 
                                 <label htmlFor="email" className="form-label fw-bold">
@@ -64,7 +67,7 @@ export default function Register () {
 
                             </div>
 
-                            <!-- パスワード -->
+                             {/*パスワード */}
                             <div className="mb-3">
 
                                 <label htmlFor="password" className="form-label fw-bold">
@@ -83,7 +86,7 @@ export default function Register () {
 
                             </div>
 
-                            <!-- パスワード確認 -->
+                            {/*パスワード確認 */}
                             <div className="mb-3">
 
                                 <label htmlFor="password-confirm" className="form-label fw-bold">
@@ -102,7 +105,7 @@ export default function Register () {
 
                             </div>
 
-                            <!-- 修了制作の確認 -->
+                            {/*修了制作の確認 */}
                             <div className="form-check my-4">
 
                                 <input
@@ -119,23 +122,23 @@ export default function Register () {
 
                             </div>
 
-                            <!-- 登録ボタン -->
+                            {/*登録ボタン */}
                             <button type="submit" className="btn btn-primary w-100">
                                 登録する
                             </button>
 
                         </form>
 
-                        <!-- ログインへのリンク -->
+                        {/* ログインへのリンク */}
                         <div className="text-center mt-4">
 
                             <p className="text-secondary small mb-2">
                                 すでにアカウントをお持ちの方は
                             </p>
 
-                            <a href="login.html" className="login-link">
+                            <Link to="/login" className="login-link">
                                 ログインはこちら →
-                            </a>
+                            </Link>
 
                         </div>
 

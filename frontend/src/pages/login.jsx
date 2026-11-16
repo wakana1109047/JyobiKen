@@ -31,12 +31,12 @@ export default function Login() {
 
     return (
         <div>
-            {/* ヘッダー */}
-            <header>
-                <Link to="/login" className="logo">
-                    JyobiKen
-                </Link>
-            </header>
+            {/*/!* ヘッダー *!/*/}
+            {/*<header>*/}
+            {/*    <Link to="/login" className="logo">*/}
+            {/*        JyobiKen*/}
+            {/*    </Link>*/}
+            {/*</header>*/}
 
             {/* ログインエリア */}
             <main className="login-area">

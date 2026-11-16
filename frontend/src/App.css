@@ -44,7 +44,7 @@ body {
   z-index: 1000;
 }
 
-.logo {
+.sidebar .logo {
   display: block;
   margin-bottom: 40px;
   color: var(--main-blue);
