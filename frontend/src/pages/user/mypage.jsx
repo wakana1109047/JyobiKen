@@ -6,7 +6,7 @@ export default function MyPage() {
     const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの状態
 
     return (
-        <main className="main-content">
+        <main className="main-content flex-grow-1 page-content">
             <h1 className="page-title">マイページ</h1>
 
             <section className="content-card">

@@ -25,7 +25,7 @@ export default function AdminResearchEdit() {
     };
 
     return (
-        <main className="main-content">
+        <main className="main-content flex-grow-1 page-content">
             <h1 className="page-title">詳細編集</h1>
 
             <section className="content-card">

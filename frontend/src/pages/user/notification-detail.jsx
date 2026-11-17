@@ -21,7 +21,7 @@ export default function NotificationDetail({ notifications, onMarkAsRead }) {
 
     if (!detail) {
         return (
-            <main className="main-content flex-grow-1 p-4">
+            <main className="main-content flex-grow-1 page-content">
                 <div className="text-center py-5">
                     <p className="text-secondary">該当する通知が見つかりませんでした。</p>
                     <button
@@ -38,7 +38,6 @@ export default function NotificationDetail({ notifications, onMarkAsRead }) {
 
     return (
         <main className="main-content flex-grow-1 p-4">
-            <h1 className="page-title h4 mb-4">通知詳細</h1>
 
             <section className="content-card bg-white p-4 rounded-3 border mx-auto" style={{ maxWidth: '850px' }}>
                 <button

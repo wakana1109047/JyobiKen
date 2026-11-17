@@ -54,7 +54,7 @@ export default function ProfileEdit() {
             </nav>
 
             {/* プロフィール編集メインコンテンツ */}
-            <main className="main-content">
+            <main className="main-content flex-grow-1 page-content">
                 <h1 className="page-title">プロフィール編集</h1>
 
                 <section className="content-card">
