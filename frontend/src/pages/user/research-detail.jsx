@@ -69,7 +69,7 @@ export default function ResearchDetail() {
                     <Link to="/" className="btn btn-outline-secondary">
                         一覧に戻る
                     </Link>
-                    <Link to="#" className="btn btn-primary">
+                    <Link to="/research-edit" className="btn btn-primary">
                         編集する
                     </Link>
                 </div>

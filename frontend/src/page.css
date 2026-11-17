@@ -488,6 +488,113 @@
     }
 }
 
+/* ==========================================================================
+   卒研編集画面 (Research Edit)
+========================================================================== */
+
+.research-edit-wrapper .content-card {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.research-edit-wrapper .form-section {
+    margin-bottom: 25px;
+}
+
+.research-edit-wrapper .required {
+    display: inline-block;
+    color: #dc3545;
+    font-size: 11px;
+    margin-left: 6px;
+}
+
+.research-edit-wrapper .member-input {
+    margin-bottom: 10px;
+}
+
+.research-edit-wrapper .member-note {
+    color: #888;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.research-edit-wrapper .image-preview {
+    width: 100%;
+    min-height: 180px;
+    background: linear-gradient(135deg, #e5f4fc, #f3f6f9);
+    border: 1px dashed #b9d9eb;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #5d9fc4;
+    font-size: 14px;
+    padding: 20px;
+    text-align: center;
+}
+
+.research-edit-wrapper .image-preview-icon {
+    font-size: 38px;
+}
+
+.research-edit-wrapper .preview-image {
+    max-width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.research-edit-wrapper .image-note {
+    color: #888;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.research-edit-wrapper .back-link {
+    display: inline-block;
+    color: var(--hover-blue);
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+
+/* スマートフォン */
+@media (max-width: 768px) {
+    .research-edit-wrapper .content-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .research-edit-wrapper .back-link {
+        font-size: 13px;
+    }
+
+    .research-edit-wrapper .form-label {
+        font-size: 13px;
+    }
+
+    .research-edit-wrapper .form-control,
+    .research-edit-wrapper .form-select {
+        font-size: 13px;
+    }
+
+    .research-edit-wrapper .image-preview {
+        min-height: 150px;
+    }
+
+    .research-edit-wrapper .content-card .d-flex.justify-content-end {
+        justify-content: flex-start !important;
+    }
+
+    .research-edit-wrapper .content-card .d-flex.justify-content-end .btn {
+        font-size: 13px;
+    }
+}
+
 
 /* ==========================================================================
    認証系画面 (Login / Register)

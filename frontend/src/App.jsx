@@ -14,6 +14,7 @@ import DiaryEdit from './pages/user/diary-edit';
 import ProfileEdit from './pages/user/profile-edit';
 import ResearchDetail from './pages/user/research-detail';
 import KanpuRegister from './pages/user/kanpu-register';
+import ResearchEdit from './pages/user/research-edit';
 
 // 認証系 (certification/)
 import Login from './pages/certification/login';
@@ -164,6 +165,7 @@ export default function App() {
           <Route path="/diary-edit" element={<DiaryEdit />} />
           <Route path="/profile-edit" element={<ProfileEdit />} />
           <Route path="/research-detail" element={<ResearchDetail />} />
+          <Route path="/research-edit" element={<ResearchEdit />} />
           <Route path="/kanpu-register" element={<KanpuRegister />} />
 
           {/* 管理者専用ルート（AdminRoute で保護） */}
