@@ -5,12 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,9 +29,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.example.jyobiken.user.entity.GroupRole;
 import com.example.jyobiken.user.repository.GroupMembershipRepository;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -84,30 +86,34 @@ class JyobiKenApplicationTests {
     }
 
     @Test
-    void loginPageRendersFormWithCsrfToken() throws Exception {
-        mockMvc.perform(get("/login"))
+    void csrfEndpointReturnsTokenWithoutLogin() throws Exception {
+        mockMvc.perform(get("/api/auth/csrf"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("name=\"_csrf\"")));
+                .andExpect(content().contentTypeCompatibleWith(
+                        MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.headerName").value("X-CSRF-TOKEN"))
+                .andExpect(jsonPath("$.parameterName").value("_csrf"))
+                .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
     @Test
-    void validCredentialsAuthenticateAndRedirectToHome() throws Exception {
-        mockMvc.perform(post("/login")
+    void validCredentialsReturnNoContent() throws Exception {
+        mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
                         .param("email", EMAIL)
                         .param("password", PASSWORD))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+                .andExpect(status().isNoContent())
+                .andExpect(authenticated().withUsername(EMAIL));
     }
 
     @Test
-    void invalidCredentialsRedirectBackToLogin() throws Exception {
-        mockMvc.perform(post("/login")
+    void invalidCredentialsReturnUnauthorized() throws Exception {
+        mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
                         .param("email", EMAIL)
                         .param("password", "incorrect"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?error"));
+                .andExpect(status().isUnauthorized())
+                .andExpect(unauthenticated());
     }
 
     @Test
@@ -158,12 +164,12 @@ class JyobiKenApplicationTests {
     void suspendedAccountCannotLogIn() throws Exception {
         jdbcTemplate.update("UPDATE app_user SET account_status = 'SUSPENDED' WHERE email = ?", EMAIL);
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
                         .param("email", EMAIL)
                         .param("password", PASSWORD))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?error"));
+                .andExpect(status().isUnauthorized())
+                .andExpect(unauthenticated());
     }
 
     @Test
@@ -173,12 +179,12 @@ class JyobiKenApplicationTests {
                 LocalDate.now().minusDays(1),
                 EMAIL);
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
                         .param("email", EMAIL)
                         .param("password", PASSWORD))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?error"));
+                .andExpect(status().isUnauthorized())
+                .andExpect(unauthenticated());
     }
 
     @Test
@@ -203,22 +209,24 @@ class JyobiKenApplicationTests {
         jdbcTemplate.update("DELETE FROM app_user WHERE email = ?", newEmail);
     }
 
-    @Test
+    @Test // アカウントが停止状態の時のテスト
     void activeSessionIsInvalidatedWhenAccountIsSuspended() throws Exception {
-        MvcResult loginResult = mockMvc.perform(post("/login")
+        MvcResult loginResult = mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
                         .param("email", EMAIL)
                         .param("password", PASSWORD))
-                .andExpect(status().is3xxRedirection())
+                .andExpect(status().isNoContent())
                 .andReturn();
         MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
         assertNotNull(session);
 
         jdbcTemplate.update("UPDATE app_user SET account_status = 'SUSPENDED' WHERE email = ?", EMAIL);
 
-        mockMvc.perform(get("/").session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?reauth"));
+        mockMvc.perform(get("/api/me").session(session))
+                .andExpect(status().isUnauthorized())
+                .andExpect(unauthenticated());
+
+        assertTrue(session.isInvalid());
     }
 
     @Test
@@ -270,6 +278,39 @@ class JyobiKenApplicationTests {
                 .andExpect(content().string(containsString("\"userType\":\"GENERAL_STUDENT\"")))
                 .andExpect(content().string(containsString("\"role\":\"LEADER\"")))
                 .andExpect(content().string(containsString(groupName)));
+    }
+
+    @Test
+    void currentUserRequiesLogin() throws Exception {
+        mockMvc.perform(get("/api/me"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(unauthenticated());
+    }
+
+    @Test
+    void logoutInvalidatesSession() throws Exception {
+        // ログインの結果
+        MvcResult loginResult = mockMvc.perform(post("/api/auth/login")
+                .with(csrf())
+                .param("email", EMAIL)
+                .param("password", PASSWORD))
+                        .andExpect(status().isNoContent())
+                                .andExpect(authenticated().withUsername(EMAIL))
+                                        .andReturn();
+
+        // ログイン時のセッションを取得する。
+        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
+        assertNotNull(session);
+
+        // 同セッションでログアウトする。
+        mockMvc.perform(post("/api/auth/logout")
+                .session(session)
+                .with(csrf()))
+                .andExpect(status().isNoContent())
+                .andExpect(unauthenticated())
+                .andExpect(cookie().maxAge("JSESSIONID", 0));
+
+        assertTrue(session.isInvalid());
     }
 
     private Long testUserId() {

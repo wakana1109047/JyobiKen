@@ -46,13 +46,14 @@ public class AccountSessionValidationFilter extends OncePerRequestFilter {
                         resultSet.getObject("expires_at", LocalDate.class)),
                 authentication.getName());
 
+        // アカウントが存在しない、または現在の認証状態が無効な場合
         if (accountStates.isEmpty() || !isCurrent(authentication, accountStates.get(0))) {
             SecurityContextHolder.clearContext();
             var session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
             }
-            response.sendRedirect("/login?reauth");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
