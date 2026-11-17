@@ -8,12 +8,14 @@ export default function Register () {
     const {
         register,
         handleSubmit,
+        getValues,
         formState: {errors},
     } = useForm({
         defaultValues: {
             name: '',
             email: '',
             password: '',
+            passwordConfirm: '',
             agreement: false
         }
     })
@@ -147,14 +149,18 @@ export default function Register () {
                                     id="password-confirm"
                                     placeholder="もう一度入力"
                                     autoComplete="new-password"
-                                    {...register('password', {
+                                    {...register('passwordConfirm', {
                                         required: 'パスワードの再入力は必須です',
-                                        minLength: {
-                                            value: 8,
-                                            message: '同じパスワードを入力してください'
+                                        validate: (value) => {
+                                            const { password } = getValues();
+                                            return value === password || 'パスワードが一致しません'
                                         }
                                     })}
                                 />
+                                {/* エラーメッセージを表示 */}
+                                <div className="invalid-feedback">
+                                    {errors.passwordConfirm?.message}
+                                </div>
 
                             </div>
 
