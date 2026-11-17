@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import DiaryEditModal from "../../components/DiaryEditModal";
+import { Link, useNavigate } from 'react-router-dom';
 export default function MyPage() {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('posts');
-    const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの状態
 
     return (
         <main className="main-content flex-grow-1 page-content">
@@ -52,8 +51,7 @@ export default function MyPage() {
                         <button
                             type="button"
                             className="btn btn-primary btn-sm"
-                            onClick={() => setIsModalOpen(true)}
-                        >
+                            onClick={() => navigate('/diary-edit?from=mypage')}                        >
                             ＋ 投稿する
                         </button>
                     )}
@@ -95,13 +93,6 @@ export default function MyPage() {
                     </div>
                 )}
             </section>
-
-            {/* モーダル表示 */}
-            <DiaryEditModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                from="mypage"
-            />
         </main>
     );
 }
