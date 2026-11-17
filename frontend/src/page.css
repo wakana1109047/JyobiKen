@@ -790,6 +790,25 @@
     border-color: #d9434d;
 }
 
+/* プロフィール編集画面 */
+.profile-edit-wrapper {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.profile-edit-wrapper>.main-content {
+    display: block;
+    width: calc(100% - 240px);
+    margin-left: 240px;
+    flex: none;
+    min-width: 0;
+}
+
+.profile-edit-wrapper>.main-content>.content-card {
+    width: 100%;
+    max-width: none;
+}
+
 @media (max-width: 768px) {
     .detail-row {
         flex-direction: column;
@@ -809,5 +828,6 @@
         font-size: 12px;
         padding: 7px 10px;
     }
+
 
 }
