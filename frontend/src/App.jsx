@@ -1,5 +1,8 @@
 import { useState, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, NavLink, Link, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+
+// コンポーネント (components/)
+import Sidebar from './components/Sidebar';
 
 // ユーザー系 (user/)
 import Home from './pages/user/research-list';
@@ -15,6 +18,8 @@ import KanpuRegister from './pages/user/kanpu-register';
 // 認証系 (certification/)
 import Login from './pages/certification/login';
 import Register from './pages/certification/register';
+import ForgotPassword from './pages/certification/forgot-password';
+import ResetPassword from './pages/certification/reset-password';
 
 // 管理者系 (admin/)
 import AdminHome from './pages/admin/admin-home';
@@ -26,33 +31,33 @@ import AdminResearchDetail from './pages/admin/admin-research-detail';
 import "./App.css";
 import "./page.css";
 
-// サイドバー付き共通レイアウト
-function MainLayout() {
+// ==========================================================================
+// 1. 判定用ガードコンポーネント
+// ==========================================================================
+
+// 未ログイン判定（ログインしていなければ /login へ強制移動）
+function ProtectedRoute({ user, children }) {
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
+// 管理者判定（管理者でなければ一般トップ / へ強制移動）
+function AdminRoute({ user, children }) {
+  if (!user || user.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
+
+// ==========================================================================
+// 2. サイドバー付き共通レイアウト
+// ==========================================================================
+function MainLayout({ user, onLogout }) {
   return (
     <div className="layout d-flex">
-      <aside className="sidebar">
-        <Link to="/" className="logo">JyobiKen</Link>
-        <nav className="nav flex-column">
-          <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            卒業研究一覧
-          </NavLink>
-          <NavLink to="/mypage" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            マイページ
-          </NavLink>
-          <NavLink to="/timeline" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            タイムライン
-          </NavLink>
-          <NavLink to="/notifications" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            通知
-          </NavLink>
-        </nav>
-        <div className="logout">
-          <Link to="/login" className="btn btn-outline-secondary btn-sm w-100">
-            ログアウト →
-          </Link>
-        </div>
-      </aside>
-
+      <Sidebar user={user} onLogout={onLogout} />
       <Outlet />
     </div>
   );
@@ -91,8 +96,31 @@ const INITIAL_NOTIFICATIONS = [
   },
 ];
 
+// ==========================================================================
+// 3. アプリ本体
+// ==========================================================================
 export default function App() {
+  // ログイン中のユーザー情報（null = 未ログイン / role: 'user' or 'admin'）
+  // ※開発中にすぐ画面確認できるよう、初期値に仮ユーザーを入れています（未ログインから始める場合は null に変更）
+  const [user, setUser] = useState({
+    name: '山田太郎',
+    role: 'user', // 'admin' に変えると管理者として開始できます
+  });
+
+  // 変更後（本番仕様：最初は未ログイン状態）
+  //const [user, setUser] = useState(null);
+
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+
+  // ログイン処理（login.jsx に渡して使用）
+  const handleLogin = useCallback((userData) => {
+    setUser(userData);
+  }, []);
+
+  // ログアウト処理
+  const handleLogout = useCallback(() => {
+    setUser(null);
+  }, []);
 
   const markAsRead = useCallback((id) => {
     setNotifications((prev) =>
@@ -108,11 +136,20 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* 認証画面（サイドバーなし） */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
-        {/* メイン画面（サイドバーあり） */}
-        <Route element={<MainLayout />}>
+        {/* メイン画面（ログイン必須 + サイドバーあり） */}
+        <Route
+          element={
+            <ProtectedRoute user={user}>
+              <MainLayout user={user} onLogout={handleLogout} />
+            </ProtectedRoute>
+          }
+        >
+          {/* 一般・共通ルート */}
           <Route path="/" element={<Home />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/timeline" element={<TimeLine />} />
@@ -128,11 +165,48 @@ export default function App() {
           <Route path="/profile-edit" element={<ProfileEdit />} />
           <Route path="/research-detail" element={<ResearchDetail />} />
           <Route path="/kanpu-register" element={<KanpuRegister />} />
-          <Route path="/admin-home" element={<AdminHome />} />
-          <Route path="/admin-accounts" element={<AdminAccounts />} />
-          <Route path="/admin-account-detail" element={<AdminAccountDetail />} />
-          <Route path="/admin-research-detail" element={<AdminResearchDetail />} />
-          <Route path="/admin-research-edit" element={<AdminResearchEdit />} />
+
+          {/* 管理者専用ルート（AdminRoute で保護） */}
+          <Route
+            path="/admin-home"
+            element={
+              <AdminRoute user={user}>
+                <AdminHome />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin-accounts"
+            element={
+              <AdminRoute user={user}>
+                <AdminAccounts />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin-account-detail"
+            element={
+              <AdminRoute user={user}>
+                <AdminAccountDetail />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin-research-detail"
+            element={
+              <AdminRoute user={user}>
+                <AdminResearchDetail />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin-research-edit"
+            element={
+              <AdminRoute user={user}>
+                <AdminResearchEdit />
+              </AdminRoute>
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -128,7 +128,6 @@ export default function Register() {
                                     name="agreement"
                                     checked={formData.agreement}
                                     onChange={handleChange}
-                                    required
                                 />
                                 <label className="form-check-label" htmlFor="agreement">
                                     修了制作を受講します
@@ -136,7 +135,7 @@ export default function Register() {
                             </div>
 
                             {/* 登録ボタン */}
-                            <button type="submit" className="btn btn-primary w-100">
+                            <button type="submit" className="btn btn-primary auth-submit-btn">
                                 登録する
                             </button>
                         </form>
