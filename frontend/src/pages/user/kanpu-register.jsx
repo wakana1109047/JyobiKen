@@ -1,4 +1,5 @@
-import { useState } from 'react';
+
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function KanpuRegister() {
@@ -6,29 +7,118 @@ export default function KanpuRegister() {
     const [searchParams] = useSearchParams();
     const from = searchParams.get('from');
 
+    // フォームの状態管理
     const [formData, setFormData] = useState({
         video: null,
         summary: '',
         document: null,
     });
 
-    // テキスト入力のハンドラー
+    const [videoPreview, setVideoPreview] = useState('');
+
+    const videoInputRef = useRef(null);
+    const documentInputRef = useRef(null);
+
+    // 動画プレビューの作成
+    useEffect(() => {
+        if (!formData.video) {
+            setVideoPreview('');
+            return;
+        }
+
+        const videoUrl = URL.createObjectURL(formData.video);
+        setVideoPreview(videoUrl);
+
+        return () => {
+            URL.revokeObjectURL(videoUrl);
+        };
+    }, [formData.video]);
+
+    // テキスト入力
     const handleTextChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
-    // ファイル入力のハンドラー
+    // ファイル入力
     const handleFileChange = (e) => {
         const { name, files } = e.target;
-        if (files && files[0]) {
-            setFormData((prev) => ({ ...prev, [name]: files[0] }));
+        const file = files[0];
+
+        if (!file) return;
+
+        // 動画ファイルの確認
+        if (name === 'video') {
+            if (!file.type.startsWith('video/')) {
+                alert('動画ファイルを選択してください。');
+                e.target.value = '';
+                return;
+            }
+
+            // 動画は100MBまで
+            if (file.size > 100 * 1024 * 1024) {
+                alert('動画のサイズは100MB以内にしてください。');
+                e.target.value = '';
+                return;
+            }
+        }
+
+        // 資料ファイルの確認
+        if (name === 'document') {
+            const allowedExtensions =
+                /\.(pdf|doc|docx|ppt|pptx|xls|xlsx)$/i;
+
+            if (!allowedExtensions.test(file.name)) {
+                alert('対応している資料ファイルを選択してください。');
+                e.target.value = '';
+                return;
+            }
+
+            // 資料は20MBまで
+            if (file.size > 20 * 1024 * 1024) {
+                alert('資料のサイズは20MB以内にしてください。');
+                e.target.value = '';
+                return;
+            }
+        }
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: file,
+        }));
+    };
+
+    // ファイルサイズの表示
+    const formatFileSize = (size) => {
+        if (size < 1024 * 1024) {
+            return `${(size / 1024).toFixed(1)} KB`;
+        }
+
+        return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+    };
+
+    // ファイル削除
+    const handleFileDelete = (name) => {
+        setFormData((prev) => ({
+            ...prev,
+            [name]: null,
+        }));
+
+        if (name === 'video' && videoInputRef.current) {
+            videoInputRef.current.value = '';
+        }
+
+        if (name === 'document' && documentInputRef.current) {
+            documentInputRef.current.value = '';
         }
     };
 
-    // 戻るボタンのハンドラー
-    const handleBack = (e) => {
-        e.preventDefault();
+    // 日誌画面へ戻る
+    const handleBack = () => {
         if (from) {
             navigate(`/diary-edit?from=${encodeURIComponent(from)}`);
         } else {
@@ -36,36 +126,68 @@ export default function KanpuRegister() {
         }
     };
 
-    // フォーム送信
+    // 登録処理
     const handleSubmit = (e) => {
         e.preventDefault();
-        alert('カンプ情報を登録しました');
-        // 必要に応じて遷移先を変更してください
-        navigate('/diary-edit');
+
+        // すべて未入力の場合
+        if (
+            !formData.video &&
+            !formData.summary.trim() &&
+            !formData.document
+        ) {
+            alert('動画・まとめテキスト・資料のいずれかを登録してください。');
+            return;
+        }
+
+        // 登録前の確認
+        const confirmRegister = window.confirm(
+            'この内容で登録しますか？'
+        );
+
+        if (!confirmRegister) return;
+
+        // 現時点では登録処理の仮実装
+        alert('登録しました！');
+
+        handleBack();
     };
 
     return (
-        <main className="main-content">
-            <a href="#" onClick={handleBack} className="back-link">
+        <main className="main-content flex-grow-1 page-content">
+
+            {/* 戻るボタン */}
+            <button
+                type="button"
+                onClick={handleBack}
+                className="back-link border-0 bg-transparent p-0 mb-3"
+            >
                 ← 日誌投稿・編集画面に戻る
-            </a>
+            </button>
 
-            <h1 className="page-title">カンプ登録</h1>
+            <h1 className="page-title h4 fw-bold mb-2">
+                完成したものを登録
+            </h1>
 
-            <p className="description">
-                カンプで使用する資料や動画を登録できます。
+            <p className="description mb-4">
+                資料や動画を登録できます。
             </p>
 
             <form onSubmit={handleSubmit}>
+
                 {/* 動画 */}
-                <section className="content-card">
-                    <h2 className="section-title">動画</h2>
-                    <div className="upload-area">
-                        <div className="upload-icon">🎬</div>
+                <section className="content-card mb-4">
+                    <h2 className="section-title">
+                        🎬 動画
+                    </h2>
+
+                    <div className="upload-area p-3">
                         <p className="text-secondary small">
-                            動画ファイルを選択してください
+                            動画ファイルを選択してください（100MB以内）
                         </p>
+
                         <input
+                            ref={videoInputRef}
                             type="file"
                             className="form-control"
                             id="video"
@@ -73,37 +195,86 @@ export default function KanpuRegister() {
                             accept="video/*"
                             onChange={handleFileChange}
                         />
+
+                        {/* 動画プレビュー */}
+                        {videoPreview && (
+                            <div className="mt-3">
+                                <p className="fw-bold small">
+                                    選択した動画
+                                </p>
+
+                                <video
+                                    src={videoPreview}
+                                    controls
+                                    style={{
+                                        width: '100%',
+                                        maxHeight: '350px',
+                                        borderRadius: '8px',
+                                    }}
+                                />
+
+                                <p className="small text-secondary mt-2">
+                                    {formData.video.name}
+                                    {' / '}
+                                    {formatFileSize(formData.video.size)}
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-danger btn-sm"
+                                    onClick={() => handleFileDelete('video')}
+                                >
+                                    動画を削除
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </section>
 
                 {/* まとめテキスト */}
-                <section className="content-card">
-                    <h2 className="section-title">まとめテキスト</h2>
+                <section className="content-card mb-4">
+                    <h2 className="section-title">
+                        📝 まとめテキスト
+                    </h2>
+
                     <div className="mb-3">
-                        <label htmlFor="summary" className="form-label">
+                        <label
+                            htmlFor="summary"
+                            className="form-label fw-bold"
+                        >
                             内容
                         </label>
+
                         <textarea
                             id="summary"
                             name="summary"
                             className="form-control"
-                            rows={5}
-                            placeholder="カンプのまとめを入力してください"
+                            rows={6}
+                            maxLength={1000}
+                            placeholder="まとめを入力してください"
                             value={formData.summary}
                             onChange={handleTextChange}
                         />
+
+                        <div className="text-end text-secondary small mt-1">
+                            {formData.summary.length} / 1000文字
+                        </div>
                     </div>
                 </section>
 
                 {/* ダウンロード資料 */}
-                <section className="content-card">
-                    <h2 className="section-title">ダウンロード資料</h2>
-                    <div className="upload-area">
-                        <div className="upload-icon">📁</div>
+                <section className="content-card mb-4">
+                    <h2 className="section-title">
+                        📁 ダウンロード資料
+                    </h2>
+
+                    <div className="upload-area p-3">
                         <p className="text-secondary small">
-                            PDFや資料ファイルを選択してください
+                            PDFや資料ファイルを選択してください（20MB以内）
                         </p>
+
                         <input
+                            ref={documentInputRef}
                             type="file"
                             className="form-control"
                             id="document"
@@ -111,6 +282,33 @@ export default function KanpuRegister() {
                             accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
                             onChange={handleFileChange}
                         />
+
+                        {/* 選択した資料の表示 */}
+                        {formData.document && (
+                            <div className="mt-3 p-3 border rounded">
+                                <div className="d-flex align-items-center gap-2">
+                                    <span>📄</span>
+
+                                    <div className="flex-grow-1">
+                                        <p className="mb-1 fw-bold">
+                                            {formData.document.name}
+                                        </p>
+
+                                        <small className="text-secondary">
+                                            {formatFileSize(formData.document.size)}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-danger btn-sm mt-2"
+                                    onClick={() => handleFileDelete('document')}
+                                >
+                                    資料を削除
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </section>
 
@@ -123,10 +321,15 @@ export default function KanpuRegister() {
                     >
                         キャンセル
                     </button>
-                    <button type="submit" className="btn btn-primary px-4">
+
+                    <button
+                        type="submit"
+                        className="btn btn-primary px-4"
+                    >
                         登録する
                     </button>
                 </div>
+
             </form>
         </main>
     );
