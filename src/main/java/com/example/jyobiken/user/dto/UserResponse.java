@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 import com.example.jyobiken.user.entity.AccountStatus;
+import com.example.jyobiken.user.entity.StudentStage;
+import com.example.jyobiken.user.entity.UserRole;
 import com.example.jyobiken.user.entity.UserType;
 
 public record UserResponse(
@@ -11,7 +13,11 @@ public record UserResponse(
         String name,
         String email,
         LocalDateTime createdAt,
-        UserType userType,
+        StudentStage studentStage,
+        UserRole role,
         AccountStatus accountStatus,
-        LocalDate expiresAt) {
+        LocalDate expiresAt,
+        String department,
+        Integer schoolYear,
+        Integer graduationYear){
 }

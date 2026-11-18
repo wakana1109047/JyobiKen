@@ -14,22 +14,27 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AppUser {
+public class User {
     private Long id;
     private String name;
     private String email;
     private String passwordHash;
     private LocalDateTime createdAt;
-    private UserType userType;
     private AccountStatus accountStatus;
     private LocalDate expiresAt;
+    private String recoveryEmail;
+    private StudentStage studentStage;
+    private UserRole role;
+    private String department;
+    private Integer schoolYear;
+    private Integer graduationYear;
 
     public AccountStatus getEffectiveAccountStatus() {
         if (accountStatus == AccountStatus.SUSPENDED || accountStatus == AccountStatus.EXPIRED) {
             return accountStatus;
         }
-        return userType == UserType.ALUMNI && expiresAt != null && expiresAt.isBefore(LocalDate.now())
-                ? AccountStatus.EXPIRED
-                : AccountStatus.ACTIVE;
+
+        return studentStage == StudentStage.GRADUATED && expiresAt != null && expiresAt.isBefore(LocalDate.now())
+                ? AccountStatus.EXPIRED : AccountStatus.ACTIVE;
     }
 }

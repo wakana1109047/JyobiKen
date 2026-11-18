@@ -10,9 +10,14 @@ CREATE TABLE IF NOT EXISTS users(
     recovery_email       VARCHAR(255),
     password_hash        VARCHAR(255) NOT NULL,
     student_stage        VARCHAR(20) DEFAULT 'general',
+    /* 管理者など例外のためにnullを許可。school_year, graduation_year, expires_at*/
+    school_year           INTEGER,
+    graduation_year      INTEGER,
+    expires_at           DATE,
     role                 VARCHAR(20) NOT NULL DEFAULT 'student',
     department           VARCHAR(50) NOT NULL,
     status               VARCHAR(50) NOT NULL DEFAULT 'active',
+    created_at           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (role) REFERENCES roles(code)
 );

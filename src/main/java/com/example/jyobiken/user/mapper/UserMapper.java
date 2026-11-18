@@ -2,40 +2,47 @@ package com.example.jyobiken.user.mapper;
 
 import java.util.Locale;
 
+import com.example.jyobiken.user.entity.*;
 import org.springframework.stereotype.Component;
 
 import com.example.jyobiken.user.dto.UserCreateRequest;
 import com.example.jyobiken.user.dto.UserResponse;
 import com.example.jyobiken.user.dto.UserUpdateRequest;
-import com.example.jyobiken.user.entity.AccountStatus;
-import com.example.jyobiken.user.entity.AppUser;
-import com.example.jyobiken.user.entity.UserType;
 
 @Component
 public class UserMapper {
 
-    public UserResponse toResponse(AppUser user) {
+    public UserResponse toResponse(User user) {
         return new UserResponse(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getCreatedAt(),
-                user.getUserType(),
+                user.getStudentStage(),
+                user.getRole(),
                 user.getEffectiveAccountStatus(),
-                user.getExpiresAt());
+                user.getExpiresAt(),
+                user.getDepartment(),
+                user.getSchoolYear(),
+                user.getGraduationYear());
     }
 
-    public AppUser toEntity(UserCreateRequest request, String encodedPassword) {
-        return AppUser.builder()
+    public User toEntity(UserCreateRequest request, String encodedPassword) {
+        return User.builder()
                 .name(request.name().trim())
                 .email(normalizeEmail(request.email()))
                 .passwordHash(encodedPassword)
-                .userType(request.userType() == null ? UserType.GENERAL_STUDENT : request.userType())
+                .studentStage(request.studentStage())
+                .role(request.role())
+                .department(request.department().trim())
+                .schoolYear(request.schoolYear())
+                .graduationYear(request.graduationYear())
+                .expiresAt(request.expiresAt())
                 .accountStatus(AccountStatus.ACTIVE)
                 .build();
     }
 
-    public void updateEntity(AppUser user, UserUpdateRequest request) {
+    public void updateEntity(User user, UserUpdateRequest request) {
         user.setName(request.name().trim());
         user.setEmail(normalizeEmail(request.email()));
     }

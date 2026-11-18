@@ -8,14 +8,13 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import com.example.jyobiken.user.entity.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
-import com.example.jyobiken.user.entity.AppUser;
 
 @Repository
 public class UserRepository {
@@ -26,21 +25,21 @@ public class UserRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<AppUser> findAll() {
+    public List<User> findAll() {
         return jdbcTemplate.query(
                 "SELECT id, name, email, password_hash AS passwordHash, created_at AS createdAt, "
                         + "user_type AS userType, account_status AS accountStatus, expires_at AS expiresAt "
                         + "FROM app_user ORDER BY id",
-                BeanPropertyRowMapper.newInstance(AppUser.class));
+                BeanPropertyRowMapper.newInstance(User.class));
     }
 
-    public Optional<AppUser> findById(Long id) {
+    public Optional<User> findById(Long id) {
         try {
-            AppUser user = jdbcTemplate.queryForObject(
+            User user = jdbcTemplate.queryForObject(
                     "SELECT id, name, email, password_hash AS passwordHash, created_at AS createdAt, "
                             + "user_type AS userType, account_status AS accountStatus, expires_at AS expiresAt "
                             + "FROM app_user WHERE id = ?",
-                    BeanPropertyRowMapper.newInstance(AppUser.class),
+                    BeanPropertyRowMapper.newInstance(User.class),
                     id);
             return Optional.ofNullable(user);
         } catch (EmptyResultDataAccessException exception) {
@@ -48,13 +47,13 @@ public class UserRepository {
         }
     }
 
-    public Optional<AppUser> findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         try {
-            AppUser user = jdbcTemplate.queryForObject(
+            User user = jdbcTemplate.queryForObject(
                     "SELECT id, name, email, password_hash AS passwordHash, created_at AS createdAt, "
                             + "user_type AS userType, account_status AS accountStatus, expires_at AS expiresAt "
                             + "FROM app_user WHERE email = ?",
-                    BeanPropertyRowMapper.newInstance(AppUser.class),
+                    BeanPropertyRowMapper.newInstance(User.class),
                     email);
             return Optional.ofNullable(user);
         } catch (EmptyResultDataAccessException exception) {
@@ -62,7 +61,7 @@ public class UserRepository {
         }
     }
 
-    public Long save(AppUser user) {
+    public Long save(User user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -86,7 +85,7 @@ public class UserRepository {
         throw new IllegalStateException("User ID generation failed");
     }
 
-    public int update(AppUser user) {
+    public int update(User user) {
         return jdbcTemplate.update(
                 "UPDATE app_user SET name = ?, email = ?, password_hash = ?, user_type = ?, "
                         + "account_status = ?, expires_at = ? WHERE id = ?",
