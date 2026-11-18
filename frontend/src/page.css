@@ -1,7 +1,6 @@
 /* ========================================
    全ページ共通レイアウト
 ======================================== */
-
 .page-content {
     padding: 40px;
     min-width: 0;
@@ -12,6 +11,7 @@
     .page-content {
         padding: 24px 16px 110px;
     }
+
 }
 
 /* 横幅が380px以下の画面 */
@@ -20,13 +20,12 @@
         padding-left: 12px;
         padding-right: 12px;
     }
-}
 
+}
 
 /* ==========================================================================
    研究一覧 (Research List)
 ========================================================================== */
-
 .research-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -98,11 +97,9 @@
     color: #777;
 }
 
-
 /* ==========================================================================
    マイページ (MyPage)
 ========================================================================== */
-
 .profile-icon {
     width: 64px;
     height: 64px;
@@ -174,11 +171,9 @@
     margin-right: 4px;
 }
 
-
 /* ==========================================================================
    タイムライン (Timeline)
 ========================================================================== */
-
 .diary-card {
     padding: 20px;
     margin-bottom: 15px;
@@ -231,11 +226,9 @@
     color: var(--hover-blue);
 }
 
-
 /* ==========================================================================
    通知 (Notifications)
 ========================================================================== */
-
 .notification-item {
     display: flex;
     align-items: center;
@@ -318,11 +311,9 @@
     font-size: 20px;
 }
 
-
 /* ==========================================================================
    プロフィール編集 (Profile Edit) / 日誌編集 (Diary Edit)
 ========================================================================== */
-
 .profile-image-area {
     text-align: center;
     margin-bottom: 30px;
@@ -392,11 +383,9 @@
     text-decoration: underline;
 }
 
-
 /* ==========================================================================
    画面固有のスマホレスポンシブ
 ========================================================================== */
-
 @media (max-width: 768px) {
     .research-grid {
         grid-template-columns: 1fr;
@@ -425,13 +414,12 @@
         min-width: 36px;
         font-size: 17px;
     }
-}
 
+}
 
 /* ==========================================================================
    卒研詳細 (Research Detail)
 ========================================================================== */
-
 .section-label {
     font-size: 14px;
     font-weight: bold;
@@ -486,12 +474,12 @@
         font-size: 16px;
         padding: 15px;
     }
+
 }
 
 /* ==========================================================================
    卒研編集画面 (Research Edit)
 ========================================================================== */
-
 .research-edit-wrapper .content-card {
     max-width: 1200px;
     width: 100%;
@@ -561,7 +549,6 @@
     margin-bottom: 25px;
 }
 
-
 /* スマートフォン */
 @media (max-width: 768px) {
     .research-edit-wrapper .content-card {
@@ -593,13 +580,12 @@
     .research-edit-wrapper .content-card .d-flex.justify-content-end .btn {
         font-size: 13px;
     }
-}
 
+}
 
 /* ==========================================================================
    認証系画面 (Login / Register)
 ========================================================================== */
-
 .auth-page-wrapper {
     width: 100%;
     min-height: 100vh;
@@ -631,14 +617,24 @@
     padding: 40px 20px;
 }
 
-.login-card,
-.register-card {
+/* 認証共通カード */
+.certification-card {
     width: 100%;
-    max-width: 460px;
     border: 1px solid #edf0f3;
     border-radius: 15px;
     background: #fff;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* ログインカードサイズ */
+.login-size {
+    max-width: 420px;
+}
+
+/* 登録カードサイズ */
+.register-size {
+    max-width: 460px;
+    margin: 0 auto;
 }
 
 .login-title,
@@ -695,8 +691,7 @@
         padding: 25px 15px;
     }
 
-    .login-card .card-body,
-    .register-card .card-body {
+    .certification-card .card-body {
         padding: 30px 24px !important;
     }
 
@@ -704,13 +699,12 @@
     .register-title {
         font-size: 23px;
     }
-}
 
+}
 
 /* ==========================================================================
    カンプ登録 (Kanpu Register)
 ========================================================================== */
-
 .section-title {
     font-size: 18px;
     font-weight: bold;
@@ -747,13 +741,12 @@
     .upload-area .form-control {
         font-size: 13px;
     }
-}
 
+}
 
 /* ==========================================================================
    日誌投稿モーダル
 ========================================================================== */
-
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -798,13 +791,12 @@
         padding: 20px;
         max-height: 80vh;
     }
-}
 
+}
 
 /* ==========================================================================
    管理者機能 (Admin Pages)
 ========================================================================== */
-
 .account-row {
     padding: 18px;
     border: 1px solid #e9edf1;
@@ -935,6 +927,5 @@
         font-size: 12px;
         padding: 7px 10px;
     }
-
 
 }

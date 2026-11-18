@@ -54,7 +54,7 @@ export default function Login({ onLogin }) {
 
             {/* ログインエリア */}
             <main className="login-area">
-                <div className="card login-card">
+                <div className="card certification-card login-size">
                     <div className="card-body p-5">
                         <h1 className="login-title text-center mb-2">ログイン</h1>
                         <p className="description text-center mb-4">
