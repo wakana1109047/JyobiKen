@@ -132,19 +132,23 @@ public class UserRepository {
                 user.getExpiresAt(), user.getRecoveryEmail(), user.getId());
     }
 
+    // 指定したユーザー以外に有効な状態の管理者が何人いるかを数える
     public int countActiveAdminsExcluding(Long id) {
         return Objects.requireNonNull(jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM app_user "
-                        + "WHERE user_type = 'ADMIN' AND account_status = 'ACTIVE' "
-                        + "AND (expires_at IS NULL OR expires_at >= CURRENT_DATE) AND id <> ?",
-                Integer.class,
-                id));
+                // <> で !=
+                """
+                    SELECT COUNT(*) FROM users WHERE role = 'admin' 
+                    AND status = 'active' AND id<> ?
+                    """, Integer.class,id));
     }
 
+
+    // 管理者の変更処理中、対象の行をロックする。同時操作で最後の管理者を失うことを対策する
     public void lockActiveAdmins() {
         jdbcTemplate.queryForList(
-                "SELECT id FROM app_user WHERE user_type = 'ADMIN' AND account_status = 'ACTIVE' "
-                        + "AND (expires_at IS NULL OR expires_at >= CURRENT_DATE) ORDER BY id FOR UPDATE",
-                Long.class);
+                """
+                    SELECT id FROM users WHERE role = 'admin'
+                    AND status = 'active' ORDER BY id FOR UPDATE
+                    """, Integer.class);
     }
 }
