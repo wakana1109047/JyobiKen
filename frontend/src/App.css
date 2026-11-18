@@ -6,6 +6,7 @@
   --hover-blue: #2996d6;
   --background: #f3f6f9;
   --border-color: #e5e7eb;
+  --subtle-border: #edf0f3;
 }
 
 * {
@@ -28,6 +29,7 @@ body {
 /* ==========================================================================
    2. 共通コンポーネント
    ========================================================================== */
+
 /* サイドバー */
 .sidebar {
   width: 240px;
@@ -42,7 +44,6 @@ body {
   flex-direction: column;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
   z-index: 9999;
-  /* 重なり防止用に高めに設定 */
 }
 
 /* 共通ロゴ */
@@ -123,7 +124,7 @@ body {
 .search-card {
   width: 100%;
   background: #fff;
-  border: 1px solid #edf0f3;
+  border: 1px solid var(--subtle-border);
   border-radius: 15px;
   padding: 30px;
   margin-bottom: 24px;

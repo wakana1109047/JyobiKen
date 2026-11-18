@@ -11,7 +11,6 @@
     .page-content {
         padding: 24px 16px 110px;
     }
-
 }
 
 /* 横幅が380px以下の画面 */
@@ -20,7 +19,6 @@
         padding-left: 12px;
         padding-right: 12px;
     }
-
 }
 
 /* ==========================================================================
@@ -104,7 +102,7 @@
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: #e5e7eb;
+    background: var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,7 +142,7 @@
 
 .post-image {
     height: 130px;
-    background: #e5e7eb;
+    background: var(--border-color);
     border-radius: 6px;
     display: flex;
     justify-content: center;
@@ -183,7 +181,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #e5e7eb;
+    background: var(--border-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -209,7 +207,7 @@
 }
 
 .post-actions {
-    border-top: 1px solid #edf0f3;
+    border-top: 1px solid var(--subtle-border);
     padding-top: 12px;
     margin-top: 15px;
 }
@@ -236,7 +234,7 @@
     padding: 18px;
     text-decoration: none;
     color: #333;
-    border-bottom: 1px solid #edf0f3;
+    border-bottom: 1px solid var(--subtle-border);
     transition: background 0.2s;
 }
 
@@ -256,7 +254,7 @@
     width: 42px;
     height: 42px;
     min-width: 42px;
-    background: #e5e7eb;
+    background: var(--border-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -301,7 +299,7 @@
 }
 
 .post-preview {
-    background: #e5e7eb;
+    background: var(--border-color);
     min-height: 220px;
     display: flex;
     justify-content: center;
@@ -414,7 +412,6 @@
         min-width: 36px;
         font-size: 17px;
     }
-
 }
 
 /* ==========================================================================
@@ -434,8 +431,8 @@
 }
 
 .member {
-    background: #f3f6f9;
-    border: 1px solid #e5e7eb;
+    background: var(--background);
+    border: 1px solid var(--border-color);
     padding: 9px 13px;
     border-radius: 8px;
     font-size: 13px;
@@ -443,7 +440,7 @@
 
 .research-description {
     min-height: 180px;
-    background: #e5e7eb;
+    background: var(--border-color);
     border-radius: 10px;
     display: flex;
     justify-content: center;
@@ -474,7 +471,6 @@
         font-size: 16px;
         padding: 15px;
     }
-
 }
 
 /* ==========================================================================
@@ -510,7 +506,7 @@
 .research-edit-wrapper .image-preview {
     width: 100%;
     min-height: 180px;
-    background: linear-gradient(135deg, #e5f4fc, #f3f6f9);
+    background: linear-gradient(135deg, #e5f4fc, var(--background));
     border: 1px dashed #b9d9eb;
     border-radius: 10px;
     display: flex;
@@ -580,7 +576,6 @@
     .research-edit-wrapper .content-card .d-flex.justify-content-end .btn {
         font-size: 13px;
     }
-
 }
 
 /* ==========================================================================
@@ -595,7 +590,7 @@
 .auth-header {
     background: #fff !important;
     padding: 20px 40px !important;
-    border-bottom: 1px solid #e5e7eb !important;
+    border-bottom: 1px solid var(--border-color) !important;
     display: block !important;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -604,7 +599,7 @@
 .auth-header .logo {
     font-size: 25px !important;
     font-weight: bold !important;
-    color: #42a9e8 !important;
+    color: var(--main-blue) !important;
     text-decoration: none !important;
 }
 
@@ -620,7 +615,7 @@
 /* 認証共通カード */
 .certification-card {
     width: 100%;
-    border: 1px solid #edf0f3;
+    border: 1px solid var(--subtle-border);
     border-radius: 15px;
     background: #fff;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -628,7 +623,7 @@
 
 /* ログインカードサイズ */
 .login-size {
-    max-width: 420px;
+    max-width: 460px;
 }
 
 /* 登録カードサイズ */
@@ -668,8 +663,8 @@
 /* ログイン・新規登録ボタン共通 */
 .auth-submit-btn {
     width: 100%;
-    background-color: #42a9e8;
-    border-color: #42a9e8;
+    background-color: var(--main-blue);
+    border-color: var(--main-blue);
     border-radius: 8px;
     padding: 12px;
     font-size: 16px;
@@ -677,8 +672,8 @@
 }
 
 .auth-submit-btn:hover {
-    background-color: #2996d6;
-    border-color: #2996d6;
+    background-color: var(--hover-blue);
+    border-color: var(--hover-blue);
 }
 
 @media (max-width: 480px) {
@@ -699,7 +694,6 @@
     .register-title {
         font-size: 23px;
     }
-
 }
 
 /* ==========================================================================
@@ -741,7 +735,6 @@
     .upload-area .form-control {
         font-size: 13px;
     }
-
 }
 
 /* ==========================================================================
@@ -791,7 +784,6 @@
         padding: 20px;
         max-height: 80vh;
     }
-
 }
 
 /* ==========================================================================
@@ -825,7 +817,7 @@
     display: flex;
     gap: 20px;
     padding: 17px 5px;
-    border-top: 1px solid #edf0f3;
+    border-top: 1px solid var(--subtle-border);
 }
 
 .detail-label {
@@ -843,7 +835,7 @@
 
 .image-preview {
     min-height: 180px;
-    background: #e5e7eb;
+    background: var(--border-color);
     border-radius: 9px;
     display: flex;
     align-items: center;
@@ -927,5 +919,4 @@
         font-size: 12px;
         padding: 7px 10px;
     }
-
 }
