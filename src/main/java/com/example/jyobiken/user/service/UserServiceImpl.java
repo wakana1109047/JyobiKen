@@ -51,25 +51,34 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found. id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("ユーザーが見つかりませんでした。 id=" + id));
         return userMapper.toResponse(user);
     }
 
     @Override
     @Transactional
     public UserResponse createUser(UserCreateRequest request, String actorEmail) {
+        // アカウントの作成時の検証
+        validatedUserClassification(
+                request.studentStage(),
+                request.role(),
+                request.expiresAt()
+        );
+
         String email = normalizeEmail(request.email());
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new DuplicateResourceException("Email already registered: " + email);
+            throw new DuplicateResourceException("メールアドレスが既に登録されています：" + email);
         }
 
         User user = userMapper.toEntity(request, passwordEncoder.encode(request.password()));
+
         Long createdId = userRepository.save(user);
+
         adminAuditRepository.record(
                 actorEmail,
-                user.getUserType() == UserType.ADMIN ? "ADMIN_ACCOUNT_ISSUED" : "ACCOUNT_CREATED",
+                user.getRole() == UserRole.ADMIN ? "ADMIN_ACCOUNT_ISSUED" : "ACCOUNT_CREATED",
                 createdId,
-                "userType=" + user.getUserType());
+                "role=" + user.getRole() + ", studentStage=" + user.getStudentStage());
         return getUserById(createdId);
     }
 
@@ -81,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
         String email = normalizeEmail(request.email());
         if (!user.getEmail().equals(email) && userRepository.findByEmail(email).isPresent()) {
-            throw new DuplicateResourceException("Email already registered: " + email);
+            throw new DuplicateResourceException("メールアドレスが既に登録されています： " + email);
         }
 
         userMapper.updateEntity(user, request);
@@ -93,58 +102,79 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse updateAccess(Long id, UserAccessUpdateRequest request, String actorEmail) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found. id=" + id));
-        if (request.userType() == UserType.ALUMNI && request.expiresAt() == null) {
-            throw new BusinessRuleException("既卒者には利用期限を設定してください。");
-        }
-        if (request.userType() != UserType.ALUMNI && request.expiresAt() != null) {
-            throw new BusinessRuleException("利用期限は既卒者にのみ設定できます。");
-        }
+                .orElseThrow(() -> new ResourceNotFoundException("ユーザーが見つかりませんでした。 id=" + id));
+
+        // 検証
+        validatedUserClassification(
+                request.studentStage(),
+                request.userRole(),
+                request.expiresAt());
 
         AccountStatus newStatus = request.accountStatus();
-        UserType newUserType = request.userType();
-        boolean remainsActiveAdmin = newUserType == UserType.ADMIN
-                && newStatus == AccountStatus.ACTIVE
-                && (request.expiresAt() == null || !request.expiresAt().isBefore(LocalDate.now()));
-        boolean isActiveAdmin = user.getUserType() == UserType.ADMIN
+        UserRole newRole = request.userRole();
+
+        // 変更後、有効な管理者として残るか
+        boolean remainsActiveAdmin = newRole == UserRole.ADMIN
+                && newStatus == AccountStatus.ACTIVE;
+        // 変更対象は現在有効な管理者か？
+        boolean isActiveAdmin = user.getRole() == UserRole.ADMIN
                 && user.getEffectiveAccountStatus() == AccountStatus.ACTIVE;
-        if (isActiveAdmin && !remainsActiveAdmin) {
+
+        // 管理者がゼロになってしまう場合を阻止する
+        if(!remainsActiveAdmin && isActiveAdmin) {
             userRepository.lockActiveAdmins();
             if (userRepository.countActiveAdminsExcluding(id) == 0) {
-                throw new BusinessRuleException("最後の有効な管理者アカウントは変更できません。");
+                throw new BusinessRuleException("最後の有効な管理者アカウントの状態は変更できません。");
             }
         }
 
-        String oldAccess = accessSummary(user.getUserType(), user.getEffectiveAccountStatus(), user.getExpiresAt());
-        user.setUserType(newUserType);
+        String oldAccess = accessSummary(user);
+
+        user.setStudentStage(request.studentStage());
+        user.setRole(newRole);
         user.setAccountStatus(newStatus);
         user.setExpiresAt(request.expiresAt());
         userRepository.update(user);
 
-        String newAccess = accessSummary(user.getUserType(), user.getEffectiveAccountStatus(), user.getExpiresAt());
+        String newAccess = accessSummary(user);
+        // ユーザーの状態が変更されている場合、
         if (!oldAccess.equals(newAccess)) {
-            adminAuditRepository.record(actorEmail, "USER_ACCESS_CHANGED", id, oldAccess + " -> " + newAccess);
+            // ユーザーの権限変更処理を履歴に残す
+            adminAuditRepository.record
+                    (actorEmail, "USER_ACCESS_CHANGED",
+                            id, oldAccess + " -> " + newAccess);
         }
         return userMapper.toResponse(user);
     }
 
+    /* 学生区分・権限・利用期限の組み合わせを検証するメソッド。
+       アカウントの作成・権限変更時に共通で使用する。
+       ルールに違反する場合は例外を投げて、保存処理まで進まない
+     */
     private void validatedUserClassification(StudentStage studentStage, UserRole role, LocalDate expiresAt){
+        // 学生で学生区分の設定がされていない場合
         if(role == UserRole.STUDENT && studentStage == null){
             throw new BusinessRuleException("学生には学生区分の設定が必要です、");
         }
+        // 管理者で学生区分が設定されている場合
         if(role == UserRole.ADMIN && studentStage != null){
             throw new BusinessRuleException("管理者には学生区分の設定が出来ません。");
         }
-        if(studentStage == studentStage.GRADUATED && expiresAt == null){
+        // 既卒者で利用期限が設定されていない場合
+        if(studentStage == StudentStage.GRADUATED && expiresAt == null){
             throw new BusinessRuleException("既卒者には利用期限を設定してください。");
         }
-        if(studentStage != studentStage.GRADUATED && expiresAt == null){
+        // 既卒者以外で利用期限が設定されている場合
+        if(studentStage != StudentStage.GRADUATED && expiresAt != null){
             throw new BusinessRuleException("利用期限は既卒者のみ設定できます。");
         }
     }
 
-    private String accessSummary(UserType userType, AccountStatus accountStatus, LocalDate expiresAt) {
-        return "userType=" + userType + ", accountStatus=" + accountStatus + ", expiresAt=" + expiresAt;
+    private String accessSummary(User user) {
+        return "role=" + user.getRole() +
+                ", studentStage=" + user.getStudentStage() +
+                ", accountStatus=" + user.getAccountStatus() +
+                ", expiresAt=" + user.getExpiresAt();
     }
 
     private String normalizeEmail(String email) {
