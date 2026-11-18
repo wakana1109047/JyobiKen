@@ -218,7 +218,7 @@ export default function Register () {
 
                                 <input
                                     type="password"
-                                    className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                                    className={`form-control ${errors.passwordConfirm ? 'is-invalid' : ''}`}
                                     id="password-confirm"
                                     placeholder="もう一度入力"
                                     autoComplete="new-password"
