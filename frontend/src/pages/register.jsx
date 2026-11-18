@@ -1,6 +1,12 @@
 import {Link, useNavigate} from "react-router-dom"
 import { useForm }  from "react-hook-form"
 
+const grad_options = {
+    high: ['1年', '2年', '3年', '4年'],       // 高度情報工学科
+    synthesis: ['1年', '2年', '3年'],         // 総合システム科
+    system: ['1年', '2年']                    // 情報システム科
+}
+
 export default function Register () {
     const navigate = useNavigate();  // ページ遷移用
 
@@ -9,16 +15,30 @@ export default function Register () {
         register,
         handleSubmit,
         getValues,
-        formState: {errors},
+        watch,    // watch を追加して学科の選択状態を監視
+        formState: { errors },
     } = useForm({
         defaultValues: {
             name: '',
+            department: 'system', // 初期値を「情報システム科」に設定
+            grade: '1年',
             email: '',
+            email2: '',
             password: '',
             passwordConfirm: '',
             agreement: false
         }
     })
+
+    // 選択の学科をリアルタイム表示
+    const selectedDepartment = watch('department')
+
+    const handleForm = e => {
+        setForm({
+            ...form,　　　　// 中身を展開
+            [e.target.name]: e.target.value
+        })
+    }
 
     // 送信時の処理　※成功した場合
     const onsubmit = (data) => {
@@ -83,11 +103,46 @@ export default function Register () {
 
                             </div>
 
-                            {/*メールアドレス */}
+                            {/* 学科／学年 */}
+                            <div className="row mb-3">
+                            {/* 学科 */}
+                                <div className="col-md-6 mb-3 mb-md-0">
+                                    <label htmlFor="department" className="form-label fw-bold">学科</label>
+                                    <select
+                                    className="form-select"
+                                    id="department"
+                                    {...register('department' )}
+                                    >
+                                        <option value="high">高度情報工学科</option>
+                                        <option value="synthesis">総合システム科</option>
+                                        <option value="system">情報システム科</option>
+
+                                    </select>
+                                </div>
+                                {/* 学年 ※学科に応じて */}
+                                <div className="col-md-6">
+                                    <label htmlFor="grade" className="form-label fw-bold">学年</label>
+                                    <select className="form-select"
+                                    id="grade"
+                                    {...register('grade',{
+                                        required: '学年を選択してください'
+                                    } )}
+                                    >
+                                        {grad_options[selectedDepartment]?.map((gradeOption) => (
+                                            <option key={gradeOption} value={gradeOption}>
+                                                {gradeOption}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            {/* 学校メールアドレス */}
                             <div className="mb-3">
 
                                 <label htmlFor="email" className="form-label fw-bold">
-                                    メールアドレス
+                                    メールアドレス1
                                 </label>
 
                                 <input
@@ -109,7 +164,25 @@ export default function Register () {
                                 <div className="invalid-feedback">{
                                     errors.email?.message}
                                 </div>
+                            </div>
 
+                            {/* 外部メールアドレス */}
+                            <div className="mb-3">
+                                <label htmlFor="email" className="form-label fw-bold">
+                                    メールアドレス2<span className="text-danger">　※任意</span>
+                                </label>
+                                <input
+                                    type="email"
+                                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                                    id="email2"
+                                    placeholder="example@email.com"
+                                    autoComplete="email2"
+                                    {...register('email2', {
+                                        // 正規表現
+
+                                    })}
+
+                                />
                             </div>
 
                              {/*パスワード */}
