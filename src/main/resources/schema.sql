@@ -22,6 +22,17 @@ CREATE TABLE IF NOT EXISTS users(
     FOREIGN KEY (role) REFERENCES roles(code)
 );
 
+CREATE TABLE IF NOT EXISTS production_enrollment(
+    user_id              BIGINT NOT NULL,
+    academic_year        INTEGER NOT NULL,
+    semestar             INTEGER NOT NULL CHECK(semestar IN (1, 2)),
+    is_enrolled          BOOLEAN NOT NULL,
+    answerd_at           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (user_id, academic_year, semestar),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
 CREATE TABLE IF NOT EXISTS groups(
     id                   BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name                 VARCHAR(50) NOT NULL,
