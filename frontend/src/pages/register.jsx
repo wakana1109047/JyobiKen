@@ -33,19 +33,40 @@ export default function Register () {
     // 選択の学科をリアルタイム表示
     const selectedDepartment = watch('department')
 
-    const handleForm = e => {
-        setForm({
-            ...form,　　　　// 中身を展開
-            [e.target.name]: e.target.value
-        })
-    }
-
     // 送信時の処理　※成功した場合
-    const onsubmit = (data) => {
-        // console.log()は、後で削除！！
-        console.log('登録データ：', data)
-        // 画面遷移 (ログインページへ)
-        navigate('/mypage')
+    // async を追加して非同期処理
+    const onsubmit = async (data) => {
+        try {
+            // 1. SpringBotのAPIへPOSTリクエストを送信
+            const response = await fetch('http://localhost:8080/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // データ形式を JSON に指定
+                },
+                body: JSON.stringify({
+                    name: data.name,
+                    department: data.department,
+                    grade: data.grade,
+                    email: data.email,
+                    email2: data.email2,
+                    password: data.password,
+                    agreement: data.agreement
+                }),
+        })
+            // 2. サーバからのレスポンス結果をチェック
+            if(response.ok){
+                console.log('登録成功！')   // デバック用
+                // 画面遷移（マイページへ）
+                navigate('/mypage')
+            } else {
+                console.error('登録失敗 ステータスコード：',response.status)
+                alert('登録に失敗しました。入力内容を確認してください')
+            }
+    } catch (error){
+            // サーバが停止している時などの通信エラー
+            console.error('通信エラー：', error)
+            alert('サーバとの通信に失敗しました')
+        }
     }
 
     // エラーの処理
@@ -194,7 +215,7 @@ export default function Register () {
 
                                 <input
                                     type="password"
-                                    className={`form-control ${errors.password? 'is-invalid' : ''}`}
+                                    className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                                     id="password"
                                     placeholder="パスワードを入力"
                                     autoComplete="new-password"
