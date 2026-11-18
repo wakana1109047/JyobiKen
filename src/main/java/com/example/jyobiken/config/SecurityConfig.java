@@ -3,6 +3,7 @@ package com.example.jyobiken.config;
 import java.util.Locale;
 import java.time.LocalDate;
 
+import com.example.jyobiken.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -70,34 +71,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate) {
+    // // Repositoryを使い、ログイン時もusersテーブルから取得する
+    UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate, UserRepository userRepository) {
         return email -> {
-            String normalizedEmail = email == null ? "" : email.trim().toLowerCase(Locale.ROOT);
-            try {
-                return jdbcTemplate.queryForObject(
-                        "SELECT email, password_hash, user_type, account_status, expires_at "
-                                + "FROM app_user WHERE email = ?",
-                        (resultSet, rowNumber) -> {
-                            UserType userType = UserType.valueOf(resultSet.getString("user_type"));
-                            AccountStatus accountStatus = AccountStatus.valueOf(
-                                    resultSet.getString("account_status"));
-                            LocalDate expiresAt = resultSet.getObject("expires_at", LocalDate.class);
-                            boolean expired = accountStatus == AccountStatus.EXPIRED
-                                    || (userType == UserType.ALUMNI
-                                            && expiresAt != null
-                                            && expiresAt.isBefore(LocalDate.now()));
+            // normalized -> nullなら空文字に。それ以外は前後の空白を除去して小文字にする
+            String normalizedEmail = email == null
+                    ? ""
+                    : email.trim().toLowerCase(Locale.ROOT);
 
-                            return User.withUsername(resultSet.getString("email"))
-                                    .password(resultSet.getString("password_hash"))
-                                    .roles(userType.name())
-                                    .disabled(accountStatus == AccountStatus.SUSPENDED)
-                                    .accountExpired(expired)
-                                    .build();
-                        },
-                        normalizedEmail);
-            } catch (EmptyResultDataAccessException exception) {
-                throw new UsernameNotFoundException("Account not found", exception);
-            }
+            var account = userRepository.findByEmail(normalizedEmail)
+                    .orElseThrow(() -> new UsernameNotFoundException("アカウントが見つかりませんでした"));
+
+            AccountStatus status = account.getEffectiveAccountStatus();
+
+            return User.withUsername(account.getEmail())
+                    .password(account.getPasswordHash())
+                    .roles(account.getRole().name())
+                    .disabled(status == AccountStatus.SUSPENDED)
+                    .accountExpired(status == AccountStatus.EXPIRED)
+                    .build();
         };
     }
 

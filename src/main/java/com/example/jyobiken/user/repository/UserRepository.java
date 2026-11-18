@@ -149,6 +149,6 @@ public class UserRepository {
                 """
                     SELECT id FROM users WHERE role = 'admin'
                     AND status = 'active' ORDER BY id FOR UPDATE
-                    """, Integer.class);
+                    """, Long.class);
     }
 }
