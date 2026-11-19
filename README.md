@@ -3,6 +3,9 @@
 - パスワードの文字数は、8文字以上
 - 英数字混合
 
+### 技術系
+- Reactで用いるライブラリ(例：import {Link} from "react-router-dom")は、React Hook Form。フォームで用いる。
+
 ## Reactについて
 ### 各ファイル
 - **App.<mark style="background:magenta;">css</mark>** : 全体のレイアウト。ボタンや文字の大きさなど。システム全体のレイアウト。基本、いじらない。
