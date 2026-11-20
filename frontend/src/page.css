@@ -9,7 +9,7 @@
 /* スマートフォン */
 @media (max-width: 768px) {
     .page-content {
-        padding: 24px 16px 110px;
+        padding: 72px 16px 24px;
     }
 }
 
