@@ -34,7 +34,9 @@ public class UserMapper {
                 .passwordHash(encodedPassword)
                 .studentStage(request.studentStage())
                 .role(request.role())
-                .department(request.department().trim())
+                .department(request.department() == null
+                        ? null
+                        : request.department().trim())
                 .schoolYear(request.schoolYear())
                 .graduationYear(request.graduationYear())
                 .expiresAt(request.expiresAt())

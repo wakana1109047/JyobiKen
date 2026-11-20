@@ -62,8 +62,14 @@ public class UserServiceImpl implements UserService {
         validatedUserClassification(
                 request.studentStage(),
                 request.role(),
-                request.expiresAt()
-        );
+                request.expiresAt());
+
+        // 学生アカウントに学科設定が必要
+        if (request.role() == UserRole.STUDENT
+                && (request.department() == null
+                || request.department().isBlank())) {
+            throw new BusinessRuleException("学生には学科を設定してください。");
+        }
 
         String email = normalizeEmail(request.email());
         if (userRepository.findByEmail(email).isPresent()) {
@@ -152,6 +158,7 @@ public class UserServiceImpl implements UserService {
        ルールに違反する場合は例外を投げて、保存処理まで進まない
      */
     private void validatedUserClassification(StudentStage studentStage, UserRole role, LocalDate expiresAt){
+
         // 学生で学生区分の設定がされていない場合
         if(role == UserRole.STUDENT && studentStage == null){
             throw new BusinessRuleException("学生には学生区分の設定が必要です、");
