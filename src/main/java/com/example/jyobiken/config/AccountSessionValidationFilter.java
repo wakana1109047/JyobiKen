@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.jyobiken.user.entity.User;
+import com.example.jyobiken.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,12 +20,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.example.jyobiken.user.entity.AccountStatus;
 import com.example.jyobiken.user.entity.UserType;
 
+// ログイン済みのリクエストに対し、今もアカウントが有効か、ログイン時から権限が変更されていないかを確認する
 public class AccountSessionValidationFilter extends OncePerRequestFilter {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final UserRepository userRepository;
 
-    public AccountSessionValidationFilter(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public AccountSessionValidationFilter(UserRepository _userRepository) {
+        this.userRepository = _userRepository;
     }
 
     @Override
@@ -38,16 +41,10 @@ public class AccountSessionValidationFilter extends OncePerRequestFilter {
             return;
         }
 
-        List<AccountState> accountStates = jdbcTemplate.query(
-                "SELECT user_type, account_status, expires_at FROM app_user WHERE email = ?",
-                (resultSet, rowNumber) -> new AccountState(
-                        UserType.valueOf(resultSet.getString("user_type")),
-                        AccountStatus.valueOf(resultSet.getString("account_status")),
-                        resultSet.getObject("expires_at", LocalDate.class)),
-                authentication.getName());
+        var account = userRepository.findByEmail(authentication.getName());
 
         // アカウントが存在しない、または現在の認証状態が無効な場合
-        if (accountStates.isEmpty() || !isCurrent(authentication, accountStates.get(0))) {
+        if (account.isEmpty() || !isCurrent(authentication, account.get())) {
             SecurityContextHolder.clearContext();
             var session = request.getSession(false);
             if (session != null) {
@@ -60,19 +57,15 @@ public class AccountSessionValidationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isCurrent(Authentication authentication, AccountState account) {
-        if (account.status() != AccountStatus.ACTIVE
-                || (account.userType() == UserType.ALUMNI
-                        && account.expiresAt() != null
-                        && account.expiresAt().isBefore(LocalDate.now()))) {
+    private boolean isCurrent(Authentication authentication, User account) {
+        // 停止・期限切れの場合は、現在のログイン状態を無効にする
+        if (account.getEffectiveAccountStatus() != AccountStatus.ACTIVE) {
             return false;
         }
-        String currentAuthority = "ROLE_" + account.userType();
+        // DBの現在の権限と、ログイン時に保持した権限を比較する
+        String currentAuthority = "ROLE_" + account.getRole().name();
         return authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(currentAuthority::equals);
-    }
-
-    private record AccountState(UserType userType, AccountStatus status, LocalDate expiresAt) {
     }
 }

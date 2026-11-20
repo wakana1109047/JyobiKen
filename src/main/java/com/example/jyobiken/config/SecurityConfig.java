@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, JdbcTemplate jdbcTemplate) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, UserRepository userRepository) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/users", "/api/users/**", "/api/admin", "/api/admin/**",
@@ -66,13 +66,13 @@ public class SecurityConfig {
                         .clearAuthentication(true)
                         // クッキー削除
                         .deleteCookies("JSESSIONID"))
-                .addFilterBefore(new AccountSessionValidationFilter(jdbcTemplate), AuthorizationFilter.class)
+                .addFilterBefore(new AccountSessionValidationFilter(userRepository), AuthorizationFilter.class)
                 .build();
     }
 
     @Bean
     // // Repositoryを使い、ログイン時もusersテーブルから取得する
-    UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate, UserRepository userRepository) {
+    UserDetailsService userDetailsService(UserRepository userRepository) {
         return email -> {
             // normalized -> nullなら空文字に。それ以外は前後の空白を除去して小文字にする
             String normalizedEmail = email == null

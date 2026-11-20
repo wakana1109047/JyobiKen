@@ -21,7 +21,8 @@ import org.springframework.stereotype.Repository;
 public class UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private static final String USER_COLUMNS = """
+    private static final String USER_COLUMNS =
+            """
             id, name, email, password_hash, created_at,
             UPPER(student_stage) AS student_stage,
             UPPER(role) AS role,

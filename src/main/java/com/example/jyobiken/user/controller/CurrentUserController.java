@@ -1,5 +1,6 @@
 package com.example.jyobiken.user.controller;
 
+import com.example.jyobiken.user.repository.GroupMemberRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.jyobiken.user.dto.CurrentUserResponse;
 import com.example.jyobiken.user.exception.ResourceNotFoundException;
 import com.example.jyobiken.user.mapper.UserMapper;
-import com.example.jyobiken.user.repository.GroupMembershipRepository;
 import com.example.jyobiken.user.repository.UserRepository;
 
 @RestController
@@ -16,15 +16,15 @@ import com.example.jyobiken.user.repository.UserRepository;
 public class CurrentUserController {
 
     private final UserRepository userRepository;
-    private final GroupMembershipRepository groupMembershipRepository;
+    private final GroupMemberRepository groupMemberRepository;
     private final UserMapper userMapper;
 
     public CurrentUserController(
             UserRepository userRepository,
-            GroupMembershipRepository groupMembershipRepository,
+            GroupMemberRepository groupMemberRepository,
             UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.groupMembershipRepository = groupMembershipRepository;
+        this.groupMemberRepository = groupMemberRepository;
         this.userMapper = userMapper;
     }
 
@@ -34,6 +34,6 @@ public class CurrentUserController {
                 .orElseThrow(() -> new ResourceNotFoundException("Current user account not found."));
         return new CurrentUserResponse(
                 userMapper.toResponse(user),
-                groupMembershipRepository.findByUserId(user.getId()));
+                groupMemberRepository.findByUserId(user.getId()));
     }
 }
