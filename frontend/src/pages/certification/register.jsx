@@ -1,5 +1,5 @@
-import {Link, useNavigate} from "react-router-dom"
-import { useForm }  from "react-hook-form"
+import { Link, useNavigate } from "react-router-dom"
+import { useForm } from "react-hook-form"
 
 const grad_options = {
     high: ['1年', '2年', '3年', '4年'],       // 高度情報工学科
@@ -7,8 +7,8 @@ const grad_options = {
     system: ['1年', '2年']                    // 情報システム科
 }
 
-export default function Register () {
-    const navigate = useNavigate();  // ページ遷移用
+export default function Register() {
+    const navigate = useNavigate()  // ページ遷移用
 
     // React Hook Form の初期化
     const {
@@ -33,15 +33,14 @@ export default function Register () {
     // 選択の学科をリアルタイム表示
     const selectedDepartment = watch('department')
 
-    // 送信時の処理　※成功した場合
-    // async を追加して非同期処理
+    // 送信時の処理
     const onsubmit = async (data) => {
         try {
-            // 1. SpringBotのAPIへPOSTリクエストを送信
+            // 1. Spring BootのAPIへPOSTリクエストを送信
             const response = await fetch('http://localhost:8080/api/register', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json', // データ形式を JSON に指定
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     name: data.name,
@@ -52,18 +51,17 @@ export default function Register () {
                     password: data.password,
                     agreement: data.agreement
                 }),
-        })
+            })
+
             // 2. サーバからのレスポンス結果をチェック
-            if(response.ok){
-                console.log('登録成功！')   // デバック用
-                // 画面遷移（マイページへ）
-                navigate('/mypage')
+            if (response.ok) {
+                console.log('登録成功！')
+                navigate('/login') // 登録成功後はログイン画面へ移動
             } else {
-                console.error('登録失敗 ステータスコード：',response.status)
+                console.error('登録失敗 ステータスコード：', response.status)
                 alert('登録に失敗しました。入力内容を確認してください')
             }
-    } catch (error){
-            // サーバが停止している時などの通信エラー
+        } catch (error) {
             console.error('通信エラー：', error)
             alert('サーバとの通信に失敗しました')
         }
@@ -76,21 +74,10 @@ export default function Register () {
 
     return (
         <div>
-
-            {/* ヘッダー */}
-            {/*<header>*/}
-            {/*    <a href="login.html" className="logo">*/}
-            {/*        JyobiKen*/}
-            {/*    </a>*/}
-            {/*</header>*/}
-
             {/* 新規登録フォーム */}
             <main className="register-area">
-
                 <div className="card register-card">
-
                     <div className="card-body p-5">
-
                         <h1 className="register-title text-center mb-2">
                             アカウント作成
                         </h1>
@@ -100,14 +87,11 @@ export default function Register () {
                         </p>
 
                         <form id="registerForm" onSubmit={handleSubmit(onsubmit, onerror)} noValidate>
-
                             {/* 氏名 */}
                             <div className="mb-3">
-
                                 <label htmlFor="name" className="form-label fw-bold">
                                     氏名
                                 </label>
-
                                 <input
                                     type="text"
                                     className={`form-control ${errors.name ? 'is-invalid' : ''}`}
@@ -118,36 +102,33 @@ export default function Register () {
                                         required: '名前は必須です'
                                     })}
                                 />
-                                {/* エラーメッセージを表示 */}
                                 <div className="invalid-feedback">{errors.name?.message}</div>
-
-
                             </div>
 
                             {/* 学科／学年 */}
                             <div className="row mb-3">
-                            {/* 学科 */}
+                                {/* 学科 */}
                                 <div className="col-md-6 mb-3 mb-md-0">
                                     <label htmlFor="department" className="form-label fw-bold">学科</label>
                                     <select
-                                    className="form-select"
-                                    id="department"
-                                    {...register('department' )}
+                                        className="form-select"
+                                        id="department"
+                                        {...register('department')}
                                     >
                                         <option value="high">高度情報工学科</option>
                                         <option value="synthesis">総合システム科</option>
                                         <option value="system">情報システム科</option>
-
                                     </select>
                                 </div>
-                                {/* 学年 ※学科に応じて */}
+                                {/* 学年 */}
                                 <div className="col-md-6">
                                     <label htmlFor="grade" className="form-label fw-bold">学年</label>
-                                    <select className="form-select"
-                                    id="grade"
-                                    {...register('grade',{
-                                        required: '学年を選択してください'
-                                    } )}
+                                    <select
+                                        className="form-select"
+                                        id="grade"
+                                        {...register('grade', {
+                                            required: '学年を選択してください'
+                                        })}
                                     >
                                         {grad_options[selectedDepartment]?.map((gradeOption) => (
                                             <option key={gradeOption} value={gradeOption}>
@@ -155,17 +136,14 @@ export default function Register () {
                                             </option>
                                         ))}
                                     </select>
-
                                 </div>
                             </div>
 
                             {/* 学校メールアドレス */}
                             <div className="mb-3">
-
                                 <label htmlFor="email" className="form-label fw-bold">
                                     メールアドレス1
                                 </label>
-
                                 <input
                                     type="email"
                                     className={`form-control ${errors.email ? 'is-invalid' : ''}`}
@@ -175,44 +153,36 @@ export default function Register () {
                                     {...register('email', {
                                         required: 'メールは必須です',
                                         pattern: {
-                                            // 正規表現
                                             value: /^[a-z]\.[a-z]{1,20}\.sys\d+@morijyobi\.ac\.jp$/i,
                                             message: '学校のメールアドレスを入力してください'
                                         }
                                     })}
                                 />
-                                {/* エラーメッセージを表示 */}
-                                <div className="invalid-feedback">{
-                                    errors.email?.message}
+                                <div className="invalid-feedback">
+                                    {errors.email?.message}
                                 </div>
                             </div>
 
                             {/* 外部メールアドレス */}
                             <div className="mb-3">
-                                <label htmlFor="email" className="form-label fw-bold">
-                                    メールアドレス2<span className="text-danger">　※任意</span>
+                                <label htmlFor="email2" className="form-label fw-bold">
+                                    メールアドレス2<span className="text-danger"> ※任意</span>
                                 </label>
                                 <input
                                     type="email"
-                                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                                    className="form-control"
                                     id="email2"
                                     placeholder="example@email.com"
-                                    autoComplete="email2"
-                                    {...register('email2', {
-                                        // 正規表現
-
-                                    })}
-
+                                    autoComplete="email"
+                                    {...register('email2')}
                                 />
                             </div>
 
-                             {/*パスワード */}
+                            {/* パスワード */}
                             <div className="mb-3">
-
                                 <label htmlFor="password" className="form-label fw-bold">
                                     パスワード
                                 </label>
-
                                 <input
                                     type="password"
                                     className={`form-control ${errors.password ? 'is-invalid' : ''}`}
@@ -227,16 +197,14 @@ export default function Register () {
                                         }
                                     })}
                                 />
-
+                                <div className="invalid-feedback">{errors.password?.message}</div>
                             </div>
 
-                            {/*パスワード確認 */}
+                            {/* パスワード確認 */}
                             <div className="mb-3">
-
                                 <label htmlFor="password-confirm" className="form-label fw-bold">
                                     パスワード（確認用）
                                 </label>
-
                                 <input
                                     type="password"
                                     className={`form-control ${errors.passwordConfirm ? 'is-invalid' : ''}`}
@@ -246,61 +214,47 @@ export default function Register () {
                                     {...register('passwordConfirm', {
                                         required: 'パスワードの再入力は必須です',
                                         validate: (value) => {
-                                            const { password } = getValues();
+                                            const { password } = getValues()
                                             return value === password || 'パスワードが一致しません'
                                         }
                                     })}
                                 />
-                                {/* エラーメッセージを表示 */}
                                 <div className="invalid-feedback">
                                     {errors.passwordConfirm?.message}
                                 </div>
-
                             </div>
 
-                            {/*修了制作の確認 */}
+                            {/* 修了制作の確認 */}
                             <div className="form-check my-4">
-
                                 <input
                                     type="checkbox"
                                     className="form-check-input"
                                     id="agreement"
                                     {...register('agreement')}
                                 />
-
                                 <label className="form-check-label" htmlFor="agreement">
                                     修了制作を受講します
                                 </label>
-
                             </div>
 
-                            {/*登録ボタン */}
+                            {/* 登録ボタン */}
                             <button type="submit" className="btn btn-primary w-100">
                                 登録する
                             </button>
-
                         </form>
 
                         {/* ログインへのリンク */}
                         <div className="text-center mt-4">
-
                             <p className="text-secondary small mb-2">
                                 すでにアカウントをお持ちの方は
                             </p>
-
                             <Link to="/login" className="login-link">
                                 ログインはこちら →
                             </Link>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </main>
-
         </div>
-
     )
 }
