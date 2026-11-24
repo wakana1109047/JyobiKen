@@ -65,7 +65,7 @@ export default function ResearchDetail() {
                 </div>
 
                 {/* ボタンエリア */}
-                <div className="d-flex justify-content-end gap-2 mt-4 flex-wrap">
+                <div className="d-flex justify-content-center gap-2 mt-4 flex-wrap">
                     <Link to="/" className="btn btn-outline-secondary">
                         一覧に戻る
                     </Link>

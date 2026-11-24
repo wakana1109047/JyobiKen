@@ -887,12 +887,32 @@
     min-height: 100vh;
 }
 
+/* プロフィール編集画面 */
+.profile-edit-wrapper {
+    width: 100%;
+    min-height: 100vh;
+}
+
 .profile-edit-wrapper>.main-content {
     display: block;
-    width: calc(100% - 240px);
+    width: 100%;
     margin-left: 240px;
-    flex: none;
+    flex: 1;
     min-width: 0;
+}
+
+.profile-edit-wrapper>.main-content>.content-card {
+    width: 100%;
+    max-width: none;
+}
+
+/* スマホ表示 */
+@media (max-width: 768px) {
+    .profile-edit-wrapper>.main-content {
+        width: 100%;
+        margin-left: 0;
+        padding: 72px 16px 24px;
+    }
 }
 
 .profile-edit-wrapper>.main-content>.content-card {

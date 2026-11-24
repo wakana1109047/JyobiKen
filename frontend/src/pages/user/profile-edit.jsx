@@ -48,15 +48,6 @@ export default function ProfileEdit() {
 
     return (
         <div className="profile-edit-wrapper">
-            {/* サイドバー */}
-            <nav className="sidebar">
-                <div className="logo">JyobiKen</div>
-                <a href="research-list.html">卒業研究一覧</a>
-                <a href="mypage.html" className="active">マイページ</a>
-                <a href="timeline.html">タイムライン</a>
-                <a href="notifications.html">通知</a>
-                <a href="login.html" className="logout">ログアウト</a>
-            </nav>
 
             {/* プロフィール編集メインコンテンツ */}
             <main className="main-content flex-grow-1 page-content">

@@ -341,7 +341,7 @@ export default function ResearchEdit() {
                     </div>
 
                     {/* ボタン */}
-                    <div className="d-flex justify-content-end gap-2 mt-4 flex-wrap">
+                    <div className="d-flex justify-content-center gap-2 mt-4 flex-wrap">
 
                         <button
                             type="button"
