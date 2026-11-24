@@ -6,6 +6,9 @@ import com.example.jyobiken.user.repository.GroupMembershipRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
+import com.example.jyobiken.user.entity.GroupRole;
 
 @Service
 public class GroupMembershipService {
@@ -31,7 +34,7 @@ public class GroupMembershipService {
         return groupMembershipRepository.findByUserId(userId);
     }
 
-    public String findRole(Long groupId, Long userId){
+    public Optional<GroupRole> findRole(Long groupId, Long userId){
         return groupMembershipRepository.findRole(groupId,userId);
     }
 }

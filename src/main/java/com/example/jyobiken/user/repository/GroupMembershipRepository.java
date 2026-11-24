@@ -6,6 +6,9 @@ import com.example.jyobiken.user.mapper.GroupMembershipMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+
+import com.example.jyobiken.user.entity.GroupRole;
 
 @Repository
 public class GroupMembershipRepository {
@@ -36,7 +39,15 @@ public class GroupMembershipRepository {
     }
 
     //役割取得
-    public String findRole(Long groupId, Long userId){
-        return groupMembershipMapper.findRole(groupId,userId);
+    public Optional<GroupRole> findRole(Long groupId, Long userId){
+        String role = groupMembershipMapper.findRole(groupId, userId);
+        if (role == null) {
+            return Optional.empty();
+        }
+        return Optional.of(GroupRole.valueOf(role));
+    }
+
+    public int addMember(Long groupId, Long userId, GroupRole role){
+        return groupMembershipMapper.addMember(groupId, userId, role);
     }
 }

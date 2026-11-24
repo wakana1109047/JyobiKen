@@ -46,6 +46,16 @@ public interface GroupMembershipMapper {
     """)
     int updateRole(GroupMembership membership);
 
+    @Insert("""
+        INSERT INTO group_membership (group_id, user_id, group_role)
+        VALUES (#{groupId}, #{userId}, #{role})
+    """)
+    int addMember(
+            @Param("groupId") Long groupId,
+            @Param("userId") Long userId,
+            @Param("role") com.example.jyobiken.user.entity.GroupRole role
+    );
+
     // 役割取得
     @Select("""
         SELECT group_role

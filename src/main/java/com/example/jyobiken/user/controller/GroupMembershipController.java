@@ -24,8 +24,8 @@ public class GroupMembershipController {
     }
 
     //メンバー脱退
-    @DeleteMapping("/{groupId}/{userId")
-    public int delete(@PathVariable Long groupId, Long userId){
+    @DeleteMapping("/{groupId}/{userId}")
+    public int delete(@PathVariable Long groupId, @PathVariable Long userId){
         return groupMembershipService.delete(groupId,userId);
     }
 
