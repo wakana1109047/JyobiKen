@@ -351,6 +351,7 @@ textarea.form-control {
   .sidebar .logout a {
     display: block;
     width: 100%;
+    text-align: center;
   }
 
   /* メインコンテンツ */
