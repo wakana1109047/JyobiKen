@@ -144,7 +144,7 @@ export default function Timeline() {
     });
 
     return (
-        <main className="main-content flex-grow-1 p-4">
+        <main className="main-content flex-grow-1 page-content">
             <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                 <h1 className="page-title mb-0">タイムライン</h1>
             </div>

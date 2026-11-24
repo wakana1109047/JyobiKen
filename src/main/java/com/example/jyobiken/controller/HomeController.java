@@ -76,7 +76,9 @@ public class HomeController {
         String passwordHash = passwordEncoder.encode(password);
         try {
             jdbcTemplate.update(
-                    "INSERT INTO app_user (name, email, password_hash, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)",
+                    "INSERT INTO app_user "
+                            + "(name, email, password_hash, user_type, account_status, created_at) "
+                            + "VALUES (?, ?, ?, 'GENERAL_STUDENT', 'ACTIVE', CURRENT_TIMESTAMP)",
                     normalizedName,
                     normalizedEmail,
                     passwordHash);

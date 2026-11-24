@@ -6,8 +6,9 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.jyobiken.user.dto.UserAccessUpdateRequest;
 import com.example.jyobiken.user.dto.UserCreateRequest;
 import com.example.jyobiken.user.dto.UserResponse;
 import com.example.jyobiken.user.dto.UserUpdateRequest;
@@ -41,8 +43,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserCreateRequest request) {
-        UserResponse createdUser = userService.createUser(request);
+    public ResponseEntity<UserResponse> createUser(
+            @Valid @RequestBody UserCreateRequest request,
+            Authentication authentication) {
+        UserResponse createdUser = userService.createUser(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
@@ -51,9 +55,11 @@ public class UserController {
         return userService.updateUser(id, request);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+    @PatchMapping("/{id}/access")
+    public UserResponse updateAccess(
+            @PathVariable Long id,
+            @Valid @RequestBody UserAccessUpdateRequest request,
+            Authentication authentication) {
+        return userService.updateAccess(id, request, authentication.getName());
     }
 }

@@ -2,6 +2,7 @@ package com.example.jyobiken.user.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Objects;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,14 +28,18 @@ public class UserRepository {
 
     public List<AppUser> findAll() {
         return jdbcTemplate.query(
-                "SELECT id, name, email, password_hash AS passwordHash, created_at AS createdAt FROM app_user ORDER BY id",
+                "SELECT id, name, email, password_hash AS passwordHash, created_at AS createdAt, "
+                        + "user_type AS userType, account_status AS accountStatus, expires_at AS expiresAt "
+                        + "FROM app_user ORDER BY id",
                 BeanPropertyRowMapper.newInstance(AppUser.class));
     }
 
     public Optional<AppUser> findById(Long id) {
         try {
             AppUser user = jdbcTemplate.queryForObject(
-                    "SELECT id, name, email, password_hash AS passwordHash, created_at AS createdAt FROM app_user WHERE id = ?",
+                    "SELECT id, name, email, password_hash AS passwordHash, created_at AS createdAt, "
+                            + "user_type AS userType, account_status AS accountStatus, expires_at AS expiresAt "
+                            + "FROM app_user WHERE id = ?",
                     BeanPropertyRowMapper.newInstance(AppUser.class),
                     id);
             return Optional.ofNullable(user);
@@ -46,7 +51,9 @@ public class UserRepository {
     public Optional<AppUser> findByEmail(String email) {
         try {
             AppUser user = jdbcTemplate.queryForObject(
-                    "SELECT id, name, email, password_hash AS passwordHash, created_at AS createdAt FROM app_user WHERE email = ?",
+                    "SELECT id, name, email, password_hash AS passwordHash, created_at AS createdAt, "
+                            + "user_type AS userType, account_status AS accountStatus, expires_at AS expiresAt "
+                            + "FROM app_user WHERE email = ?",
                     BeanPropertyRowMapper.newInstance(AppUser.class),
                     email);
             return Optional.ofNullable(user);
@@ -60,11 +67,15 @@ public class UserRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO app_user (name, email, password_hash, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)",
+                    "INSERT INTO app_user (name, email, password_hash, user_type, account_status, expires_at, created_at) "
+                            + "VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
                     Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getPasswordHash());
+            preparedStatement.setString(4, user.getUserType().name());
+            preparedStatement.setString(5, user.getAccountStatus().name());
+            preparedStatement.setObject(6, user.getExpiresAt());
             return preparedStatement;
         }, keyHolder);
 
@@ -77,14 +88,30 @@ public class UserRepository {
 
     public int update(AppUser user) {
         return jdbcTemplate.update(
-                "UPDATE app_user SET name = ?, email = ?, password_hash = ? WHERE id = ?",
+                "UPDATE app_user SET name = ?, email = ?, password_hash = ?, user_type = ?, "
+                        + "account_status = ?, expires_at = ? WHERE id = ?",
                 user.getName(),
                 user.getEmail(),
                 user.getPasswordHash(),
+                user.getUserType().name(),
+                user.getAccountStatus().name(),
+                user.getExpiresAt(),
                 user.getId());
     }
 
-    public int deleteById(Long id) {
-        return jdbcTemplate.update("DELETE FROM app_user WHERE id = ?", id);
+    public int countActiveAdminsExcluding(Long id) {
+        return Objects.requireNonNull(jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM app_user "
+                        + "WHERE user_type = 'ADMIN' AND account_status = 'ACTIVE' "
+                        + "AND (expires_at IS NULL OR expires_at >= CURRENT_DATE) AND id <> ?",
+                Integer.class,
+                id));
+    }
+
+    public void lockActiveAdmins() {
+        jdbcTemplate.queryForList(
+                "SELECT id FROM app_user WHERE user_type = 'ADMIN' AND account_status = 'ACTIVE' "
+                        + "AND (expires_at IS NULL OR expires_at >= CURRENT_DATE) ORDER BY id FOR UPDATE",
+                Long.class);
     }
 }
