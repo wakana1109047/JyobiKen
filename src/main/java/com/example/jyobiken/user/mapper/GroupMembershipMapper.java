@@ -1,30 +1,12 @@
 package com.example.jyobiken.user.mapper;
 
 import com.example.jyobiken.user.dto.GroupMembershipResponse;
-import com.example.jyobiken.user.entity.GroupMembership;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
 public interface GroupMembershipMapper {
-
-    // メンバー追加
-    @Insert("""
-        INSERT INTO group_membership
-        (
-            group_id,
-            user_id,
-            group_role
-        )
-        VALUES
-        (
-            #{groupId},
-            #{userId},
-            #{groupRole}
-        )
-    """)
-    int insert(GroupMembership membership);
 
     // 脱退
     @Delete("""
@@ -40,11 +22,14 @@ public interface GroupMembershipMapper {
     // 役割変更
     @Update("""
         UPDATE group_membership
-        SET group_role = #{groupRole}
+        SET group_role = #{role}
         WHERE group_id = #{groupId}
           AND user_id = #{userId}
     """)
-    int updateRole(GroupMembership membership);
+    int updateRole(
+            @Param("groupId") Long groupId,
+            @Param("userId") Long userId,
+            @Param("role") com.example.jyobiken.user.entity.GroupRole role);
 
     @Insert("""
         INSERT INTO group_membership (group_id, user_id, group_role)
@@ -68,6 +53,14 @@ public interface GroupMembershipMapper {
             @Param("userId") Long userId
     );
 
+    @Select("""
+        SELECT COUNT(*)
+        FROM group_membership
+        WHERE group_id = #{groupId}
+          AND group_role = 'LEADER'
+    """)
+    int countLeaders(@Param("groupId") Long groupId);
+
     // 所属グループ取得
     @Select("""
         SELECT
@@ -78,6 +71,7 @@ public interface GroupMembershipMapper {
         JOIN research_group rg
           ON rg.id = gm.group_id
         WHERE gm.user_id = #{userId}
+          AND LOWER(rg.status) <> 'deleted'
         ORDER BY rg.name, gm.group_id
     """)
     List<GroupMembershipResponse> findByUserId(Long userId);

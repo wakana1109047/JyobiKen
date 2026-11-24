@@ -1,7 +1,9 @@
 package com.example.jyobiken.user.dto;
 
-public class GroupUpdateRequest {
-    String name;
-    String description;
-    String status;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record GroupUpdateRequest(
+        @NotBlank @Size(max = 50) String name,
+        String description) {
 }

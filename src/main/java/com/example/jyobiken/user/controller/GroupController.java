@@ -1,7 +1,11 @@
 package com.example.jyobiken.user.controller;
 
+import com.example.jyobiken.user.dto.GroupCreateRequest;
+import com.example.jyobiken.user.dto.GroupUpdateRequest;
 import com.example.jyobiken.user.entity.Group;
 import com.example.jyobiken.user.service.GroupService;
+import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,20 +30,27 @@ public class GroupController {
     }
 
     @PostMapping
-    public int insert(@RequestBody Group group){
-        return groupService.insert(group);
+    public int insert(
+            @Valid @RequestBody GroupCreateRequest request,
+            Authentication authentication){
+        return groupService.insert(request, authentication);
     }
 
     @PutMapping("/{id}")
-    public int update(@PathVariable Long id,
-                      @RequestBody Group group){
+    public int update(
+            @PathVariable Long id,
+            @Valid @RequestBody GroupUpdateRequest request,
+            Authentication authentication){
+        return groupService.update(id, request, authentication);
+    }
 
-        group.setId(id);
-        return groupService.update(group);
+    @PostMapping("/{id}/end")
+    public int end(@PathVariable Long id, Authentication authentication){
+        return groupService.end(id, authentication);
     }
 
     @DeleteMapping("/{id}")
-    public int delete(@PathVariable Long id){
-        return groupService.delete(id);
+    public int delete(@PathVariable Long id, Authentication authentication){
+        return groupService.delete(id, authentication);
     }
 }

@@ -1,8 +1,11 @@
 package com.example.jyobiken.user.controller;
 
+import com.example.jyobiken.user.dto.GroupMemberAddRequest;
 import com.example.jyobiken.user.dto.GroupMembershipResponse;
-import com.example.jyobiken.user.entity.GroupMembership;
+import com.example.jyobiken.user.dto.GroupRoleUpdateRequest;
 import com.example.jyobiken.user.service.GroupMembershipService;
+import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,27 +21,39 @@ public class GroupMembershipController {
     }
 
     //メンバー追加
-    @PostMapping
-    public int insert(@RequestBody GroupMembership membership){
-        return groupMembershipService.insert(membership);
+    @PostMapping("/{groupId}")
+    public int insert(
+            @PathVariable Long groupId,
+            @Valid @RequestBody GroupMemberAddRequest request,
+            Authentication authentication){
+        return groupMembershipService.addMember(groupId, request, authentication);
     }
 
     //メンバー脱退
     @DeleteMapping("/{groupId}/{userId}")
-    public int delete(@PathVariable Long groupId, @PathVariable Long userId){
-        return groupMembershipService.delete(groupId,userId);
+    public int delete(
+            @PathVariable Long groupId,
+            @PathVariable Long userId,
+            Authentication authentication){
+        return groupMembershipService.delete(groupId, userId, authentication);
     }
 
     //役割変更
-    @PutMapping
-    public int updateRole(@RequestBody GroupMembership membership){
-        return groupMembershipService.updateRole(membership);
+    @PutMapping("/{groupId}/{userId}")
+    public int updateRole(
+            @PathVariable Long groupId,
+            @PathVariable Long userId,
+            @Valid @RequestBody GroupRoleUpdateRequest request,
+            Authentication authentication){
+        return groupMembershipService.updateRole(groupId, userId, request.role(), authentication);
     }
 
     //所属グループ取得
     @GetMapping("/user/{userId}")
-    public List<GroupMembershipResponse> findByUserId(@PathVariable Long userId){
-        return groupMembershipService.findByUserId(userId);
+    public List<GroupMembershipResponse> findByUserId(
+            @PathVariable Long userId,
+            Authentication authentication){
+        return groupMembershipService.findByUserId(userId, authentication);
     }
 
 }

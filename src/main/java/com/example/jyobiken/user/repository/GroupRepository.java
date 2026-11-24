@@ -22,6 +22,10 @@ public class GroupRepository {
         return groupMapper.findById(id);
     }
 
+    public void lockById(Long id){
+        groupMapper.lockById(id);
+    }
+
     public int insert(Group group){
         return groupMapper.insert(group);
     }
@@ -30,7 +34,11 @@ public class GroupRepository {
         return groupMapper.update(group);
     }
 
-    public int delete(Long id){
-        return groupMapper.delete(id);
+    public int softDelete(Long id){
+        return groupMapper.updateStatus(id, "deleted");
+    }
+
+    public int updateStatus(Long id, String status){
+        return groupMapper.updateStatus(id, status);
     }
 }

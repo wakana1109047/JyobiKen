@@ -1,7 +1,6 @@
 package com.example.jyobiken.user.repository;
 
 import com.example.jyobiken.user.dto.GroupMembershipResponse;
-import com.example.jyobiken.user.entity.GroupMembership;
 import com.example.jyobiken.user.mapper.GroupMembershipMapper;
 import org.springframework.stereotype.Repository;
 
@@ -18,19 +17,14 @@ public class GroupMembershipRepository {
         this.groupMembershipMapper = groupMembershipMapper;
     }
 
-    //メンバー追加
-    public int insert(GroupMembership membership){
-        return groupMembershipMapper.insert(membership);
-    }
-
     //メンバー脱退
     public int delete(Long groupId, Long userId){
         return groupMembershipMapper.delete(groupId,userId);
     }
 
     //役割変更
-    public int updateRole(GroupMembership membership){
-        return groupMembershipMapper.updateRole(membership);
+    public int updateRole(Long groupId, Long userId, GroupRole role){
+        return groupMembershipMapper.updateRole(groupId, userId, role);
     }
 
     //所属グループ取得
@@ -49,5 +43,9 @@ public class GroupMembershipRepository {
 
     public int addMember(Long groupId, Long userId, GroupRole role){
         return groupMembershipMapper.addMember(groupId, userId, role);
+    }
+
+    public int countLeaders(Long groupId){
+        return groupMembershipMapper.countLeaders(groupId);
     }
 }
