@@ -36,7 +36,7 @@ export default function AdminAccountDetail() {
 
                 <div className="detail-row">
                     <div className="detail-label">所属</div>
-                    <div className="detail-value">専門学生</div>
+                    <div className="detail-value">情報システム科</div>
                 </div>
 
                 <div className="d-flex justify-content-end gap-2 mt-4">

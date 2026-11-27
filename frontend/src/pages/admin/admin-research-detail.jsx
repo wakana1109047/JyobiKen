@@ -1,11 +1,16 @@
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
 export default function AdminResearchDetail() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const from = searchParams.get('from');
+
+    // マイページから来た場合は /mypage、それ以外は管理者トップ（/admin-home）へ戻る
+    const backPath = from === 'mypage' ? '/mypage' : '/admin-home';
 
     const handleDelete = () => {
         if (window.confirm('この卒業研究を削除しますか？')) {
-            navigate('/');
+            navigate(backPath);
         }
     };
 
@@ -14,8 +19,8 @@ export default function AdminResearchDetail() {
             <h1 className="page-title">卒研詳細</h1>
 
             <section className="content-card">
-                <Link to="/" className="text-primary text-decoration-none small">
-                    ← 戻る
+                <Link to={backPath} className="text-primary text-decoration-none small">
+                    ← {from === 'mypage' ? 'マイページに戻る' : '戻る'}
                 </Link>
 
                 <div className="research-image mt-3">画像など</div>

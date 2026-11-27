@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 
 export default function DiaryEdit() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const from = searchParams.get('from'); // クエリパラメータ ?from=... を取得
+  const from = searchParams.get('from');
+  const photoInputRef = useRef(null);
 
-  // フォーム入力の状態管理
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [photo, setPhoto] = useState(null);
 
-  // 戻り先ページのルーティング定義
   const pageRoutes = {
     timeline: '/timeline',
     mypage: '/mypage',
@@ -20,23 +19,26 @@ export default function DiaryEdit() {
     'research-detail': '/research-detail',
   };
 
-  // 「← 戻る」ボタンクリック時の処理
   const handleBack = (e) => {
     e.preventDefault();
     if (from && pageRoutes[from]) {
       navigate(pageRoutes[from]);
     } else {
-      // 指定がない場合のデフォルト遷移先
       navigate('/');
     }
   };
 
-  // 投稿送信時の処理
+  const handleClearPhoto = () => {
+    setPhoto(null);
+    if (photoInputRef.current) {
+      photoInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     alert('日誌を投稿しました！');
 
-    // 投稿完了後に元の画面へ戻る（例: タイムラインまたは一覧）
     if (from && pageRoutes[from]) {
       navigate(pageRoutes[from]);
     } else {
@@ -46,7 +48,6 @@ export default function DiaryEdit() {
 
   return (
     <main className="main-content flex-grow-1 p-4">
-      {/* 戻るリンク */}
       <a href="#" onClick={handleBack} className="back-link text-decoration-none small text-primary mb-3 d-inline-block">
         ← 戻る
       </a>
@@ -92,13 +93,26 @@ export default function DiaryEdit() {
             <label htmlFor="diary-photo" className="form-label fw-bold small">
               写真
             </label>
-            <input
-              type="file"
-              id="diary-photo"
-              className="form-control"
-              accept="image/*"
-              onChange={(e) => setPhoto(e.target.files[0])}
-            />
+            <div className="input-group">
+              <input
+                ref={photoInputRef}
+                type="file"
+                id="diary-photo"
+                className="form-control"
+                accept="image/*"
+                onChange={(e) => setPhoto(e.target.files[0] || null)}
+              />
+              {photo && (
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={handleClearPhoto}
+                  title="選択を取り消す"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
 
           {/* 投稿ボタン */}
@@ -109,7 +123,6 @@ export default function DiaryEdit() {
           </div>
         </form>
 
-        {/* 完成したものの登録リンク（fromパラメーターを引き継ぎ） */}
         <Link
           to={`/kanpu-register?from=${encodeURIComponent(from || '')}`}
           className="sub-link text-decoration-none small text-primary d-inline-block mt-3"

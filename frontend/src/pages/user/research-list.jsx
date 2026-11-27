@@ -49,7 +49,9 @@ export default function Home() {
     <main className="main-content">
       <header className="top-header">
         <h1 className="page-title">卒業研究一覧</h1>
-        <div className="user-name">👤 ユーザー</div>
+        <Link to="/mypage" className="user-name text-decoration-none text-dark">
+          👤 ユーザー
+        </Link>
       </header>
 
       <section className="search-card">

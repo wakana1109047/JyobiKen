@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function KanpuRegister() {
@@ -6,19 +6,20 @@ export default function KanpuRegister() {
     const [searchParams] = useSearchParams();
     const from = searchParams.get('from');
 
+    const videoInputRef = useRef(null);
+    const documentInputRef = useRef(null);
+
     const [formData, setFormData] = useState({
         video: null,
         summary: '',
         document: null,
     });
 
-    // テキスト入力のハンドラー
     const handleTextChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // ファイル入力のハンドラー
     const handleFileChange = (e) => {
         const { name, files } = e.target;
         if (files && files[0]) {
@@ -26,7 +27,16 @@ export default function KanpuRegister() {
         }
     };
 
-    // 戻るボタンのハンドラー
+    const handleFileClear = (name) => {
+        setFormData((prev) => ({ ...prev, [name]: null }));
+        if (name === 'video' && videoInputRef.current) {
+            videoInputRef.current.value = '';
+        }
+        if (name === 'document' && documentInputRef.current) {
+            documentInputRef.current.value = '';
+        }
+    };
+
     const handleBack = (e) => {
         e.preventDefault();
         if (from) {
@@ -36,11 +46,9 @@ export default function KanpuRegister() {
         }
     };
 
-    // フォーム送信
     const handleSubmit = (e) => {
         e.preventDefault();
         alert('カンプ情報を登録しました');
-        // 必要に応じて遷移先を変更してください
         navigate('/diary-edit');
     };
 
@@ -65,14 +73,27 @@ export default function KanpuRegister() {
                         <p className="text-secondary small">
                             動画ファイルを選択してください
                         </p>
-                        <input
-                            type="file"
-                            className="form-control"
-                            id="video"
-                            name="video"
-                            accept="video/*"
-                            onChange={handleFileChange}
-                        />
+                        <div className="input-group">
+                            <input
+                                ref={videoInputRef}
+                                type="file"
+                                className="form-control"
+                                id="video"
+                                name="video"
+                                accept="video/*"
+                                onChange={handleFileChange}
+                            />
+                            {formData.video && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-secondary"
+                                    onClick={() => handleFileClear('video')}
+                                    title="選択を取り消す"
+                                >
+                                    ✕
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </section>
 
@@ -103,14 +124,27 @@ export default function KanpuRegister() {
                         <p className="text-secondary small">
                             PDFや資料ファイルを選択してください
                         </p>
-                        <input
-                            type="file"
-                            className="form-control"
-                            id="document"
-                            name="document"
-                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-                            onChange={handleFileChange}
-                        />
+                        <div className="input-group">
+                            <input
+                                ref={documentInputRef}
+                                type="file"
+                                className="form-control"
+                                id="document"
+                                name="document"
+                                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                                onChange={handleFileChange}
+                            />
+                            {formData.document && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-secondary"
+                                    onClick={() => handleFileClear('document')}
+                                    title="選択を取り消す"
+                                >
+                                    ✕
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </section>
 

@@ -37,7 +37,9 @@ export default function AdminHome() {
         <main className="main-content">
             <header className="top-header">
                 <h1 className="page-title">卒業研究一覧</h1>
-                <div className="user-name">👤 山田太郎</div>
+                <Link to="/mypage" className="user-name text-decoration-none text-dark">
+                    👤 山田太郎
+                </Link>
             </header>
 
             {/* 検索・絞り込み */}
