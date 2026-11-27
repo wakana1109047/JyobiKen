@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-app_password="$(cat /run/secrets/app_db_password)"
+app_password="$(cat /run/secrets/jyobiken_app_db_password)"
 
 psql \
     --username "$POSTGRES_USER" \

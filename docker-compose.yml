@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
     secrets:
       - postgres_password
-      - app_db_password
+      - jyobiken_app_db_password  # app_db_password →  jyobiken_app_db_password に修正
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db/create-app-user.sh:/docker-entrypoint-initdb.d/10-create-app-user.sh:ro
@@ -37,7 +37,7 @@ services:
       APP_BOOTSTRAP_ADMIN_EMAIL: ${INITIAL_ADMIN_EMAIL:-}
     user: "${APP_UID:?Set APP_UID in JyobiKen/.env}:${APP_GID:?Set APP_GID in JyobiKen/.env}"
     secrets:
-      - source: app_db_password
+      - source: jyobiken_app_db_password     # app_db_password →  jyobiken_app_db_password へ修正
         target: spring.datasource.password
       - source: initial_admin_password
         target: app.bootstrap-admin.password
@@ -86,8 +86,8 @@ volumes:
 secrets:
   postgres_password:
     file: ./secrets/postgres_password.txt
-  app_db_password:
-    file: ./secrets/app_db_password.txt
+  jyobiken_app_db_password:
+    file: ./secrets/jyobiken_app_db_password.txt
   initial_admin_password:
     file: ./secrets/initial_admin_password.txt
 

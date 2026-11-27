@@ -1,8 +1,14 @@
+# 巨大化の原因となる依存ライブラリ・ビルド成果物を除外
+node_modules
+**/node_modules
+# target  ← コメントアウト
+# **/target ← コメントアウト
+
+# Git・IDE設定・環境変数
 .git
-.idea
 **/.git
+.idea
 **/.idea
-**/target
 **/data
 **/.env
 **/secrets/*.txt
