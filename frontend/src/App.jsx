@@ -17,8 +17,8 @@ import KanpuRegister from './pages/user/kanpu-register'
 import ResearchEdit from './pages/user/research-edit'
 
 // 認証系 (pages/certification/)
-import Login from './pages/certification/login'
-import Register from './pages/certification/register'
+import Login from './pages/certification/Login.jsx'
+import Register from './pages/certification/Register.jsx'
 import ForgotPassword from './pages/certification/forgot-password'
 import ResetPassword from './pages/certification/reset-password'
 
@@ -119,11 +119,14 @@ const INITIAL_NOTIFICATIONS = [
 // 3. アプリ本体
 // ==========================================================================
 export default function App() {
-    // ログイン中のユーザー情報（初期状態はテスト用ユーザー）
-    const [user, setUser] = useState({
-        name: '山田太郎',
-        role: 'user', // 'admin' に変更すると管理者画面をテスト可能です
-    })
+    // ログイン中のユーザー情報（初期状態はテスト用ユーザー）→ 常時ログイン用
+    // const [user, setUser] = useState({
+    //     name: '山田太郎',
+    //     role: 'user', // 'admin' に変更すると管理者画面をテスト可能です
+    // })
+
+    // ユーザ未ログイン状態
+    const[user, setUser] = useState(null)
 
     const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS)
 
