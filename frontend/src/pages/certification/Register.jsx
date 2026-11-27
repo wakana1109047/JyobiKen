@@ -19,14 +19,14 @@ export default function Register() {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            name: '',
+            name: '',             // 氏名
             department: 'system', // 初期値を「情報システム科」に設定
-            grade: '1年',
-            email: '',
-            email2: '',
-            password: '',
-            passwordConfirm: '',
-            agreement: false
+            grade: '1年',         // 学年
+            email: '',            // 学校のメアド　※必須
+            email2: '',           // 連絡用のメアド
+            password: '',         // パスワード
+            passwordConfirm: '',  // 確認用パスワード　※DBに保存しない
+            agreement: false      // 修了研究の有無　※初期値：受講しない
         }
     })
 
