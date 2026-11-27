@@ -170,12 +170,28 @@ export default function Register() {
                                 </label>
                                 <input
                                     type="email"
-                                    className="form-control"
+                                    className={`form-control ${errors.email2 ? 'is-invalid' : ''}`}
                                     id="email2"
                                     placeholder="example@email.com"
                                     autoComplete="email"
-                                    {...register('email2')}
+                                    {...register('email2',{
+                                        // 多分ここら辺に追加
+                                        validate:(value) => {
+                                            // 未入力でもOK
+                                            if(!value)
+                                                return true
+                                            // ブラウザの標準的なメアド形式か関数でチェック
+                                            const tempInput = document.createElement('input');
+                                            tempInput.type = 'email'
+                                            tempInput.value = value
+
+                                            return tempInput.checkValidity() || '正しいメールアドレスの形式で入力してください'
+                                        }
+                                    })}
                                 />
+                                <div className="invalid-feedback">
+                                    {errors.email2?.message}
+                                </div>
                             </div>
 
                             {/* パスワード */}
