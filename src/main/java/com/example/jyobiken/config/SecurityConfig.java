@@ -19,8 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import com.example.jyobiken.user.entity.AccountStatus;
-import com.example.jyobiken.user.entity.UserType;
-import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -35,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/register", "/error", "/h2-console/**", "/css/**", "/js/**", "/images/**", "/node_modules/bootstrap/**").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/api/auth/csrf").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
