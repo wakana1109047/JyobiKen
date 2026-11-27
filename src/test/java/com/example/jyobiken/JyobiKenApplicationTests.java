@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.example.jyobiken.user.repository.GroupMemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.example.jyobiken.user.entity.GroupRole;
-import com.example.jyobiken.user.repository.GroupMembershipRepository;
 
 
 @SpringBootTest
@@ -54,7 +54,7 @@ class JyobiKenApplicationTests {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private GroupMembershipRepository groupMembershipRepository;
+    private GroupMemberRepository groupMemberRepository;
 
     @BeforeEach
     void createLoginTestUser() {
@@ -255,11 +255,11 @@ class JyobiKenApplicationTests {
                 Long.class,
                 EMAIL);
 
-        groupMembershipRepository.addMember(groupId, userId, GroupRole.LEADER);
+        groupMemberRepository.addMember(groupId, userId, GroupRole.LEADER);
 
         assertEquals(
                 GroupRole.LEADER,
-                groupMembershipRepository.findRole(groupId, userId).orElseThrow());
+                groupMemberRepository.findRole(groupId, userId).orElseThrow());
     }
 
     @Test
@@ -271,7 +271,7 @@ class JyobiKenApplicationTests {
                 Long.class,
                 groupName);
         testGroupIds.add(groupId);
-        groupMembershipRepository.addMember(groupId, testUserId(), GroupRole.LEADER);
+        groupMemberRepository.addMember(groupId, testUserId(), GroupRole.LEADER);
 
         mockMvc.perform(get("/api/me").with(user(EMAIL).roles("GENERAL_STUDENT")))
                 .andExpect(status().isOk())

@@ -1,8 +1,6 @@
 package com.example.jyobiken.config;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
 
 import com.example.jyobiken.user.entity.User;
 import com.example.jyobiken.user.repository.UserRepository;
@@ -10,15 +8,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.jyobiken.user.entity.AccountStatus;
-import com.example.jyobiken.user.entity.UserType;
 
 // ログイン済みのリクエストに対し、今もアカウントが有効か、ログイン時から権限が変更されていないかを確認する
 public class AccountSessionValidationFilter extends OncePerRequestFilter {

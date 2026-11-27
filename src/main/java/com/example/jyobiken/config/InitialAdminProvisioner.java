@@ -40,39 +40,46 @@ public class InitialAdminProvisioner implements ApplicationRunner {
         if (email.isBlank()) {
             return;
         }
+        // 管理者の数を数える
         Integer adminCount = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM app_user WHERE user_type = 'ADMIN'",
+                "SELECT COUNT(*) FROM users WHERE role = 'admin'",
                 Integer.class);
         if (adminCount != null && adminCount > 0) {
             return;
-        }
+        } // パスワードが空白
         if (password.isBlank()) {
-            throw new IllegalStateException("Initial admin password must be configured before the first admin is issued.");
-        }
-        if (password.length() < 12) {
-            throw new IllegalStateException("Initial admin password must be at least 12 characters.");
+            throw new IllegalStateException("管理者のパスワードを設定する必要があります。");
+        } // パスワードが8文字より小さい、または英数字が混在していない
+        if (password.length() < 8
+            || !password.matches(".*[A-Za-z].*")
+            || !password.matches(".*[0-9].*")){
+            throw new IllegalStateException("管理者のパスワードは8文字以上必要です。また、英字と数字が両方含まれている必要があります。");
         }
 
+        // メールアドレスの重複確認
         String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
         if (normalizedEmail.isBlank()) {
             throw new IllegalStateException("Initial admin email cannot be blank.");
         }
         Integer existingUserCount = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM app_user WHERE email = ?",
+                "SELECT COUNT(*) FROM users WHERE email = ?",
                 Integer.class,
                 normalizedEmail);
         if (existingUserCount != null && existingUserCount > 0) {
-            throw new IllegalStateException("Initial admin email is already assigned to a non-admin account.");
+            throw new IllegalStateException("このメールアドレスは既に登録されています。");
         }
 
         jdbcTemplate.update(
-                "INSERT INTO app_user (name, email, password_hash, user_type, account_status) "
-                        + "VALUES (?, ?, ?, 'ADMIN', 'ACTIVE')",
+                """
+                    INSERT INTO users 
+                    (name, email, password_hash, student_stage, role, status)
+                    VALUES(?, ?, ?, null, 'admin', 'active')
+                    """,
                 "Administrator",
                 normalizedEmail,
                 passwordEncoder.encode(password));
         Long adminId = jdbcTemplate.queryForObject(
-                "SELECT id FROM app_user WHERE email = ?",
+                "SELECT id FROM users WHERE email = ?",
                 Long.class,
                 normalizedEmail);
         adminAuditRepository.record("SYSTEM", "INITIAL_ADMIN_ISSUED", adminId, "Initial administrator provisioned.");

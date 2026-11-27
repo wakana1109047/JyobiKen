@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import com.example.jyobiken.user.entity.AccountStatus;
 import com.example.jyobiken.user.entity.StudentStage;
 import com.example.jyobiken.user.entity.UserRole;
-import com.example.jyobiken.user.entity.UserType;
 
 public record UserResponse(
         Long id,

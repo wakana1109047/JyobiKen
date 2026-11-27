@@ -65,11 +65,7 @@ public class UserServiceImpl implements UserService {
                 request.expiresAt());
 
         // 学生アカウントに学科設定が必要
-        if (request.role() == UserRole.STUDENT
-                && (request.department() == null
-                || request.department().isBlank())) {
-            throw new BusinessRuleException("学生には学科を設定してください。");
-        }
+        validatedStudentDepartment(request.role(), request.department());
 
         String email = normalizeEmail(request.email());
         if (userRepository.findByEmail(email).isPresent()) {
@@ -115,6 +111,8 @@ public class UserServiceImpl implements UserService {
                 request.studentStage(),
                 request.userRole(),
                 request.expiresAt());
+
+        validatedStudentDepartment(request.userRole(), user.getDepartment());
 
         AccountStatus newStatus = request.accountStatus();
         UserRole newRole = request.userRole();
@@ -169,11 +167,17 @@ public class UserServiceImpl implements UserService {
         }
         // 既卒者で利用期限が設定されていない場合
         if(studentStage == StudentStage.GRADUATED && expiresAt == null){
-            throw new BusinessRuleException("既卒者には利用期限を設定してください。");
+            throw new BusinessRuleException("既卒者には利用期限を設定する必要があります。");
         }
         // 既卒者以外で利用期限が設定されている場合
         if(studentStage != StudentStage.GRADUATED && expiresAt != null){
             throw new BusinessRuleException("利用期限は既卒者のみ設定できます。");
+        }
+    }
+
+    private void validatedStudentDepartment(UserRole role, String department){
+        if(role == UserRole.STUDENT && (department == null || department.isBlank())){
+            throw new BusinessRuleException("学生には学科を設定する必要があります。");
         }
     }
 
@@ -187,4 +191,5 @@ public class UserServiceImpl implements UserService {
     private String normalizeEmail(String email) {
         return email == null ? "" : email.trim().toLowerCase(Locale.ROOT);
     }
+
 }
