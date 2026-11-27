@@ -109,7 +109,7 @@ export default function App() {
   });
 
   // 変更後（本番仕様：最初は未ログイン状態）
-  //const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
 
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
 
@@ -152,7 +152,7 @@ export default function App() {
         >
           {/* 一般・共通ルート */}
           <Route path="/" element={<Home />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage" element={<MyPage user={user} />} />
           <Route path="/timeline" element={<TimeLine />} />
           <Route
             path="/notifications"

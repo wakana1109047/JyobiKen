@@ -1,8 +1,13 @@
-
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function ResearchDetail() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const from = searchParams.get('from');
+
+    // マイページから来た場合は /mypage、それ以外はトップ（卒業研究一覧）に戻る
+    const backPath = from === 'mypage' ? '/mypage' : '/';
+    const backButtonLabel = from === 'mypage' ? 'マイページに戻る' : '一覧に戻る';
 
     const members = [
         '山田花子',
@@ -17,10 +22,10 @@ export default function ResearchDetail() {
             <div className="content-card">
                 <button
                     type="button"
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate(backPath)}
                     className="back-link border-0 bg-transparent p-0 mb-3"
                 >
-                    ← 戻る
+                    ← {from === 'mypage' ? 'マイページに戻る' : '戻る'}
                 </button>
 
                 <div className="research-image mb-4">
@@ -66,8 +71,8 @@ export default function ResearchDetail() {
 
                 {/* ボタンエリア */}
                 <div className="d-flex justify-content-end gap-2 mt-4 flex-wrap">
-                    <Link to="/" className="btn btn-outline-secondary">
-                        一覧に戻る
+                    <Link to={backPath} className="btn btn-outline-secondary">
+                        {backButtonLabel}
                     </Link>
                     <Link to="/research-edit" className="btn btn-primary">
                         編集する

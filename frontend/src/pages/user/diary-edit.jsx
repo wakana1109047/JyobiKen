@@ -1,13 +1,12 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 
 export default function DiaryEdit() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from');
+  const photoInputRef = useRef(null);
 
-  // 入力内容
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [photo, setPhoto] = useState(null);
@@ -28,7 +27,6 @@ export default function DiaryEdit() {
     };
   }, [photo]);
 
-  // 戻り先ページ
   const pageRoutes = {
     timeline: '/timeline',
     mypage: '/mypage',
@@ -37,7 +35,6 @@ export default function DiaryEdit() {
     'research-detail': '/research-detail',
   };
 
-  // 戻る処理
   const handleBack = () => {
     if (from && pageRoutes[from]) {
       navigate(pageRoutes[from]);
@@ -46,7 +43,6 @@ export default function DiaryEdit() {
     }
   };
 
-  // 写真選択処理
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
 
@@ -69,17 +65,14 @@ export default function DiaryEdit() {
     setPhoto(file);
   };
 
-  // 写真削除処理
   const handlePhotoDelete = () => {
     setPhoto(null);
 
-    const fileInput = document.getElementById('diary-photo');
-    if (fileInput) {
-      fileInput.value = '';
+    if (photoInputRef.current) {
+      photoInputRef.current.value = '';
     }
   };
 
-  // 投稿処理
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -186,8 +179,8 @@ export default function DiaryEdit() {
             >
               写真
             </label>
-
             <input
+              ref={photoInputRef}
               type="file"
               id="diary-photo"
               className="form-control"

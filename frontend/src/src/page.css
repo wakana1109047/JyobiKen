@@ -1,0 +1,931 @@
+/* ========================================
+   全ページ共通レイアウト
+======================================== */
+.page-content {
+    padding: 40px;
+    min-width: 0;
+}
+
+/* スマートフォン */
+@media (max-width: 768px) {
+    .page-content {
+        padding: 24px 16px 110px;
+    }
+
+}
+
+/* 横幅が380px以下の画面 */
+@media (max-width: 380px) {
+    .page-content {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+}
+
+/* ==========================================================================
+   研究一覧 (Research List)
+========================================================================== */
+.research-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.research-card {
+    overflow: hidden;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    transition: box-shadow .2s;
+}
+
+.research-card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
+}
+
+.research-image {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #e9ecef;
+    color: #777;
+    font-size: 16px;
+}
+
+.research-body {
+    padding: 15px;
+}
+
+.group-name {
+    color: #777;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.research-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.research-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    color: #666;
+    font-size: 12px;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.empty-message {
+    display: none;
+    padding: 35px;
+    background: #fff;
+    border-radius: 10px;
+    text-align: center;
+    color: #777;
+}
+
+/* ==========================================================================
+   マイページ (MyPage)
+========================================================================== */
+.profile-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+}
+
+.profile-name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.profile-info {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.8;
+}
+
+.profile-edit {
+    font-size: 12px;
+}
+
+.tab-button {
+    border: none;
+    background: transparent;
+    padding: 12px 16px;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+}
+
+.tab-button.active {
+    color: var(--hover-blue);
+    border-bottom-color: var(--main-blue);
+    font-weight: bold;
+}
+
+.post-image {
+    height: 130px;
+    background: #e5e7eb;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.post-title {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.post-description {
+    font-size: 12px;
+    color: #777;
+}
+
+.tag {
+    background: #f0f4f7;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 11px;
+    margin-right: 4px;
+}
+
+/* ==========================================================================
+   タイムライン (Timeline)
+========================================================================== */
+.diary-card {
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.post-date {
+    font-size: 12px;
+    color: #888;
+}
+
+.diary-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.diary-text {
+    font-size: 14px;
+    color: #666;
+    white-space: pre-wrap;
+}
+
+.post-actions {
+    border-top: 1px solid #edf0f3;
+    padding-top: 12px;
+    margin-top: 15px;
+}
+
+.action-button {
+    background: transparent;
+    border: none;
+    color: #777;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.action-button:hover {
+    color: var(--hover-blue);
+}
+
+/* ==========================================================================
+   通知 (Notifications)
+========================================================================== */
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #edf0f3;
+    transition: background 0.2s;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background: #f7fbfe;
+}
+
+.notification-item.unread {
+    background: #f2f9fe;
+}
+
+.notification-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    background: #e5e7eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.notification-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 5px;
+}
+
+.notification-date {
+    font-size: 11px;
+    color: #999;
+}
+
+.unread-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--main-blue);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.arrow {
+    color: #999;
+    font-size: 20px;
+}
+
+.post-preview {
+    background: #e5e7eb;
+    min-height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    color: #666;
+    font-size: 20px;
+}
+
+/* ==========================================================================
+   プロフィール編集 (Profile Edit) / 日誌編集 (Diary Edit)
+========================================================================== */
+.profile-image-area {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-image {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #e8f5fd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    color: var(--main-blue);
+    overflow: hidden;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-button {
+    display: inline-block;
+    padding: 7px 16px;
+    border: 1px solid var(--main-blue);
+    border-radius: 8px;
+    color: var(--main-blue);
+    background: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.image-button:hover {
+    background: #edf7fd;
+}
+
+.save-button {
+    background-color: var(--main-blue);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    padding: 12px 35px;
+    font-weight: bold;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background-color: var(--hover-blue);
+    color: #fff;
+}
+
+.sub-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: var(--main-blue);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.sub-link:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   画面固有のスマホレスポンシブ
+========================================================================== */
+@media (max-width: 768px) {
+    .research-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .button-area {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .button-area .btn,
+    .save-button {
+        width: 100%;
+    }
+
+    .notification-item {
+        padding: 14px 12px;
+        gap: 9px;
+    }
+
+    .notification-icon {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        font-size: 17px;
+    }
+
+}
+
+/* ==========================================================================
+   卒研詳細 (Research Detail)
+========================================================================== */
+.section-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.member-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.member {
+    background: #f3f6f9;
+    border: 1px solid #e5e7eb;
+    padding: 9px 13px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.research-description {
+    min-height: 180px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: #666;
+    padding: 20px;
+    text-align: center;
+}
+
+/* 卒研詳細のレスポンシブ補正 */
+@media (max-width: 768px) {
+    .research-title {
+        font-size: 21px;
+    }
+
+    .member-list {
+        gap: 8px;
+    }
+
+    .member {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .research-description {
+        min-height: 150px;
+        font-size: 16px;
+        padding: 15px;
+    }
+
+}
+
+/* ==========================================================================
+   卒研編集画面 (Research Edit)
+========================================================================== */
+.research-edit-wrapper .content-card {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.research-edit-wrapper .form-section {
+    margin-bottom: 25px;
+}
+
+.research-edit-wrapper .required {
+    display: inline-block;
+    color: #dc3545;
+    font-size: 11px;
+    margin-left: 6px;
+}
+
+.research-edit-wrapper .member-input {
+    margin-bottom: 10px;
+}
+
+.research-edit-wrapper .member-note {
+    color: #888;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.research-edit-wrapper .image-preview {
+    width: 100%;
+    min-height: 180px;
+    background: linear-gradient(135deg, #e5f4fc, #f3f6f9);
+    border: 1px dashed #b9d9eb;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #5d9fc4;
+    font-size: 14px;
+    padding: 20px;
+    text-align: center;
+}
+
+.research-edit-wrapper .image-preview-icon {
+    font-size: 38px;
+}
+
+.research-edit-wrapper .preview-image {
+    max-width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.research-edit-wrapper .image-note {
+    color: #888;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.research-edit-wrapper .back-link {
+    display: inline-block;
+    color: var(--hover-blue);
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* スマートフォン */
+@media (max-width: 768px) {
+    .research-edit-wrapper .content-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .research-edit-wrapper .back-link {
+        font-size: 13px;
+    }
+
+    .research-edit-wrapper .form-label {
+        font-size: 13px;
+    }
+
+    .research-edit-wrapper .form-control,
+    .research-edit-wrapper .form-select {
+        font-size: 13px;
+    }
+
+    .research-edit-wrapper .image-preview {
+        min-height: 150px;
+    }
+
+    .research-edit-wrapper .content-card .d-flex.justify-content-end {
+        justify-content: flex-start !important;
+    }
+
+    .research-edit-wrapper .content-card .d-flex.justify-content-end .btn {
+        font-size: 13px;
+    }
+
+}
+
+/* ==========================================================================
+   認証系画面 (Login / Register)
+========================================================================== */
+.auth-page-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.auth-header {
+    background: #fff !important;
+    padding: 20px 40px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.auth-header .logo {
+    font-size: 25px !important;
+    font-weight: bold !important;
+    color: #42a9e8 !important;
+    text-decoration: none !important;
+}
+
+.login-area,
+.register-area {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* 認証共通カード */
+.certification-card {
+    width: 100%;
+    border: 1px solid #edf0f3;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* ログインカードサイズ */
+.login-size {
+    max-width: 420px;
+}
+
+/* 登録カードサイズ */
+.register-size {
+    max-width: 460px;
+    margin: 0 auto;
+}
+
+.login-title,
+.register-title {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.description {
+    color: #777;
+    font-size: 14px;
+}
+
+.register-link,
+.login-link {
+    color: var(--hover-blue);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.register-link:hover,
+.login-link:hover {
+    text-decoration: underline;
+}
+
+.form-check-input:checked {
+    background-color: var(--main-blue);
+    border-color: var(--main-blue);
+}
+
+/* ログイン・新規登録ボタン共通 */
+.auth-submit-btn {
+    width: 100%;
+    background-color: #42a9e8;
+    border-color: #42a9e8;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.auth-submit-btn:hover {
+    background-color: #2996d6;
+    border-color: #2996d6;
+}
+
+@media (max-width: 480px) {
+    .auth-header {
+        padding: 18px 20px;
+    }
+
+    .login-area,
+    .register-area {
+        padding: 25px 15px;
+    }
+
+    .certification-card .card-body {
+        padding: 30px 24px !important;
+    }
+
+    .login-title,
+    .register-title {
+        font-size: 23px;
+    }
+
+}
+
+/* ==========================================================================
+   カンプ登録 (Kanpu Register)
+========================================================================== */
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.upload-area {
+    background: #f7f9fb;
+    border: 1px dashed #cbd5e1;
+    border-radius: 9px;
+    padding: 24px;
+    text-align: center;
+}
+
+.upload-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.upload-area .form-control {
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 17px;
+        margin-bottom: 15px;
+    }
+
+    .upload-area {
+        padding: 18px 14px;
+    }
+
+    .upload-area .form-control {
+        font-size: 13px;
+    }
+
+}
+
+/* ==========================================================================
+   日誌投稿モーダル
+========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100000;
+    padding: 20px;
+}
+
+.modal-content-card {
+    background: #fff;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 85vh;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* フォーム内（スクロールエリア）の余白調整 */
+.modal-content-card form {
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-right: -8px;
+}
+
+@media (max-width: 768px) {
+    .modal-overlay {
+        padding: 15px;
+    }
+
+    .modal-content-card {
+        padding: 20px;
+        max-height: 80vh;
+    }
+
+}
+
+/* ==========================================================================
+   管理者機能 (Admin Pages)
+========================================================================== */
+.account-row {
+    padding: 18px;
+    border: 1px solid #e9edf1;
+    border-radius: 12px;
+    margin-top: 14px;
+    background: #fff;
+    transition: box-shadow 0.2s;
+}
+
+.account-row:hover {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.account-name {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.account-number {
+    font-size: 12px;
+    color: #777;
+}
+
+.detail-row {
+    display: flex;
+    gap: 20px;
+    padding: 17px 5px;
+    border-top: 1px solid #edf0f3;
+}
+
+.detail-label {
+    width: 140px;
+    flex-shrink: 0;
+    color: #777;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.detail-value {
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.image-preview {
+    min-height: 180px;
+    background: #e5e7eb;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    margin-bottom: 16px;
+}
+
+.member-chip {
+    background: #f0f4f7;
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 7px;
+}
+
+.btn-edit {
+    color: #fff;
+    background: #35c96b;
+    border-color: #35c96b;
+}
+
+.btn-edit:hover {
+    color: #fff;
+    background: #26ae57;
+    border-color: #26ae57;
+}
+
+.btn-delete {
+    color: #fff;
+    background: #f15b64;
+    border-color: #f15b64;
+}
+
+.btn-delete:hover {
+    color: #fff;
+    background: #d9434d;
+    border-color: #d9434d;
+}
+
+/* プロフィール編集画面 */
+.profile-edit-wrapper {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.profile-edit-wrapper>.main-content {
+    display: block;
+    width: calc(100% - 240px);
+    margin-left: 240px;
+    flex: none;
+    min-width: 0;
+}
+
+.profile-edit-wrapper>.main-content>.content-card {
+    width: 100%;
+    max-width: none;
+}
+
+@media (max-width: 768px) {
+    .detail-row {
+        flex-direction: column;
+        gap: 6px;
+        padding: 15px 3px;
+    }
+
+    .detail-label {
+        width: auto;
+    }
+
+    .image-preview {
+        min-height: 150px;
+    }
+
+    .member-chip {
+        font-size: 12px;
+        padding: 7px 10px;
+    }
+
+}

@@ -1,22 +1,30 @@
-import { useState } from 'react'; import ReactDOM from 'react-dom';
+import React, { useState, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 
 export default function DiaryEditModal({ isOpen, onClose, from = '' }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [, setPhoto] = useState(null);
+    const [photo, setPhoto] = useState(null);
+    const photoInputRef = useRef(null);
     if (!isOpen) return null;
+
+    const handleClearPhoto = () => {
+        setPhoto(null);
+        if (photoInputRef.current) {
+            photoInputRef.current.value = '';
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         alert('日誌を投稿しました！');
         setTitle('');
         setContent('');
-        setPhoto(null);
+        handleClearPhoto();
         onClose();
     };
 
-    // document.body の直下にレンダリングしてサイドバーや親要素の margin-left を回避する
     return ReactDOM.createPortal(
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content-card" onClick={(e) => e.stopPropagation()}>
@@ -68,13 +76,26 @@ export default function DiaryEditModal({ isOpen, onClose, from = '' }) {
                         <label htmlFor="diary-photo" className="form-label fw-bold small">
                             写真
                         </label>
-                        <input
-                            type="file"
-                            id="diary-photo"
-                            className="form-control"
-                            accept="image/*"
-                            onChange={(e) => setPhoto(e.target.files[0])}
-                        />
+                        <div className="input-group">
+                            <input
+                                ref={photoInputRef}
+                                type="file"
+                                id="diary-photo"
+                                className="form-control"
+                                accept="image/*"
+                                onChange={(e) => setPhoto(e.target.files[0] || null)}
+                            />
+                            {photo && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-secondary"
+                                    onClick={handleClearPhoto}
+                                    title="選択を取り消す"
+                                >
+                                    ✕
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     {/* ボタン */}
@@ -100,6 +121,13 @@ export default function DiaryEditModal({ isOpen, onClose, from = '' }) {
                         onClick={onClose}
                     >
                         完成したものを登録する →
+                    </Link>
+                    <Link
+                        to={`/diary-edit?from=${encodeURIComponent(from)}`}
+                        className="text-decoration-none small text-primary ms-3"
+                        onClick={onClose}
+                    >
+                        詳細画面で入力する →
                     </Link>
                 </div>
             </div>

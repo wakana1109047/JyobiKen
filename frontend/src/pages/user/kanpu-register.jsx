@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -7,7 +6,6 @@ export default function KanpuRegister() {
     const [searchParams] = useSearchParams();
     const from = searchParams.get('from');
 
-    // フォームの状態管理
     const [formData, setFormData] = useState({
         video: null,
         summary: '',
@@ -19,7 +17,6 @@ export default function KanpuRegister() {
     const videoInputRef = useRef(null);
     const documentInputRef = useRef(null);
 
-    // 動画プレビューの作成
     useEffect(() => {
         if (!formData.video) {
             setVideoPreview('');
@@ -34,7 +31,6 @@ export default function KanpuRegister() {
         };
     }, [formData.video]);
 
-    // テキスト入力
     const handleTextChange = (e) => {
         const { name, value } = e.target;
 
@@ -44,7 +40,6 @@ export default function KanpuRegister() {
         }));
     };
 
-    // ファイル入力
     const handleFileChange = (e) => {
         const { name, files } = e.target;
         const file = files[0];
@@ -102,7 +97,7 @@ export default function KanpuRegister() {
     };
 
     // ファイル削除
-    const handleFileDelete = (name) => {
+    const handleFileClear = (name) => {
         setFormData((prev) => ({
             ...prev,
             [name]: null,
@@ -117,7 +112,6 @@ export default function KanpuRegister() {
         }
     };
 
-    // 日誌画面へ戻る
     const handleBack = () => {
         if (from) {
             navigate(`/diary-edit?from=${encodeURIComponent(from)}`);
@@ -126,10 +120,8 @@ export default function KanpuRegister() {
         }
     };
 
-    // 登録処理
     const handleSubmit = (e) => {
         e.preventDefault();
-
         // すべて未入力の場合
         if (
             !formData.video &&
@@ -185,16 +177,27 @@ export default function KanpuRegister() {
                         <p className="text-secondary small">
                             動画ファイルを選択してください（100MB以内）
                         </p>
-
-                        <input
-                            ref={videoInputRef}
-                            type="file"
-                            className="form-control"
-                            id="video"
-                            name="video"
-                            accept="video/*"
-                            onChange={handleFileChange}
-                        />
+                        <div className="input-group">
+                            <input
+                                ref={videoInputRef}
+                                type="file"
+                                className="form-control"
+                                id="video"
+                                name="video"
+                                accept="video/*"
+                                onChange={handleFileChange}
+                            />
+                            {formData.video && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-secondary"
+                                    onClick={() => handleFileClear('video')}
+                                    title="選択を取り消す"
+                                >
+                                    ✕
+                                </button>
+                            )}
+                        </div>
 
                         {/* 動画プレビュー */}
                         {videoPreview && (
@@ -222,7 +225,7 @@ export default function KanpuRegister() {
                                 <button
                                     type="button"
                                     className="btn btn-outline-danger btn-sm"
-                                    onClick={() => handleFileDelete('video')}
+                                    onClick={() => handleFileClear('video')}
                                 >
                                     動画を削除
                                 </button>
@@ -272,16 +275,27 @@ export default function KanpuRegister() {
                         <p className="text-secondary small">
                             PDFや資料ファイルを選択してください（20MB以内）
                         </p>
-
-                        <input
-                            ref={documentInputRef}
-                            type="file"
-                            className="form-control"
-                            id="document"
-                            name="document"
-                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-                            onChange={handleFileChange}
-                        />
+                        <div className="input-group">
+                            <input
+                                ref={documentInputRef}
+                                type="file"
+                                className="form-control"
+                                id="document"
+                                name="document"
+                                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                                onChange={handleFileChange}
+                            />
+                            {formData.document && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-secondary"
+                                    onClick={() => handleFileClear('document')}
+                                    title="選択を取り消す"
+                                >
+                                    ✕
+                                </button>
+                            )}
+                        </div>
 
                         {/* 選択した資料の表示 */}
                         {formData.document && (
@@ -303,7 +317,7 @@ export default function KanpuRegister() {
                                 <button
                                     type="button"
                                     className="btn btn-outline-danger btn-sm mt-2"
-                                    onClick={() => handleFileDelete('document')}
+                                    onClick={() => handleFileClear('document')}
                                 >
                                     資料を削除
                                 </button>
