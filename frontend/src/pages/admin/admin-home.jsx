@@ -34,7 +34,7 @@ export default function AdminHome() {
     });
 
     return (
-        <main className="main-content">
+        <main className="main-content flex-grow-1 page-content">
             <header className="top-header">
                 <h1 className="page-title">卒業研究一覧</h1>
                 <Link to="/mypage" className="user-name text-decoration-none text-dark">

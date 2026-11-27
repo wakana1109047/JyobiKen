@@ -37,7 +37,7 @@ export default function MyPage({ user }) {
     };
 
     return (
-        <main className="main-content">
+        <main className="main-content flex-grow-1 page-content">
             <h1 className="page-title">マイページ</h1>
 
             {/* プロフィールカード */}
@@ -175,7 +175,6 @@ export default function MyPage({ user }) {
                     )
                 )}
             </section>
-
             {/* モーダル表示（一般ユーザー用） */}
             {!isAdmin && (
                 <DiaryEditModal

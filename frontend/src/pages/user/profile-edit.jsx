@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function ProfileEdit() {
+    const navigate = useNavigate();
+
+    // フォームの状態管理
     // フォームの状態管理
     const [formData, setFormData] = useState({
         name: '山田 太郎',
@@ -37,9 +41,9 @@ export default function ProfileEdit() {
     // フォーム送信時のハンドラー
     const handleSubmit = (e) => {
         e.preventDefault();
+        // プロフィールを保存する処理
         alert('プロフィールを保存しました。');
-        // ルーティングライブラリ（React Routerなど）を使用する場合は useNavigate() 等で遷移します
-        window.location.href = 'mypage.html';
+        navigate('/mypage');
     };
 
     return (
@@ -55,7 +59,7 @@ export default function ProfileEdit() {
             </nav>
 
             {/* プロフィール編集メインコンテンツ */}
-            <main className="main-content">
+            <main className="main-content flex-grow-1 page-content">
                 <h1 className="page-title">プロフィール編集</h1>
 
                 <section className="content-card">
@@ -147,9 +151,10 @@ export default function ProfileEdit() {
 
                         {/* ボタン */}
                         <div className="button-area d-flex justify-content-end gap-3 mt-5">
-                            <a href="mypage.html" className="btn btn-outline-secondary">
+                            <Link to="/mypage" className="btn btn-outline-secondary">
                                 キャンセル
-                            </a>
+                            </Link>
+
                             <button type="submit" className="btn btn-primary">
                                 変更を保存する
                             </button>

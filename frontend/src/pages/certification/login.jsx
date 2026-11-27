@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react'; import { Link, useNavigate } from 'react-router-dom';
 
 export default function Login({ onLogin }) {
     const navigate = useNavigate();
@@ -55,7 +54,7 @@ export default function Login({ onLogin }) {
 
             {/* ログインエリア */}
             <main className="login-area">
-                <div className="card login-card">
+                <div className="card certification-card login-size">
                     <div className="card-body p-5">
                         <h1 className="login-title text-center mb-2">ログイン</h1>
                         <p className="description text-center mb-4">
@@ -109,7 +108,7 @@ export default function Login({ onLogin }) {
                             </div>
 
                             {/* ログインボタン */}
-                            <button type="submit" className="btn btn-primary w-100">
+                            <button type="submit" className="btn btn-primary auth-submit-btn">
                                 ログイン
                             </button>
                         </form>

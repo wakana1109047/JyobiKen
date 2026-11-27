@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function ResearchDetail() {
@@ -10,7 +9,6 @@ export default function ResearchDetail() {
     const backPath = from === 'mypage' ? '/mypage' : '/';
     const backButtonLabel = from === 'mypage' ? 'マイページに戻る' : '一覧に戻る';
 
-    // メンバーデータの例（動的に表示可能）
     const members = [
         '山田花子',
         '山田花子',
@@ -20,7 +18,7 @@ export default function ResearchDetail() {
     ];
 
     return (
-        <main className="main-content">
+        <main className="main-content flex-grow-1 page-content">
             <div className="content-card">
                 <button
                     type="button"
@@ -30,7 +28,7 @@ export default function ResearchDetail() {
                     ← {from === 'mypage' ? 'マイページに戻る' : '戻る'}
                 </button>
 
-                <div className="research-image">
+                <div className="research-image mb-4">
                     画像など
                 </div>
 
@@ -76,7 +74,7 @@ export default function ResearchDetail() {
                     <Link to={backPath} className="btn btn-outline-secondary">
                         {backButtonLabel}
                     </Link>
-                    <Link to="/diary-edit?from=research-detail" className="btn btn-primary">
+                    <Link to="/research-edit" className="btn btn-primary">
                         編集する
                     </Link>
                 </div>

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react'; import { Link, useNavigate } from 'react-router-dom';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -40,7 +39,7 @@ export default function Register() {
 
             {/* 新規登録フォーム */}
             <main className="register-area">
-                <div className="card register-card">
+                <div className="card certification-card register-size">
                     <div className="card-body p-5">
                         <h1 className="register-title text-center mb-2">アカウント作成</h1>
                         <p className="description text-center mb-4">
@@ -129,7 +128,6 @@ export default function Register() {
                                     name="agreement"
                                     checked={formData.agreement}
                                     onChange={handleChange}
-                                    required
                                 />
                                 <label className="form-check-label" htmlFor="agreement">
                                     修了制作を受講します
@@ -137,7 +135,7 @@ export default function Register() {
                             </div>
 
                             {/* 登録ボタン */}
-                            <button type="submit" className="btn btn-primary w-100">
+                            <button type="submit" className="btn btn-primary auth-submit-btn">
                                 登録する
                             </button>
                         </form>

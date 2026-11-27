@@ -7,7 +7,6 @@ export default function DiaryEditModal({ isOpen, onClose, from = '' }) {
     const [content, setContent] = useState('');
     const [photo, setPhoto] = useState(null);
     const photoInputRef = useRef(null);
-
     if (!isOpen) return null;
 
     const handleClearPhoto = () => {
@@ -122,6 +121,13 @@ export default function DiaryEditModal({ isOpen, onClose, from = '' }) {
                         onClick={onClose}
                     >
                         完成したものを登録する →
+                    </Link>
+                    <Link
+                        to={`/diary-edit?from=${encodeURIComponent(from)}`}
+                        className="text-decoration-none small text-primary ms-3"
+                        onClick={onClose}
+                    >
+                        詳細画面で入力する →
                     </Link>
                 </div>
             </div>
